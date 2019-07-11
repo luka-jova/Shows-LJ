@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--https://stackoverflow.com/questions/1521640/standard-android-button-with-a-different-color/1726352#1726352-->
+<selector
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:state_enabled="true" >
+        <shape>
+            <solid android:color="@color/colorLoginEnabled"/>
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+
+    <item android:state_enabled="false">
+        <shape>
+            <solid android:color="@color/colorLoginDisabled"/>
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+
+
+</selector>

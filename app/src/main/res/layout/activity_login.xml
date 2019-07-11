@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/editTextUsername"
+                app:srcCompat="@drawable/ic_logo_mark"
+                android:id="@+id/imageViewLogoTrokut"/>
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                app:layout_constraintTop_toBottomOf="@id/imageViewLogoTrokut"
+                app:layout_constraintBottom_toTopOf="@id/editTextPassword"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:hint="Username"
+                android:ems="10"
+                android:id="@+id/editTextUsername"/>
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                app:layout_constraintTop_toBottomOf="@id/editTextUsername"
+                app:layout_constraintBottom_toTopOf="@id/buttonLogin"
+                android:hint="Password"
+                android:ems="10"
+                android:id="@+id/editTextPassword"/>
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="@id/editTextPassword"
+                app:layout_constraintTop_toTopOf="@id/editTextPassword"
+                app:layout_constraintBottom_toBottomOf="@id/editTextPassword"
+                android:background="@drawable/ic_show_password"
+                android:id="@+id/buttonShowPassword"/>
+        <Button
+                android:text="LOG IN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/editTextPassword"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/custom_button"
+                android:textColor="@color/colorLoginText"
+                android:id="@+id/buttonLogin"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
