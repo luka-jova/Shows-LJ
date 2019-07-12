@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Shows-LukaJovanovic</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="err_username">Enter valid email address</string>
+    <string name="err_password">Enter password with 8 or more characters</string>
+    <string name="button_login">Log in</string>
 </resources>
