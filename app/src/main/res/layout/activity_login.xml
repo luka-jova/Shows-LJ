@@ -18,16 +18,16 @@
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textInputLayoutUsername"
                 app:layout_constraintTop_toBottomOf="@id/imageViewLogoTrokut"
-                app:layout_constraintBottom_toTopOf="@+id/textInputLayoutPassword">
+                app:layout_constraintBottom_toTopOf="@+id/textInputLayoutPassword"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:id="@+id/textInputLayoutUsername">
 
                 <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textEmailAddress"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginLeft="16dp"
                         android:hint="@string/hint_username"
                         android:id="@+id/editTextUsername"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -41,14 +41,14 @@
                 app:passwordToggleDrawable="@drawable/ic_show_password"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/colorPasswordEye"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
                 android:id="@+id/textInputLayoutPassword">
 
                 <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginLeft="16dp"
                         android:hint="@string/hint_password"
                         android:id="@+id/editTextPassword"/>
         </com.google.android.material.textfield.TextInputLayout>

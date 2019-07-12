@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import kotlinx.android.synthetic.main.activity_login.*
 
+const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._]*@{1}[A-Za-z0-9._]{1,}\.[A-Za-z0-9._]{1,}"""
 
 class LoginActivity : AppCompatActivity() {
 
@@ -23,6 +24,13 @@ class LoginActivity : AppCompatActivity() {
         editTextUsername.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 updateButton()
+                if(!isEmailValid(editTextUsername.text.toString())) {
+                    textInputLayoutUsername.error = getString(R.string.err_username)
+                    textInputLayoutUsername.isErrorEnabled = true
+                }
+                else {
+                    textInputLayoutUsername.isErrorEnabled = false
+                }
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -41,10 +49,14 @@ class LoginActivity : AppCompatActivity() {
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
+
     }
 
+    fun isEmailValid(email : String): Boolean {
+        return EMAIL_REGEX.toRegex().matches(email)
+    }
 
     fun updateButton() {
-        buttonLogin.isEnabled = editTextUsername.text.isNotEmpty() && editTextPassword.text.length >= 8
+        buttonLogin.isEnabled = isEmailValid(editTextUsername.text.toString()) && editTextPassword.text.length >= 8
     }
 }
