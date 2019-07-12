@@ -1,13 +1,11 @@
 package com.makina.shows_lukajovanovic
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import kotlinx.android.synthetic.main.activity_login.*
 
-const val USERNAME_CODE = "USERNAME"
 
 class LoginActivity : AppCompatActivity() {
 
@@ -17,10 +15,8 @@ class LoginActivity : AppCompatActivity() {
         buttonLogin.isEnabled = false
 
         buttonLogin.setOnClickListener {
-            val welcomeActivityIntent = Intent(this, WelcomeActivity::class.java)
-            val usernameInput = editTextUsername.text
-            welcomeActivityIntent.putExtra(USERNAME_CODE, usernameInput.toString())
-            startActivity(welcomeActivityIntent)
+            val usernameInput:String = editTextUsername.text.toString()
+            startActivity(WelcomeActivity.newInstance(this, usernameInput))
         }
 
 

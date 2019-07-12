@@ -18,5 +18,11 @@
         </shape>
     </item>
 
+    <item>
+        <shape>
+            <solid android:color="@color/colorLoginDisabled"/>
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
 
 </selector>
