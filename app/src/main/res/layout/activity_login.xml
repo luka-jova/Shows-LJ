@@ -22,6 +22,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/textInputLayoutPassword"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
+                app:errorEnabled="true"
                 android:id="@+id/textInputLayoutUsername">
 
                 <EditText
@@ -38,9 +39,9 @@
                 app:layout_constraintTop_toBottomOf="@id/textInputLayoutUsername"
                 app:layout_constraintBottom_toTopOf="@id/buttonLogin"
                 app:passwordToggleContentDescription="password_eye"
-                app:passwordToggleDrawable="@drawable/ic_show_password"
-                app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/colorPasswordEye"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleDrawable="@drawable/ic_show_password"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 android:id="@+id/textInputLayoutPassword">

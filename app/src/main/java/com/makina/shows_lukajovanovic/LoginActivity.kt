@@ -26,10 +26,9 @@ class LoginActivity : AppCompatActivity() {
                 updateButton()
                 if(!isEmailValid(editTextUsername.text.toString())) {
                     textInputLayoutUsername.error = getString(R.string.err_username)
-                    textInputLayoutUsername.isErrorEnabled = true
                 }
                 else {
-                    textInputLayoutUsername.isErrorEnabled = false
+                    textInputLayoutUsername.error = ""
                 }
             }
 
