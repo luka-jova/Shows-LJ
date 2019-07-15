@@ -8,5 +8,8 @@
     <color name="colorBlack">#000000</color>
     <color name="colorTextStrong">#2e2e2e</color>
     <color name="colorTextNormal">#505050</color>
+    <color name="colorTextLight">#a0a0a0</color>
     <color name="colorBackgroundShow">#eeeeee</color>
+
+
 </resources>

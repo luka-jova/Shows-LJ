@@ -1,5 +1,7 @@
 package com.makina.shows_lukajovanovic
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +20,10 @@ class ShowsActivity : AppCompatActivity() {
 			showsList.add(Show(4, R.drawable.img_sherlock, "Sherlock", "2010 - "))
 			showsList.add(Show(5, R.drawable.img_men, "Two and a half men", "? - ?"))
 
+		}
+		fun newInstance(context: Context) : Intent {
+			val intent = Intent(context, ShowsActivity::class.java)
+			return intent
 		}
 	}
 

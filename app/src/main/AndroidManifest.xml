@@ -13,6 +13,7 @@
 		</activity>
 		<activity android:name=".EpisodesActivity"/>
 		<activity android:name=".ShowsActivity">
+			<!--TODO promijeni launcher-->
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 

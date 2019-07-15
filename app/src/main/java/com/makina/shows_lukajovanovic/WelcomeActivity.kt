@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import kotlinx.android.synthetic.main.activity_welcome.*
 
 class WelcomeActivity : AppCompatActivity() {
@@ -16,6 +18,7 @@ class WelcomeActivity : AppCompatActivity() {
             intent.putExtra(USERNAME_CODE, username)
             return intent
         }
+        ///TODO HANDLER
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,5 +26,6 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_welcome)
         val username = intent.getStringExtra(USERNAME_CODE)
         textViewWelcomeUser.text = "Welcome, $username"
+
     }
 }
