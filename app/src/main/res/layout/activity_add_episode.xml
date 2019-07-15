@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				xmlns:app="http://schemas.android.com/apk/res-auto"
+				xmlns:tools="http://schemas.android.com/tools"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+
+	<androidx.appcompat.widget.Toolbar
+					android:layout_width="match_parent"
+					android:layout_height="?attr/actionBarSize"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					android:background="@color/colorPrimary"
+					android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+					app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+					android:id="@+id/toolbarAddEpisode"/>
+
+	<com.google.android.material.textfield.TextInputLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:layout_constraintTop_toBottomOf="@id/toolbarAddEpisode"
+					android:layout_marginRight="16dp"
+					android:layout_marginLeft="16dp"
+					android:id="@+id/textInputEpisodeTitle">
+
+		<EditText
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:inputType="text"
+						android:hint="@string/hint_episode_title"
+						android:id="@+id/editTextEpisodeName"/>
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:layout_constraintTop_toBottomOf="@id/textInputEpisodeTitle"
+					android:layout_marginTop="16dp"
+					android:layout_marginRight="16dp"
+					android:layout_marginLeft="16dp"
+					android:id="@+id/textInputEpisodeDescription">
+
+	<EditText
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:inputType="text"
+					android:hint="@string/hint_episode_description"
+					android:id="@+id/editTextEpisodeDescription"/>
+	</com.google.android.material.textfield.TextInputLayout>
+	<Button
+					android:text="@string/button_save"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					app:layout_constraintBottom_toBottomOf="parent"
+					android:layout_marginRight="16dp"
+					android:layout_marginLeft="16dp"
+					android:layout_marginBottom="50dp"
+					android:background="@drawable/custom_button"
+					android:textColor="@color/colorPrimary"
+					android:id="@+id/buttonSave"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

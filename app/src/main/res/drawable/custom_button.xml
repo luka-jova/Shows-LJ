@@ -6,7 +6,7 @@
 
     <item android:state_enabled="true" >
         <shape>
-            <solid android:color="@color/colorLoginEnabled"/>
+            <solid android:color="@color/colorAccent"/>
             <corners android:radius="8dp" />
         </shape>
     </item>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				xmlns:tools="http://schemas.android.com/tools"
+				android:layout_width="match_parent"
+				android:layout_height="150dp"
+				android:padding="8dp">
+
+	<FrameLayout
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1">
+
+		<ImageView
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						tools:src="@tools:sample/avatars[1]"
+						android:background="@color/colorBackgroundShow"
+						android:id="@+id/imageViewShow"
+						android:scaleType="fitXY"/>
+	</FrameLayout>
+
+	<LinearLayout
+					android:orientation="vertical"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="3"
+					android:paddingLeft="16dp"
+					android:paddingTop="8dp">
+		<TextView
+						android:text="Ime serije"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="20sp"
+						android:layout_marginBottom="8dp"
+						android:id="@+id/textViewShowName"/>
+		<TextView
+						android:text="(2011 - 2019)"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="14sp"
+						android:id="@+id/textViewShowDate"/>
+	</LinearLayout>
+</LinearLayout>

@@ -39,7 +39,7 @@
                 app:layout_constraintTop_toBottomOf="@id/textInputLayoutUsername"
                 app:layout_constraintBottom_toTopOf="@id/buttonLogin"
                 app:passwordToggleContentDescription="password_eye"
-                app:passwordToggleTint="@color/colorPasswordEye"
+                app:passwordToggleTint="@color/colorAccent"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleDrawable="@drawable/ic_show_password"
                 android:layout_marginRight="16dp"

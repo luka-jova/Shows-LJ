@@ -27,7 +27,7 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="28sp"
             android:textSize="40dp"
-            android:textColor="@color/colorYourein"
+            android:textColor="@color/colorTextStrong"
 
             android:id="@+id/textViewYourein"/>
     <TextView
@@ -38,7 +38,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:textColor="@color/colorWelcomeUser"
+            android:textColor="@color/colorTextNormal"
             android:textSize="15sp"
             android:id="@+id/textViewWelcomeUser"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

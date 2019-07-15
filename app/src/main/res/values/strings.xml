@@ -1,8 +1,13 @@
 <resources>
-    <string name="app_name">Shows-LukaJovanovic</string>
-    <string name="hint_username">Username</string>
-    <string name="hint_password">Password</string>
-    <string name="err_username">Enter valid email address</string>
-    <string name="err_password">Enter a password with 8 or more characters</string>
-    <string name="button_login">Log in</string>
+	<string name="app_name">Shows-LukaJovanovic</string>
+	<string name="hint_username">Username</string>
+	<string name="hint_password">Password</string>
+	<string name="err_username">Enter valid email address</string>
+	<string name="err_password">Enter a password with 8 or more characters</string>
+	<string name="button_login">Log in</string>
+	<string name="button_save">SAVE</string>
+	<string name="hint_episode_description">Episode description</string>
+	<string name="hint_episode_title">Episode title</string>
+	<string name="text_episodes"><b>Episodes</b></string>
+	<string name="text_shows"><b>Shows</b></string>
 </resources>
