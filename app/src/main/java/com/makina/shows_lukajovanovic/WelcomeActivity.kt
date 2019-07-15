@@ -18,7 +18,6 @@ class WelcomeActivity : AppCompatActivity() {
             intent.putExtra(USERNAME_CODE, username)
             return intent
         }
-        //probni konmentar
         ///TODO HANDLER
     }
 
