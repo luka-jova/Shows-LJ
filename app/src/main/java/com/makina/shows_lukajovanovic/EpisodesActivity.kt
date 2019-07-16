@@ -11,8 +11,11 @@ import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 import kotlinx.android.synthetic.main.activity_episodes.*
+import kotlinx.android.synthetic.main.activity_shows.*
 
 class EpisodesActivity : AppCompatActivity() {
 	companion object {
@@ -26,18 +29,14 @@ class EpisodesActivity : AppCompatActivity() {
 	}
 	var position = -1
 
-	fun generateText() {
-		textViewEpisodesContent.text = ""
+	fun updateVisibility() {
 		if(ShowsActivity.showsList[ position ].episodeList.size > 0) {
 			defaultLayout.visibility = View.INVISIBLE
-			textViewEpisodesContent.text = ""
-			var i = 0
-			for(cur in ShowsActivity.showsList[ position ].episodeList)
-				textViewEpisodesContent.text =
-					textViewEpisodesContent.text.toString() + "${++i}. $cur\n\n"
+			recyclerViewEpisodes?.visibility = View.VISIBLE
 		}
 		else {
 			defaultLayout.visibility = View.VISIBLE
+			recyclerViewEpisodes?.visibility = View.INVISIBLE
 		}
 	}
 
@@ -49,8 +48,13 @@ class EpisodesActivity : AppCompatActivity() {
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		supportActionBar?.setDisplayShowHomeEnabled(true)
 		supportActionBar?.title = ShowsActivity.showsList[ position ].name
-		generateText()
+		updateVisibility()
 
+		textViewDescription.text = ShowsActivity.showsList[ position ].showDescription
+
+		val recyclerViewEpisodes = recyclerViewEpisodes
+		recyclerViewEpisodes.layoutManager = LinearLayoutManager(this)
+		recyclerViewEpisodes.adapter = EpisodesRecyclerAdapter(ShowsActivity.showsList[ position ].episodeList)
 
 		fab.setOnClickListener { view ->
 			//TODO sta je request code?
@@ -62,8 +66,13 @@ class EpisodesActivity : AppCompatActivity() {
 		if(resultCode == RESULT_OK) {
 			//TODO jel ovo radi: ako je null postavi na default
 			val episodeName: String = data?.getStringExtra(AddEpisodeActivity.EPISODE_NAME) ?: "Default"
-			ShowsActivity.showsList[ position ].episodeList.add(episodeName)
-			generateText()
+			val curEpisodeList = ShowsActivity.showsList[ position ].episodeList
+			curEpisodeList.add("${curEpisodeList.size + 1}. $episodeName")
+
+			//TODO promijeni da koristim samo jedan val recyclerViewEpisodes ovdje i u onCreate
+			val recyclerViewEpisodes = recyclerViewEpisodes
+			recyclerViewEpisodes.adapter?.notifyItemInserted(curEpisodeList.size - 1)
+			updateVisibility()
 		}
 	}
 
