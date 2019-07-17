@@ -1,5 +1,6 @@
 package com.makina.shows_lukajovanovic
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -16,18 +17,40 @@ import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.activity_add_episode.*
 import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.*
 import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.view.*
+import android.widget.Toast
+import android.webkit.PermissionRequest
+import android.Manifest.permission
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.app.Activity
+import android.icu.util.Calendar
+import android.media.MediaScannerConnection
+import android.os.Environment
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.DexterError
+import com.karumi.dexter.listener.PermissionRequestErrorListener
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+
 
 class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.NoticeDialogListener, TakePhotoDialog.TakePhotoDialogListener {
 	override fun onDialogSelect(which: String) {
 		Log.d("moj tag", which)
 		if(which == TakePhotoDialog.CAMERA_STRING) {
 			//Camera
-			dispatchTakePictureIntent()
+			/**dispatchTakePictureIntent()*/
+			takePhotoFromCamera()
 		} else {
 			//Gallery
+			choosePhotoFromGallery()
 		}
 	}
-
+/**
 	val REQUEST_IMAGE_CAPTURE = 1
 
 	private fun dispatchTakePictureIntent() {
@@ -42,17 +65,44 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			val imageBitmap = data?.extras?.get("data") as Bitmap
 			imageButtonTakePhoto.setImageBitmap(imageBitmap)
 		}
-	}
+	}*/
 
+
+	public override fun onActivityResult(requestCode:Int, resultCode:Int, data: Intent?) {
+
+		if(requestCode == GALLERY && resultCode == RESULT_OK) {
+			if (data != null) {
+				val contentURI = data!!.data
+				try {
+					val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
+					val path = saveImage(bitmap)
+					Toast.makeText(this@AddEpisodeActivity, "Image Saved!", Toast.LENGTH_SHORT).show()
+					imageButtonTakePhoto.setImageBitmap(bitmap)
+				}
+				catch (e: IOException) {
+					e.printStackTrace()
+					Toast.makeText(this@AddEpisodeActivity, "Failed!", Toast.LENGTH_SHORT).show()
+				}
+			}
+		}
+		else if (requestCode == CAMERA && resultCode == RESULT_OK) {
+			val thumbnail = data!!.extras!!.get("data") as Bitmap
+			imageButtonTakePhoto.setImageBitmap(thumbnail)
+			saveImage(thumbnail)
+			Toast.makeText(this@AddEpisodeActivity, "Image Saved!", Toast.LENGTH_SHORT).show()
+		}
+	}
 
 
 	companion object {
 		const val EPISODE_CODE = "EPISODE_CODE"
+		private val IMAGE_DIRECTORY = "/demonuts"
 		fun newInstance(context: Context) : Intent {
 			val intent = Intent(context, AddEpisodeActivity::class.java)
 			return intent
 		}
 	}
+
 	private var curEpisode:Episode = Episode()
 
 	override fun onSaveInstanceState(outState: Bundle) {
@@ -75,6 +125,7 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 		supportActionBar?.setDisplayShowHomeEnabled(true)
 		supportActionBar?.title = "Add episode"
 
+		requestMultiplePermissions()
 		curEpisode = (savedInstanceState?.getSerializable(EPISODE_CODE) as? Episode) ?: Episode()
 
 		//**LOAD STATE*//
@@ -142,6 +193,94 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 		var cS:String = "--"
 		if(curEpisode.seasonNum != -1) cS = curEpisode.seasonNum.toString()
 		textViewSeasonEpisode.text = "S ${cS.padStart(2, '0')}, E ${cE.padStart(2, '0')}"
+	}
+////*****///
+	private fun requestMultiplePermissions() {
+		Dexter.withActivity(this)
+			.withPermissions(
+				Manifest.permission.CAMERA,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE,
+				Manifest.permission.READ_EXTERNAL_STORAGE
+			)
+			.withListener(object : MultiplePermissionsListener {
+				override fun onPermissionRationaleShouldBeShown(
+					permissions: MutableList<com.karumi.dexter.listener.PermissionRequest>?,
+					token: PermissionToken?
+				) {
+					token?.continuePermissionRequest()
+				}
+
+				override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+					// check if all permissions are granted
+					if (report.areAllPermissionsGranted()) {
+						Toast.makeText(applicationContext, "All permissions are granted by user!", Toast.LENGTH_SHORT).show()
+					}
+
+					// check for permanent denial of any permission
+					if (report.isAnyPermissionPermanentlyDenied()) {
+						// show alert dialog navigating to Settings
+						//openSettingsDialog();
+					}
+				}
+
+			}).withErrorListener(object : PermissionRequestErrorListener {
+				override fun onError(error: DexterError) {
+					Toast.makeText(applicationContext, "Some Error! ", Toast.LENGTH_SHORT).show()
+				}
+			})
+			.onSameThread()
+			.check()
+	}
+	private val GALLERY = 1
+	private val CAMERA = 2
+
+	fun choosePhotoFromGallery() {
+		val galleryIntent = Intent(Intent.ACTION_PICK,
+			MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
+		startActivityForResult(galleryIntent, GALLERY)
+	}
+
+	private fun takePhotoFromCamera() {
+		val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+		startActivityForResult(intent, CAMERA)
+	}
+
+
+	fun saveImage(myBitmap: Bitmap):String {
+		val bytes = ByteArrayOutputStream()
+		myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
+		val wallpaperDirectory = File(
+			(Environment.getExternalStorageDirectory()).toString() + IMAGE_DIRECTORY)
+		// have the object build the directory structure, if needed.
+		Log.d("fee",wallpaperDirectory.toString())
+		if (!wallpaperDirectory.exists())
+		{
+
+			wallpaperDirectory.mkdirs()
+		}
+
+		try
+		{
+			Log.d("heel",wallpaperDirectory.toString())
+			val f = File(wallpaperDirectory, ((Calendar.getInstance()
+				.getTimeInMillis()).toString() + ".jpg"))
+			f.createNewFile()
+			val fo = FileOutputStream(f)
+			fo.write(bytes.toByteArray())
+			MediaScannerConnection.scanFile(this,
+				arrayOf(f.getPath()),
+				arrayOf("image/jpeg"), null)
+			fo.close()
+			Log.d("TAG", "File Saved::--->" + f.getAbsolutePath())
+
+			return f.getAbsolutePath()
+		}
+		catch (e1: IOException) {
+			e1.printStackTrace()
+		}
+
+		return ""
 	}
 
 }
