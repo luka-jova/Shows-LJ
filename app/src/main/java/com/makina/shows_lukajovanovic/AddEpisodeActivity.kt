@@ -2,9 +2,11 @@ package com.makina.shows_lukajovanovic
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -15,7 +17,35 @@ import kotlinx.android.synthetic.main.activity_add_episode.*
 import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.*
 import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.view.*
 
-class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.NoticeDialogListener {
+class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.NoticeDialogListener, TakePhotoDialog.TakePhotoDialogListener {
+	override fun onDialogSelect(which: String) {
+		Log.d("moj tag", which)
+		if(which == TakePhotoDialog.CAMERA_STRING) {
+			//Camera
+			dispatchTakePictureIntent()
+		} else {
+			//Gallery
+
+		}
+	}
+
+	val REQUEST_IMAGE_CAPTURE = 1
+
+	private fun dispatchTakePictureIntent() {
+		Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+			takePictureIntent.resolveActivity(packageManager)?.also {
+				startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+			}
+		}
+	}
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+			val imageBitmap = data?.extras?.get("data") as Bitmap
+			imageButtonTakePhoto.setImageBitmap(imageBitmap)
+		}
+	}
+
+
 
 	companion object {
 		const val EPISODE_CODE = "EPISODE_CODE"
@@ -87,6 +117,10 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 				curEpisode.episodeDescription = this@AddEpisodeActivity.editTextEpisodeDescription.text.toString()
 			}
 		})
+
+		imageButtonTakePhoto.setOnClickListener {
+			TakePhotoDialog().show(supportFragmentManager, "takePhotoDialog")
+		}
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -14,5 +14,7 @@
 	<string name="text_upload_photo"><b>Upload photo</b></string>
 	<string name="text_save"><b>SAVE</b></string>
 	<string name="text_seasons"><b>Seasons</b></string>
+	<string name="gallery">Gallery</string>
+	<string name="camera">Camera</string>
 
 </resources>
