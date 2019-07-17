@@ -49,8 +49,8 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 		if(which == TakePhotoDialog.CAMERA_STRING) {
 			//Camera
 			/**dispatchTakePictureIntent()*/
-			///takePhotoFromCamera()
-			dispatchTakePictureIntent()
+			takePhotoFromCamera()
+			///dispatchTakePictureIntent()
 		} else {
 			//Gallery
 			choosePhotoFromGallery()
@@ -102,17 +102,17 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 				}
 			}
 		}
-		/*else if (requestCode == CAMERA && resultCode == RESULT_OK) {
+		else if (requestCode == CAMERA && resultCode == RESULT_OK) {
 			bitmapEpisode = data!!.extras!!.get("data") as Bitmap
 			imageButtonTakePhoto.setImageBitmap(bitmapEpisode)
 			saveImage(bitmapEpisode!!)
-		}*/
-		else if(requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+		}
+		/*else if(requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
 			bitmapEpisode = MediaStore.Images.Media.getBitmap(this.contentResolver,
 				data!!.extras!!.get(MediaStore.EXTRA_OUTPUT) as Uri?
 			)
 			setPhoto()
-		}
+		}*/
 
 	}
 
