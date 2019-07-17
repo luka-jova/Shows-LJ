@@ -25,7 +25,6 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			dispatchTakePictureIntent()
 		} else {
 			//Gallery
-
 		}
 	}
 
