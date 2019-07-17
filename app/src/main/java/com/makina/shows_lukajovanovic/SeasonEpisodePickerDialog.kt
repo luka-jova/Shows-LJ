@@ -9,44 +9,80 @@ import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
 import android.view.LayoutInflater
-import android.widget.TimePicker
+import android.view.View
+import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.*
-import java.util.*
+import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.view.*
 
-class SeasonEpisodePickerDialog : DialogFragment() {
+
+class SeasonEpisodePickerDialog(var curSeason: Int = 1, var curEpisode: Int = 1) : DialogFragment() {
+	companion object {
+		const val CUR_SEASON = "CUR_SEASON"
+		const val CUR_EPISODE = "CUR_EPISODE"
+	}
+	lateinit var curView : View
+	init{
+		//TODO zasto se kod rotacije poziva ovaj init? -> da se ne poziva ne bih morao koristiti Bundle
+		Log.d("moj tag", "inicijalizacija")
+	}
+
+	override fun onSaveInstanceState(outState: Bundle) {
+		Log.d("moj tag", "sejvam $curSeason $curEpisode")
+		outState.putInt(CUR_SEASON, curSeason)
+		outState.putInt(CUR_EPISODE, curEpisode)
+		super.onSaveInstanceState(outState)
+	}
+
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+		Log.d("moj tag", "onCreateDialog()")
+		if(curSeason == -1) curSeason = 1
+		if(curEpisode == -1) curEpisode = 1
+		curSeason = savedInstanceState?.getInt(CUR_SEASON)  ?: curSeason
+		curEpisode = savedInstanceState?.getInt(CUR_EPISODE) ?: curEpisode
+		Log.d("moj tag", "loadam $curSeason $curEpisode")
+
 		return activity?.let {
 			//TODO sto radi activity.let
 			val builder = AlertDialog.Builder(it)
 			val inflater = requireActivity().layoutInflater
 
 			//TODO mogu li povecati font texta u neutral buttonu?
-			builder.setView(inflater.inflate(R.layout.layout_fragment_season_episode_picker, null))
-				.setPositiveButton(R.string.text_save,
+			curView = inflater.inflate(R.layout.layout_fragment_season_episode_picker, null)
+			builder.setView(curView)
+			Log.d("moj tag", "prvotno stanje je ${view == null}")
+			builder.setPositiveButton(R.string.text_save,
 					DialogInterface.OnClickListener { dialog, id ->
-						/**val curFragment = activity?.supportFragmentManager?.findFragmentByTag("timePicker")
-						if(curFragment == null) {Log.d("moj tag", "1. null")}
-						else if(curFragment.editTextNapisiNesto == null) {Log.d("moj tag", "2. null")}
-						else {Log.d("moj tag", curFragment.editTextNapisiNesto.text.toString())}**/
-
-						///ipak je ova klasa takoder Fragment
-						/**Log.d("moj tag", "bok")
-						Log.d("moj tag", "debug ${this@SeasonEpisodePickerDialog.editTextNapisiNesto.text}")
-						*/
-						listener.onDialogSaveButton(this)
+						listener.onDialogSaveButton(this@SeasonEpisodePickerDialog)
 					})
+
+			curView.numberPickerSeason.maxValue = resources.getInteger(R.integer.int_season_max)
+			curView.numberPickerSeason.minValue = resources.getInteger(R.integer.int_season_min)
+			curView.numberPickerEpisode.minValue = resources.getInteger(R.integer.int_episode_min)
+			curView.numberPickerEpisode.maxValue = resources.getInteger(R.integer.int_episode_max)
+			curView.numberPickerEpisode.value = curEpisode
+			curView.numberPickerSeason.value = curSeason
+
+			curView.numberPickerSeason.setOnValueChangedListener(object : NumberPicker.OnValueChangeListener {
+				override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
+					this@SeasonEpisodePickerDialog.curSeason = newVal
+				}
+			})
+			curView.numberPickerEpisode.setOnValueChangedListener(object : NumberPicker.OnValueChangeListener {
+				override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
+					this@SeasonEpisodePickerDialog.curEpisode = newVal
+				}
+			})
+
 			builder.create()
 		} ?: throw IllegalStateException("Activity cannot be null")
 
 	}
 
-	// Use this instance of the interface to deliver action events
 	internal lateinit var listener: NoticeDialogListener
 
 	interface NoticeDialogListener {
-		fun onDialogSaveButton(dialog: DialogFragment)
+		//TODO prije je radilo, a sad ne radi da ovdje kao argument primam dialog: DialogFragment, i onda overrideam dialog: SeasonEpisodePickerDialog (sto je takoder DialogFragment)
+		fun onDialogSaveButton(dialog: SeasonEpisodePickerDialog)
 	}
 
 	override fun onAttach(context: Context) {
@@ -56,11 +92,5 @@ class SeasonEpisodePickerDialog : DialogFragment() {
 		} catch (e: ClassCastException) {
 			throw ClassCastException(("$context must implement NoticeDialogListener"))
 		}
-	}
-
-	override fun onResume() {
-		super.onResume()
-		view.findViewById(R.id.editTextNapisiNesto)
-		Log.d("moj tag", "kad je stvoreno pokusavam ${editTextNapisiNesto.text}")
 	}
 }

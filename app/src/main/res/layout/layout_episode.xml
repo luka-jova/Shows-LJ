@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
-
+              android:layout_height="wrap_content"
+							android:orientation="horizontal">
+	<TextView
+					android:text="S 00 E 00"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:textAlignment="center"
+					android:textSize="16sp"
+					android:textColor="@color/colorAccent"
+					android:id="@+id/textViewEpisodeSENumber"/>
 	<TextView
 					android:text="Dummy"
-					android:layout_width="match_parent"
+					android:layout_width="0dp"
 					android:layout_height="wrap_content"
+					android:layout_weight="3"
 					android:paddingLeft="24dp"
 					android:paddingBottom="20dp"
 					android:paddingTop="20dp"

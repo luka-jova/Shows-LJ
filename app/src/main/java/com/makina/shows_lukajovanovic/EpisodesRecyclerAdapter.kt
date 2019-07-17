@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.layout_episode.view.*
 import kotlinx.android.synthetic.main.layout_show.view.*
 
-class EpisodesRecyclerAdapter(val episodeList: MutableList<String>) : RecyclerView.Adapter<EpisodesRecyclerAdapter.ViewHolder>() {
+class EpisodesRecyclerAdapter(val episodeList: MutableList<Episode>) : RecyclerView.Adapter<EpisodesRecyclerAdapter.ViewHolder>() {
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 		val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_episode, parent, false)
 		return ViewHolder(view)
@@ -19,11 +19,11 @@ class EpisodesRecyclerAdapter(val episodeList: MutableList<String>) : RecyclerVi
 	}
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-		val episodeText = holder.itemView.textViewEpisode
+		val curEpisode = episodeList[ position ]
 
-		episodeText.text = episodeList[ position ]
-
-		val cont = holder.itemView.context
+		holder.itemView.textViewEpisode.text = curEpisode.name
+		holder.itemView.textViewEpisodeSENumber.text =
+			"S${curEpisode.seasonNum.toString().padStart(2, '0')} E${curEpisode.episodeNum.toString().padStart(2, '0')}"
 	}
 
 

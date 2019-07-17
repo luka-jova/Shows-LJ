@@ -64,10 +64,9 @@ class EpisodesActivity : AppCompatActivity() {
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		if(resultCode == RESULT_OK) {
-			//TODO jel ovo radi: ako je null postavi na default
-			val episodeName: String = data?.getStringExtra(AddEpisodeActivity.EPISODE_NAME) ?: "Default"
+			val curEpisode: Episode = data?.getSerializableExtra(AddEpisodeActivity.EPISODE_CODE) as Episode
 			val curEpisodeList = ShowsActivity.showsList[ position ].episodeList
-			curEpisodeList.add("${curEpisodeList.size + 1}. $episodeName")
+			curEpisodeList.add(curEpisode)
 
 			//TODO promijeni da koristim samo jedan val recyclerViewEpisodes ovdje i u onCreate
 			val recyclerViewEpisodes = recyclerViewEpisodes
