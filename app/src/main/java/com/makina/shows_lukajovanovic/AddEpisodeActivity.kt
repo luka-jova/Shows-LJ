@@ -23,9 +23,13 @@ import android.Manifest.permission
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Activity
+import android.graphics.BitmapFactory
+import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Environment
+import androidx.core.content.FileProvider
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -36,6 +40,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
 
 
 class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.NoticeDialogListener, TakePhotoDialog.TakePhotoDialogListener {
@@ -44,7 +49,8 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 		if(which == TakePhotoDialog.CAMERA_STRING) {
 			//Camera
 			/**dispatchTakePictureIntent()*/
-			takePhotoFromCamera()
+			///takePhotoFromCamera()
+			dispatchTakePictureIntent()
 		} else {
 			//Gallery
 			choosePhotoFromGallery()
@@ -67,35 +73,53 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 		}
 	}*/
 
+	var bitmapEpisode: Bitmap? = null
+
+	fun setPhoto() {
+		if(bitmapEpisode == null) {
+			imageButtonTakePhoto.setImageResource(R.drawable.ic_show_password)
+		}
+		else {
+			imageButtonTakePhoto.setImageBitmap(bitmapEpisode)
+		}
+	}
+
 
 	public override fun onActivityResult(requestCode:Int, resultCode:Int, data: Intent?) {
-
+		Toast.makeText(this, "onActivityResult $requestCode $resultCode", Toast.LENGTH_SHORT).show()
+		Log.d("moj tag", "onActivityResult $requestCode $resultCode")
 		if(requestCode == GALLERY && resultCode == RESULT_OK) {
+
 			if (data != null) {
+				Log.d("moj tag", "dimenzije: ")
 				val contentURI = data!!.data
 				try {
-					val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
-					val path = saveImage(bitmap)
-					Toast.makeText(this@AddEpisodeActivity, "Image Saved!", Toast.LENGTH_SHORT).show()
-					imageButtonTakePhoto.setImageBitmap(bitmap)
+					bitmapEpisode = MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
+					imageButtonTakePhoto.setImageBitmap(bitmapEpisode)
 				}
 				catch (e: IOException) {
 					e.printStackTrace()
-					Toast.makeText(this@AddEpisodeActivity, "Failed!", Toast.LENGTH_SHORT).show()
 				}
 			}
 		}
-		else if (requestCode == CAMERA && resultCode == RESULT_OK) {
-			val thumbnail = data!!.extras!!.get("data") as Bitmap
-			imageButtonTakePhoto.setImageBitmap(thumbnail)
-			saveImage(thumbnail)
-			Toast.makeText(this@AddEpisodeActivity, "Image Saved!", Toast.LENGTH_SHORT).show()
+		/*else if (requestCode == CAMERA && resultCode == RESULT_OK) {
+			bitmapEpisode = data!!.extras!!.get("data") as Bitmap
+			imageButtonTakePhoto.setImageBitmap(bitmapEpisode)
+			saveImage(bitmapEpisode!!)
+		}*/
+		else if(requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+			bitmapEpisode = MediaStore.Images.Media.getBitmap(this.contentResolver,
+				data!!.extras!!.get(MediaStore.EXTRA_OUTPUT) as Uri?
+			)
+			setPhoto()
 		}
+
 	}
 
 
 	companion object {
 		const val EPISODE_CODE = "EPISODE_CODE"
+		const val BITMAP_CODE = "BITMAP_CODE"
 		private val IMAGE_DIRECTORY = "/demonuts"
 		fun newInstance(context: Context) : Intent {
 			val intent = Intent(context, AddEpisodeActivity::class.java)
@@ -106,15 +130,21 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 	private var curEpisode:Episode = Episode()
 
 	override fun onSaveInstanceState(outState: Bundle) {
+		Log.d("moj tag", "sejvam")
+		outState.putParcelable(BITMAP_CODE, bitmapEpisode)
 		outState.putSerializable(EPISODE_CODE, curEpisode)
 		super.onSaveInstanceState(outState)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
+		Log.d("moj tag", "loadam")
 		///OVO JE TEORETSKI VISKA, ALI OSTAVLJAM ZATO STO AKO ZELIM U TEKST POSTAVITI NESTO SVOJE (NE SEJVAN TEKST) ONDA AKO POZIVAM SAMO U onCreate-u TO POSTAVLJANJE TEKSTA, super(...) u ovoja metodi CE UBACITI ZAPRAVO SEJVANI TEKST TE PREBRISATI ONO STO SAM STAVIO U onCreate-u
 		editTextEpisodeName.setText(curEpisode.name)
 		editTextEpisodeDescription.setText(curEpisode.episodeDescription)
+
+		bitmapEpisode = savedInstanceState?.getParcelable(BITMAP_CODE)
+		setPhoto()
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -194,7 +224,53 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 		if(curEpisode.seasonNum != -1) cS = curEpisode.seasonNum.toString()
 		textViewSeasonEpisode.text = "S ${cS.padStart(2, '0')}, E ${cE.padStart(2, '0')}"
 	}
-////*****///
+
+	lateinit var currentPhotoPath: String
+
+	@Throws(IOException::class)
+	private fun createImageFile(): File {
+		// Create an image file name
+		val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+		val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+		return File.createTempFile(
+			"JPEG_${timeStamp}_", /* prefix */
+			".jpg", /* suffix */
+			storageDir /* directory */
+		).apply {
+			// Save a file: path for use with ACTION_VIEW intents
+			currentPhotoPath = absolutePath
+		}
+	}
+	val REQUEST_TAKE_PHOTO = 3
+
+	private fun dispatchTakePictureIntent() {
+		Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+			// Ensure that there's a camera activity to handle the intent
+			takePictureIntent.resolveActivity(packageManager)?.also {
+				// Create the File where the photo should go
+				val photoFile: File? = try {
+					createImageFile()
+				} catch (ex: IOException) {
+					// Error occurred while creating the File
+					null
+				}
+				// Continue only if the File was successfully created
+				photoFile?.also {
+					val photoURI: Uri = FileProvider.getUriForFile(
+						this,
+						"com.example.android.fileprovider",
+						it
+					)
+					takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+					startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
+				}
+			}
+		}
+	}
+
+
+
+	////*****///
 	private fun requestMultiplePermissions() {
 		Dexter.withActivity(this)
 			.withPermissions(
