@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.activity_add_episode.*
-import kotlinx.android.synthetic.main.activity_episodes.*
+import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.*
 
-class AddEpisodeActivity : AppCompatActivity() {
+class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.NoticeDialogListener {
+
 	companion object {
 		const val EPISODE_NAME = "EPISODE_NAME"
 		fun newInstance(context: Context) : Intent {
@@ -31,6 +33,9 @@ class AddEpisodeActivity : AppCompatActivity() {
 			setResult(RESULT_OK, resultIntent)
 			finish()
 		}
+		linearLayoutSeasonEpisodePicker.setOnClickListener {
+			SeasonEpisodePickerDialog().show(supportFragmentManager, "timePicker")
+		}
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -38,6 +43,13 @@ class AddEpisodeActivity : AppCompatActivity() {
 			finish()
 		}
 		return super.onOptionsItemSelected(item)
+	}
+
+	override fun onDialogSaveButton(dialog: DialogFragment) {
+		Log.d("moj tag", "pozdrav")
+		if(dialog == null) Log.d("moj tag", "prvi null")
+		if(dialog.editTextNapisiNesto == null) {Log.d("moj tag", "drugi null")}
+		else Log.d("moj tag", "evo sejvano, ${dialog.editTextNapisiNesto.text ?: "null"}")
 	}
 
 }

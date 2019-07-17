@@ -10,6 +10,6 @@
     <color name="colorTextNormal">#505050</color>
     <color name="colorTextLight">#a0a0a0</color>
     <color name="colorBackgroundShow">#eeeeee</color>
-
+    <color name="colorTransparent">#00000000</color>
 
 </resources>

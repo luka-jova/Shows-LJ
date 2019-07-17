@@ -6,7 +6,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="match_parent">
 
-
 	<androidx.appcompat.widget.Toolbar
 					android:layout_width="match_parent"
 					android:layout_height="?attr/actionBarSize"
@@ -17,39 +16,91 @@
 					android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
 					app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 					android:id="@+id/toolbarAddEpisode"/>
+	<ImageButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:srcCompat="@drawable/ic_camera"
+					android:layout_marginTop="32dp"
+					android:background="@color/colorTransparent"
+					app:layout_constraintTop_toBottomOf="@id/toolbarAddEpisode"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					android:id="@+id/imageButtonTakePhoto"/>
+	<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/imageButtonTakePhoto"
+					android:layout_marginTop="10dp"
+					android:text="@string/text_upload_photo"
+					android:textColor="@color/colorAccent"
+					android:textSize="15sp"
+					android:id="@+id/textViewUploadPhoto"/>
 
-	<com.google.android.material.textfield.TextInputLayout
+
+	<LinearLayout
+					android:orientation="vertical"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					app:layout_constraintTop_toBottomOf="@id/toolbarAddEpisode"
-					android:layout_marginRight="16dp"
-					android:layout_marginLeft="16dp"
-					android:id="@+id/textInputEpisodeTitle">
+					app:layout_constraintTop_toBottomOf="@id/textViewUploadPhoto"
+					app:layout_constraintBottom_toTopOf="@id/buttonSave"
+					android:paddingLeft="16dp"
+					android:paddingRight="16dp"
+					android:id="@+id/linearLayoutInputs">
 
-		<EditText
+		<com.google.android.material.textfield.TextInputLayout
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:inputType="text"
-						android:hint="@string/hint_episode_title"
-						android:id="@+id/editTextEpisodeName"/>
-	</com.google.android.material.textfield.TextInputLayout>
+						android:id="@+id/textInputEpisodeTitle">
 
-	<com.google.android.material.textfield.TextInputLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					app:layout_constraintTop_toBottomOf="@id/textInputEpisodeTitle"
-					android:layout_marginTop="16dp"
-					android:layout_marginRight="16dp"
-					android:layout_marginLeft="16dp"
-					android:id="@+id/textInputEpisodeDescription">
+			<EditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:inputType="text"
+							android:textSize="16sp"
+							android:hint="@string/hint_episode_title"
+							android:id="@+id/editTextEpisodeName"/>
+		</com.google.android.material.textfield.TextInputLayout>
 
-	<EditText
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:inputType="text"
-					android:hint="@string/hint_episode_description"
-					android:id="@+id/editTextEpisodeDescription"/>
-	</com.google.android.material.textfield.TextInputLayout>
+		<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingTop="20dp"
+						android:paddingBottom="20dp"
+						android:orientation="vertical"
+						android:id="@+id/linearLayoutSeasonEpisodePicker">
+			<TextView
+							android:text="Season &amp; episode"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:textColor="@color/colorTextLight"
+							android:textSize="16sp"/>
+			<TextView
+							android:text="S ??, E ??"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:textColor="@color/colorAccent"
+							android:textSize="14sp"
+							android:id="@+id/textViewSeasonEpisode"/>
+		</LinearLayout>
+
+		<com.google.android.material.textfield.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/textInputEpisodeDescription">
+
+
+			<EditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:inputType="text"
+							android:textSize="16sp"
+							android:hint="@string/hint_episode_description"
+							android:id="@+id/editTextEpisodeDescription"/>
+		</com.google.android.material.textfield.TextInputLayout>
+	</LinearLayout>
+
 	<Button
 					android:text="@string/button_save"
 					android:layout_width="match_parent"

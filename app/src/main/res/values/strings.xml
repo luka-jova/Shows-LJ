@@ -9,5 +9,9 @@
 	<string name="hint_episode_description">Episode description</string>
 	<string name="hint_episode_title">Episode title</string>
 	<string name="text_episodes"><b>Episodes</b></string>
+	<string name="text_episode"><b>Episode</b></string>
 	<string name="text_shows"><b>Shows</b></string>
+	<string name="text_upload_photo"><b>Upload photo</b></string>
+	<string name="text_save"><b>SAVE</b></string>
+	<string name="text_seasons"><b>Seasons</b></string>
 </resources>
