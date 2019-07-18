@@ -39,7 +39,6 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 		private const val REQUEST_CODE_PERMISSION_GALLERY = 1
 		private const val REQUEST_CODE_PERMISSIONS_CAMERA = 2
 		private const val REQUEST_CODE_PERMISSION_SETPHOTO = 3
-		private var currentPhotoPath: String = ""
 
 		fun newInstance(context: Context) : Intent {
 			return Intent(context, AddEpisodeActivity::class.java)
@@ -147,7 +146,7 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			choosePhotoFromGallery()
 		}
 	}
-//TODO dovde
+
 	override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 		if(grantResults.first() != PackageManager.PERMISSION_GRANTED) {
 			Toast.makeText(this, "Please provide storage permission.", Toast.LENGTH_SHORT).show()
@@ -169,20 +168,17 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 	}
 
 	private fun choosePhotoFromGallery() {
-		Log.d("tigar", "choosePhotoFromGallery")
 		if(!handlePermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSION_GALLERY)) return
 		//Imam permission
-		Log.d("tigar", "imam permission")
 		val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 		startActivityForResult(galleryIntent, REQUEST_GALLERY)
 	}
 
 	private fun takePhotoFromCamera() {
-		Log.d("tigar", "takePhotoFromCamera")
 		if(!handlePermission(Manifest.permission.CAMERA, REQUEST_CODE_PERMISSIONS_CAMERA)) return
 		if(!handlePermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSIONS_CAMERA)) return
 		if(!handlePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSIONS_CAMERA)) return
-		Log.d("tigar", "imam permission")
+		//Imam permissione
 
 		val photoFile: File? = try {
 			createImageFile()
@@ -237,18 +233,12 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 	private fun createImageFile(): File? {
 		// Create an image file name
 		val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-		val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-		if(storageDir == null) {
-			currentPhotoPath = ""
-			//TODO rusi? exception?
-			return null
-		}
+		val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: return null
 		val resultFile: File = File.createTempFile(
 				"JPEG_${timeStamp}_",
 				".jpg",
 				storageDir)
 
-		currentPhotoPath = resultFile.absolutePath
 		return resultFile
 	}
 }
