@@ -41,7 +41,5 @@ class TakePhotoDialog: DialogFragment() {
 			throw ClassCastException(("$context must implement NoticeDialogListener"))
 		}
 
-
-
 	}
 }
