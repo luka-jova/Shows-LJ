@@ -1,14 +1,18 @@
 package com.makina.shows_lukajovanovic
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,22 +23,30 @@ import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.view
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.checkSelfPermission
+import androidx.core.content.FileProvider
+import java.io.File
+import java.io.IOException
 import java.io.InputStream
+import java.util.*
 
 
 class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.NoticeDialogListener, TakePhotoDialog.TakePhotoDialogListener {
 	companion object {
 		const val EPISODE_CODE = "EPISODE_CODE"
-		const val BITMAP_CODE = "BITMAP_CODE"
+		const val PHOTO_URI_CODE = "PHOTO_URI_CODE"
 		private const val REQUEST_GALLERY = 2
 		private const val REQUEST_CAMERA = 1
 		private const val REQUEST_CODE_PERMISSION_GALLERY = 1
+		private const val REQUEST_CODE_PERMISSIONS_CAMERA = 2
+		private const val REQUEST_CODE_PERMISSION_SETPHOTO = 3
+		private var currentPhotoPath: String = ""
 
 		fun newInstance(context: Context) : Intent {
 			return Intent(context, AddEpisodeActivity::class.java)
 		}
 	}
 
+	private var photoUri: Uri? = null
 	var bitmapEpisode: Bitmap? = null
 	private var curEpisode:Episode = Episode()
 
@@ -57,7 +69,6 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			finish()
 		}
 		linearLayoutSeasonEpisodePicker.setOnClickListener {
-			Log.d("moj tag", "otvaram Fragment ${curEpisode.seasonNum} ${curEpisode.episodeNum}")
 			SeasonEpisodePickerDialog(curEpisode.seasonNum, curEpisode.episodeNum).show(supportFragmentManager, "timePicker")
 		}
 
@@ -90,24 +101,17 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 	}
 
 	public override fun onActivityResult(requestCode:Int, resultCode:Int, data: Intent?) {
-		Toast.makeText(this, "onActivityResult $requestCode $resultCode", Toast.LENGTH_SHORT).show()
 		if(requestCode == REQUEST_GALLERY && resultCode == RESULT_OK) {
-			val contentUri: Uri? = data?.data
-			Log.d("tigar", contentUri?.path ?: "null je")
-
-			if(contentUri == null) {/**TODO srusi program? javi gresku?*/Log.d("tigar", "contentUri je null")}
-			else bitmapEpisode = getBitmap(contentUri)
+			photoUri = data?.data
 		}
-		else if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
-
+		if((requestCode == REQUEST_GALLERY || requestCode == REQUEST_CAMERA) && resultCode == RESULT_OK) {
+			setPhoto()
 		}
-		setPhoto()
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
-		Log.d("moj tag", "sejvam")
-		outState.putParcelable(BITMAP_CODE, bitmapEpisode)
 		outState.putSerializable(EPISODE_CODE, curEpisode)
+		outState.putParcelable(PHOTO_URI_CODE, photoUri)
 		super.onSaveInstanceState(outState)
 	}
 
@@ -117,8 +121,7 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 		editTextEpisodeName.setText(curEpisode.name)
 		editTextEpisodeDescription.setText(curEpisode.episodeDescription)
 		loadTextViewSE()
-
-		bitmapEpisode = savedInstanceState.getParcelable(BITMAP_CODE)
+		photoUri = savedInstanceState.getParcelable(PHOTO_URI_CODE)
 		setPhoto()
 	}
 
@@ -144,43 +147,65 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			choosePhotoFromGallery()
 		}
 	}
-
+//TODO dovde
 	override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-		Log.d("tigar", "onRequestPermissionResult")
-		if(requestCode == REQUEST_CODE_PERMISSION_GALLERY) {
-			if(grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-				choosePhotoFromGallery()
-			}
-			else {
-				Toast.makeText(this, "Please provide storage permission.", Toast.LENGTH_SHORT).show()
-				Log.d("tigar", "permission odbijen")
-			}
+		if(grantResults.first() != PackageManager.PERMISSION_GRANTED) {
+			Toast.makeText(this, "Please provide storage permission.", Toast.LENGTH_SHORT).show()
+			return
 		}
+		when (requestCode) {
+			REQUEST_CODE_PERMISSION_GALLERY -> choosePhotoFromGallery()
+			REQUEST_CODE_PERMISSIONS_CAMERA -> takePhotoFromCamera()
+			REQUEST_CODE_PERMISSION_SETPHOTO -> setPhoto()
+		}
+	}
 
+	private fun handlePermission(curPermission: String, requestCode: Int):Boolean {
+		if(ActivityCompat.checkSelfPermission(this, curPermission) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, arrayOf(curPermission), requestCode)
+			return false
+		}
+		return true
 	}
 
 	private fun choosePhotoFromGallery() {
 		Log.d("tigar", "choosePhotoFromGallery")
-		if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-			//Nemam permission
-			Log.d("tigar", "nemam permission")
-			ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSION_GALLERY)
-		}
-		else {
-			//Imam permission
-			Log.d("tigar", "imam permission")
-			val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-			startActivityForResult(galleryIntent, REQUEST_GALLERY)
-		}
+		if(!handlePermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSION_GALLERY)) return
+		//Imam permission
+		Log.d("tigar", "imam permission")
+		val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+		startActivityForResult(galleryIntent, REQUEST_GALLERY)
 	}
 
 	private fun takePhotoFromCamera() {
-		return
-		val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-		startActivityForResult(intent, REQUEST_CAMERA)
+		Log.d("tigar", "takePhotoFromCamera")
+		if(!handlePermission(Manifest.permission.CAMERA, REQUEST_CODE_PERMISSIONS_CAMERA)) return
+		if(!handlePermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSIONS_CAMERA)) return
+		if(!handlePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSIONS_CAMERA)) return
+		Log.d("tigar", "imam permission")
+
+		val photoFile: File? = try {
+			createImageFile()
+		} catch (ex: IOException) {
+			null
+		}
+		val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+		takePhotoIntent.resolveActivity(packageManager)?.also {
+			photoFile?.also {
+				photoUri = FileProvider.getUriForFile(this, "com.makina.shows_lukajovanovic", it)
+				takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+				startActivityForResult(takePhotoIntent, REQUEST_CAMERA)
+			}
+		}
 	}
 
 	private fun setPhoto() {
+		if(!handlePermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSION_SETPHOTO)) return
+		//Imam permission
+
+		photoUri?.apply {
+			bitmapEpisode = getBitmap(this)
+		}
 		if(bitmapEpisode == null) {
 			imageButtonTakePhoto.setImageResource(R.drawable.ic_camera)
 		}
@@ -207,9 +232,23 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 		return resultBitmap
 	}
 
-	private fun requestPermission() {
 
+	@Throws(IOException::class)
+	private fun createImageFile(): File? {
+		// Create an image file name
+		val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+		val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+		if(storageDir == null) {
+			currentPhotoPath = ""
+			//TODO rusi? exception?
+			return null
+		}
+		val resultFile: File = File.createTempFile(
+				"JPEG_${timeStamp}_",
+				".jpg",
+				storageDir)
+
+		currentPhotoPath = resultFile.absolutePath
+		return resultFile
 	}
-
-
 }
