@@ -196,6 +196,10 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 	}
 
 	private fun setPhoto() {
+		if(photoUri == null) {
+			imageButtonTakePhoto.setImageResource(R.drawable.ic_camera)
+			return
+		}
 		if(!handlePermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSION_SETPHOTO)) return
 		//Imam permission
 
