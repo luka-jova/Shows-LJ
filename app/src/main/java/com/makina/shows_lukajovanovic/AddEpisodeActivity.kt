@@ -79,7 +79,7 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			}
 
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-				curEpisode.name = this@AddEpisodeActivity.editTextEpisodeName.text.toString()
+				curEpisode.name = editTextEpisodeName.text.toString()
 			}
 		})
 		editTextEpisodeDescription.addTextChangedListener(object: TextWatcher {
@@ -90,7 +90,7 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			}
 
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-				curEpisode.episodeDescription = this@AddEpisodeActivity.editTextEpisodeDescription.text.toString()
+				curEpisode.episodeDescription = editTextEpisodeDescription.text.toString()
 			}
 		})
 

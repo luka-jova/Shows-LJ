@@ -55,23 +55,24 @@ class SeasonEpisodePickerDialog(var curSeason: Int = 1, var curEpisode: Int = 1)
 						listener.onDialogSaveButton(this@SeasonEpisodePickerDialog)
 					})
 
-			curView.numberPickerSeason.maxValue = resources.getInteger(R.integer.int_season_max)
-			curView.numberPickerSeason.minValue = resources.getInteger(R.integer.int_season_min)
-			curView.numberPickerEpisode.minValue = resources.getInteger(R.integer.int_episode_min)
-			curView.numberPickerEpisode.maxValue = resources.getInteger(R.integer.int_episode_max)
-			curView.numberPickerEpisode.value = curEpisode
-			curView.numberPickerSeason.value = curSeason
-
-			curView.numberPickerSeason.setOnValueChangedListener(object : NumberPicker.OnValueChangeListener {
-				override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
-					this@SeasonEpisodePickerDialog.curSeason = newVal
-				}
-			})
-			curView.numberPickerEpisode.setOnValueChangedListener(object : NumberPicker.OnValueChangeListener {
-				override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
-					this@SeasonEpisodePickerDialog.curEpisode = newVal
-				}
-			})
+			with(curView) {
+				numberPickerSeason.maxValue = resources.getInteger(R.integer.int_season_max)
+				numberPickerSeason.minValue = resources.getInteger(R.integer.int_season_min)
+				numberPickerEpisode.minValue = resources.getInteger(R.integer.int_episode_min)
+				numberPickerEpisode.maxValue = resources.getInteger(R.integer.int_episode_max)
+				numberPickerEpisode.value = curEpisode
+				numberPickerSeason.value = curSeason
+				numberPickerSeason.setOnValueChangedListener(object : NumberPicker.OnValueChangeListener {
+					override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
+						this@SeasonEpisodePickerDialog.curSeason = newVal
+					}
+				})
+				numberPickerEpisode.setOnValueChangedListener(object : NumberPicker.OnValueChangeListener {
+					override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
+						this@SeasonEpisodePickerDialog.curEpisode = newVal
+					}
+				})
+			}
 
 			builder.create()
 		} ?: throw IllegalStateException("Activity cannot be null")
