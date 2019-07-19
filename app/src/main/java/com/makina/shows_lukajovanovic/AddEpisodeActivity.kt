@@ -232,7 +232,8 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 	@Throws(IOException::class)
 	private fun createImageFile(): File? {
 		// Create an image file name
-		val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+		///val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+		val timeStamp = Calendar.getInstance().timeInMillis
 		val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: return null
 		val resultFile: File = File.createTempFile(
 				"JPEG_${timeStamp}_",
