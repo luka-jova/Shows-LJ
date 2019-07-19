@@ -28,6 +28,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.NoticeDialogListener, TakePhotoDialog.TakePhotoDialogListener {
@@ -148,9 +149,11 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 	}
 
 	override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-		if(grantResults.first() != PackageManager.PERMISSION_GRANTED) {
-			Toast.makeText(this, "Please provide storage permission.", Toast.LENGTH_SHORT).show()
-			return
+		for(cur in grantResults) {
+			if(cur != PackageManager.PERMISSION_GRANTED) {
+				Toast.makeText(this, "Please provide permission.", Toast.LENGTH_SHORT).show()
+				return
+			}
 		}
 		when (requestCode) {
 			REQUEST_CODE_PERMISSION_GALLERY -> choosePhotoFromGallery()
@@ -159,25 +162,37 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 		}
 	}
 
-	private fun handlePermission(curPermission: String, requestCode: Int):Boolean {
-		if(ActivityCompat.checkSelfPermission(this, curPermission) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, arrayOf(curPermission), requestCode)
-			return false
+	private fun handlePermission(curPermissions: Array<String>, requestCode: Int):Boolean {
+		val reqPermissions: ArrayList<String> = arrayListOf<String>()
+		for(cur in curPermissions) {
+			if(ActivityCompat.checkSelfPermission(this, cur) != PackageManager.PERMISSION_GRANTED) {
+				reqPermissions.add(cur)
+			}
 		}
-		return true
+		if(reqPermissions.isEmpty()) return true
+		ActivityCompat.requestPermissions(this, reqPermissions.toTypedArray(), requestCode)
+		return false
 	}
 
 	private fun choosePhotoFromGallery() {
-		if(!handlePermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSION_GALLERY)) return
+		if(!handlePermission(
+				arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+				REQUEST_CODE_PERMISSION_GALLERY
+			)) return
 		//Imam permission
 		val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 		startActivityForResult(galleryIntent, REQUEST_GALLERY)
 	}
 
 	private fun takePhotoFromCamera() {
-		if(!handlePermission(Manifest.permission.CAMERA, REQUEST_CODE_PERMISSIONS_CAMERA)) return
-		if(!handlePermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSIONS_CAMERA)) return
-		if(!handlePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSIONS_CAMERA)) return
+		if(!handlePermission(
+				arrayOf(
+					Manifest.permission.CAMERA,
+					Manifest.permission.READ_EXTERNAL_STORAGE,
+					Manifest.permission.WRITE_EXTERNAL_STORAGE
+				),
+				REQUEST_CODE_PERMISSIONS_CAMERA
+			)) return
 		//Imam permissione
 
 		val photoFile: File? = try {
@@ -200,7 +215,10 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			imageButtonTakePhoto.setImageResource(R.drawable.ic_camera)
 			return
 		}
-		if(!handlePermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_PERMISSION_SETPHOTO)) return
+		if(!handlePermission(
+				arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+				REQUEST_CODE_PERMISSION_SETPHOTO
+			)) return
 		//Imam permission
 
 		photoUri?.apply {

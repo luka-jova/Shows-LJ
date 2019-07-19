@@ -80,7 +80,6 @@ class EpisodesActivity : AppCompatActivity() {
 		if(item.itemId == android.R.id.home) {
 			finish()
 		}
-		Log.d("moj tag", item.itemId.toString())
 		return super.onOptionsItemSelected(item)
 	}
 
