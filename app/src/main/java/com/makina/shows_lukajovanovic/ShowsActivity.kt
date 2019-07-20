@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_shows.*
@@ -11,6 +12,43 @@ import kotlinx.android.synthetic.main.activity_shows.*
 class ShowsActivity : AppCompatActivity() {
 	companion object {
 		var showsList = mutableListOf<Show>()
+		const val PREF_KEY = "PREF_KEY_"
+
+		fun saveData(context: Context) {
+			val sharedPref = getDefaultSharedPreferences(context) ?: return
+			with(sharedPref.edit()) {
+				for(i in 0 until showsList.size) {
+					putInt(PREF_KEY + "CNT:$i", showsList[ i ].episodeList.size)
+					for(j in 0 until showsList[ i ].episodeList.size) {
+						putInt(PREF_KEY + "${i}:${j}:SN", showsList[ i ].episodeList[ j ].seasonNum)
+						putInt(PREF_KEY + "${i}:${j}:EN", showsList[ i ].episodeList[ j ].episodeNum)
+						putString(PREF_KEY + "${i}:${j}:NAME", showsList[ i ].episodeList[ j ].name)
+					}
+				}
+				apply()
+			}
+		}
+
+		fun restoreData(context: Context) {
+			val sharedPref = getDefaultSharedPreferences(context) ?: return
+			with(sharedPref) {
+				for(i in 0 until showsList.size) {
+					showsList[ i ].episodeList.clear()
+					for(j in 0 until getInt(PREF_KEY + "CNT:$i", 0)) {
+						showsList[ i ].episodeList.add(Episode(
+							getString(PREF_KEY + "${i}:${j}:NAME", "") ?: "",
+							getInt(PREF_KEY + "${i}:${j}:SN", 1),
+							getInt(PREF_KEY + "${i}:${j}:EN", 1)
+						))
+					}
+				}
+			}
+		}
+		fun resetData() {
+			for(cur in showsList) {
+				cur.episodeList.clear()
+			}
+		}
 
 		init {
 			showsList.add(Show(
@@ -62,7 +100,6 @@ class ShowsActivity : AppCompatActivity() {
 				"(2019 - 2019)",
 				showDescription =  "In April 1986, an explosion at the Chernobyl nuclear power plant in the Union of Soviet Socialist Republics becomes one of the world's worst man-made catastrophes."
 			))
-
 		}
 		fun newInstance(context: Context) : Intent {
 			val intent = Intent(context, ShowsActivity::class.java)
@@ -78,4 +115,6 @@ class ShowsActivity : AppCompatActivity() {
 	  recyclerView.layoutManager = LinearLayoutManager(this)
 	  recyclerView.adapter = ShowsRecyclerAdapter(showsList)
   }
+
+
 }

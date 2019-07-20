@@ -42,6 +42,8 @@ class EpisodesActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		ShowsActivity.restoreData(applicationContext)
+
 		setContentView(R.layout.activity_episodes)
 		setSupportActionBar(toolbarEpisodes)
 		position = intent.getIntExtra(SHOW_INDEX, 0)
@@ -72,6 +74,7 @@ class EpisodesActivity : AppCompatActivity() {
 			val recyclerViewEpisodes = recyclerViewEpisodes
 			recyclerViewEpisodes.adapter?.notifyItemInserted(curEpisodeList.size - 1)
 			updateVisibility()
+			ShowsActivity.saveData(applicationContext)
 		}
 	}
 
@@ -82,5 +85,6 @@ class EpisodesActivity : AppCompatActivity() {
 		}
 		return super.onOptionsItemSelected(item)
 	}
+
 
 }
