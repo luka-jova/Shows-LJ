@@ -1,11 +1,10 @@
-package com.makina.shows_lukajovanovic
+package com.makina.shows_lukajovanovic.ui.welcome
 
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import com.makina.shows_lukajovanovic.R
 import kotlinx.android.synthetic.main.activity_welcome.*
 
 class WelcomeActivity : AppCompatActivity() {

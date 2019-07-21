@@ -5,6 +5,7 @@
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<application
+					android:name=".ShowsApp"
 					android:allowBackup="true"
 					android:icon="@mipmap/ic_launcher"
 					android:label="@string/app_name"
@@ -21,10 +22,10 @@
 							android:resource="@xml/file_paths"></meta-data>
 		</provider>
 
-		<activity android:name=".AddEpisodeActivity">
+		<activity android:name=".ui.episodes.add.AddEpisodeActivity">
 		</activity>
-		<activity android:name=".EpisodesActivity"/>
-		<activity android:name=".ShowsActivity">
+		<activity android:name=".ui.episodes.EpisodesActivity"/>
+		<activity android:name=".ui.shows.ShowsActivity">
 			<!--TODO promijeni launcher-->
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
@@ -32,9 +33,9 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-		<activity android:name=".WelcomeActivity">
+		<activity android:name=".ui.welcome.WelcomeActivity">
 		</activity>
-		<activity android:name=".LoginActivity">
+		<activity android:name=".ui.welcome.LoginActivity">
 		</activity>
 	</application>
 

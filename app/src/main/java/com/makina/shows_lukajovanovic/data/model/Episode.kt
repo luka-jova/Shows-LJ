@@ -1,4 +1,4 @@
-package com.makina.shows_lukajovanovic
+package com.makina.shows_lukajovanovic.data.model
 
 import java.io.Serializable
 

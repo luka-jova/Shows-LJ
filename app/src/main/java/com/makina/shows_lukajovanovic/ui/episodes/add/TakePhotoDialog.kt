@@ -1,19 +1,20 @@
-package com.makina.shows_lukajovanovic
+package com.makina.shows_lukajovanovic.ui.episodes.add
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.DialogFragment
 
 class TakePhotoDialog: DialogFragment() {
 	companion object {
 		const val CAMERA_STRING = "Camera"
 		const val GALLERY_STRING = "Gallery"
-		val arrayCodes: Array<String> = arrayOf(CAMERA_STRING, GALLERY_STRING)
+		val arrayCodes: Array<String> = arrayOf(
+			CAMERA_STRING,
+			GALLERY_STRING
+		)
 	}
 	internal lateinit var listener: TakePhotoDialogListener
 

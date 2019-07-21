@@ -1,17 +1,15 @@
-package com.makina.shows_lukajovanovic
+package com.makina.shows_lukajovanovic.ui.episodes.add
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.app.TimePickerDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
+import com.makina.shows_lukajovanovic.R
 import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.view.*
 
 
@@ -50,7 +48,8 @@ class SeasonEpisodePickerDialog(var curSeason: Int = 1, var curEpisode: Int = 1)
 			curView = inflater.inflate(R.layout.layout_fragment_season_episode_picker, null)
 			builder.setView(curView)
 			Log.d("moj tag", "prvotno stanje je ${view == null}")
-			builder.setPositiveButton(R.string.text_save,
+			builder.setPositiveButton(
+				R.string.text_save,
 					DialogInterface.OnClickListener { dialog, id ->
 						listener.onDialogSaveButton(this@SeasonEpisodePickerDialog)
 					})

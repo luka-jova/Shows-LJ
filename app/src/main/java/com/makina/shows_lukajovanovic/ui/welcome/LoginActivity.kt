@@ -1,9 +1,10 @@
-package com.makina.shows_lukajovanovic
+package com.makina.shows_lukajovanovic.ui.welcome
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import com.makina.shows_lukajovanovic.R
 import kotlinx.android.synthetic.main.activity_login.*
 
 const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._]*@{1}[A-Za-z0-9._]{1,}\.[A-Za-z0-9._]{1,}"""

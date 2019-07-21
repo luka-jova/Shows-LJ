@@ -1,29 +1,26 @@
-package com.makina.shows_lukajovanovic
+package com.makina.shows_lukajovanovic.ui.episodes.add
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
-import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_add_episode.*
 import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.checkSelfPermission
 import androidx.core.content.FileProvider
+import com.makina.shows_lukajovanovic.data.model.Episode
+import com.makina.shows_lukajovanovic.R
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -31,7 +28,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.NoticeDialogListener, TakePhotoDialog.TakePhotoDialogListener {
+class AddEpisodeActivity : AppCompatActivity(),
+	SeasonEpisodePickerDialog.NoticeDialogListener,
+	TakePhotoDialog.TakePhotoDialogListener {
 	companion object {
 		const val EPISODE_CODE = "EPISODE_CODE"
 		const val PHOTO_URI_CODE = "PHOTO_URI_CODE"
@@ -48,7 +47,8 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 
 	private var photoUri: Uri? = null
 	var bitmapEpisode: Bitmap? = null
-	private var curEpisode:Episode = Episode()
+	private var curEpisode: Episode =
+		Episode()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -69,7 +69,11 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			finish()
 		}
 		linearLayoutSeasonEpisodePicker.setOnClickListener {
-			SeasonEpisodePickerDialog(curEpisode.seasonNum, curEpisode.episodeNum).show(supportFragmentManager, "timePicker")
+			SeasonEpisodePickerDialog(
+				curEpisode.seasonNum,
+				curEpisode.episodeNum
+			)
+				.show(supportFragmentManager, "timePicker")
 		}
 
 		editTextEpisodeName.addTextChangedListener(object: TextWatcher {
@@ -117,7 +121,8 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		curEpisode = savedInstanceState.getSerializable(EPISODE_CODE) as? Episode ?: Episode()
+		curEpisode = savedInstanceState.getSerializable(EPISODE_CODE) as? Episode
+			?: Episode()
 		editTextEpisodeName.setText(curEpisode.name)
 		editTextEpisodeDescription.setText(curEpisode.episodeDescription)
 		loadTextViewSE()
@@ -181,7 +186,9 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			)) return
 		//Imam permission
 		val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-		startActivityForResult(galleryIntent, REQUEST_GALLERY)
+		startActivityForResult(galleryIntent,
+			REQUEST_GALLERY
+		)
 	}
 
 	private fun takePhotoFromCamera() {
@@ -205,7 +212,9 @@ class AddEpisodeActivity : AppCompatActivity(), SeasonEpisodePickerDialog.Notice
 			photoFile?.also {
 				photoUri = FileProvider.getUriForFile(this, "com.makina.shows_lukajovanovic", it)
 				takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
-				startActivityForResult(takePhotoIntent, REQUEST_CAMERA)
+				startActivityForResult(takePhotoIntent,
+					REQUEST_CAMERA
+				)
 			}
 		}
 	}

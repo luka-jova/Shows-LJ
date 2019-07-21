@@ -1,12 +1,12 @@
-package com.makina.shows_lukajovanovic
+package com.makina.shows_lukajovanovic.ui.episodes
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.makina.shows_lukajovanovic.R
+import com.makina.shows_lukajovanovic.data.model.Episode
 import kotlinx.android.synthetic.main.layout_episode.view.*
-import kotlinx.android.synthetic.main.layout_show.view.*
 
 class EpisodesRecyclerAdapter(val episodeList: MutableList<Episode>) : RecyclerView.Adapter<EpisodesRecyclerAdapter.ViewHolder>() {
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
