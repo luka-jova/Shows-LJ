@@ -16,16 +16,16 @@ import kotlinx.android.synthetic.main.activity_episodes.*
 
 class EpisodesActivity : AppCompatActivity() {
 	companion object {
-		const val SHOW_INDEX = "SHOW_INDEX"
+		const val SHOW_ID = "SHOW_INDEX"
 
 		fun newInstance(context: Context, showIndex: Int) : Intent {
 			val intent = Intent(context, EpisodesActivity::class.java)
-			intent.putExtra(SHOW_INDEX, showIndex)
+			intent.putExtra(SHOW_ID, showIndex)
 			return intent
 		}
 	}
-	var position = -1
-
+	var showId = -1
+	/*
 	fun updateVisibility() {
 		if(ShowsActivity.showsList[ position ].episodeList.size > 0) {
 			defaultLayout.visibility = View.INVISIBLE
@@ -43,10 +43,13 @@ class EpisodesActivity : AppCompatActivity() {
 
 		setContentView(R.layout.activity_episodes)
 		setSupportActionBar(toolbarEpisodes)
-		position = intent.getIntExtra(SHOW_INDEX, 0)
+		showId = intent.getIntExtra(SHOW_ID, 0)
+
+
+
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		supportActionBar?.setDisplayShowHomeEnabled(true)
-		supportActionBar?.title = ShowsActivity.showsList[ position ].name
+		supportActionBar?.title = "IME"
 		updateVisibility()
 
 		textViewDescription.text = ShowsActivity.showsList[ position ].showDescription
@@ -83,5 +86,5 @@ class EpisodesActivity : AppCompatActivity() {
 		return super.onOptionsItemSelected(item)
 	}
 
-
+*/
 }

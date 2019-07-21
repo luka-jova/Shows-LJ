@@ -12,16 +12,19 @@ private const val FILENAME = "Shows.data"
 
 object ShowsRepository {
 	private var showsList: MutableList<Show>
-	val showsLiveData = MutableLiveData<List<Show>>()
+	private val showsMutableLiveData = MutableLiveData<List<Show>>()
+
+	val showsLiveData: LiveData<List<Show>>
+		get() = showsMutableLiveData
 
 	init {
 		showsList = getData()
-		showsLiveData.value = showsList
+		showsMutableLiveData.value = showsList
 	}
 
 	fun addShow(newShow: Show) {
 		showsList.add(newShow)
-		showsLiveData.value = showsList
+		showsMutableLiveData.value = showsList
 	}
 
 	private fun getData(): MutableList<Show> {

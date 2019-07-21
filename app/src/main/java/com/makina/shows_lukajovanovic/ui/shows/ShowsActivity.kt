@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.activity_shows.*
 
 class ShowsActivity : AppCompatActivity() {
 	companion object {
-		val showsList: List<Show> = listOf()
+		val showsList = listOf<Show>()
 		fun newInstance(context: Context) : Intent {
 			val intent = Intent(context, ShowsActivity::class.java)
 			return intent
@@ -42,6 +42,9 @@ class ShowsActivity : AppCompatActivity() {
 		  }
 	  })
 
+	  buttonAdd.setOnClickListener {
+		  viewModel.addShow(viewModel.showsList[ 0 ])
+	  }
   }
 
 
