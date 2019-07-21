@@ -19,6 +19,8 @@ import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.view
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.makina.shows_lukajovanovic.data.model.Episode
 import com.makina.shows_lukajovanovic.R
 import java.io.File
@@ -34,21 +36,25 @@ class AddEpisodeActivity : AppCompatActivity(),
 	companion object {
 		const val EPISODE_CODE = "EPISODE_CODE"
 		const val PHOTO_URI_CODE = "PHOTO_URI_CODE"
+		const val SHOW_ID_CODE = "SHOW_ID_CODE"
 		private const val REQUEST_GALLERY = 2
 		private const val REQUEST_CAMERA = 1
 		private const val REQUEST_CODE_PERMISSION_GALLERY = 1
 		private const val REQUEST_CODE_PERMISSIONS_CAMERA = 2
 		private const val REQUEST_CODE_PERMISSION_SETPHOTO = 3
 
-		fun newInstance(context: Context) : Intent {
-			return Intent(context, AddEpisodeActivity::class.java)
+		fun newInstance(context: Context, showId: Int) : Intent {
+			val newIntent = Intent(context, AddEpisodeActivity::class.java)
+			newIntent.putExtra(SHOW_ID_CODE, showId)
+			return newIntent
 		}
 	}
 
 	private var photoUri: Uri? = null
 	var bitmapEpisode: Bitmap? = null
-	private var curEpisode: Episode =
-		Episode()
+	private var curEpisode: Episode = Episode()
+	private var showId = -1
+	private lateinit var viewModel: AddEpisodeViewModel
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -58,14 +64,15 @@ class AddEpisodeActivity : AppCompatActivity(),
 		supportActionBar?.setDisplayShowHomeEnabled(true)
 		supportActionBar?.title = "Add episode"
 
+		showId = intent.getIntExtra(SHOW_ID_CODE, -1)
+		viewModel = ViewModelProviders.of(this).get(AddEpisodeViewModel::class.java)
+
 		curEpisode = (savedInstanceState?.getSerializable(EPISODE_CODE) as? Episode) ?: Episode()
 
 		loadTextViewSE()
 
 		buttonSave.setOnClickListener {
-			val resultIntent = Intent()
-			resultIntent.putExtra(EPISODE_CODE, curEpisode)
-			setResult(RESULT_OK, resultIntent)
+			viewModel.addEpisode(showId, curEpisode)
 			finish()
 		}
 		linearLayoutSeasonEpisodePicker.setOnClickListener {

@@ -26,10 +26,6 @@ class EpisodesViewModel : ViewModel(), Observer<List<Episode>> {
 		episodesMutableLiveData.value = episodesList
 	}
 
-	fun addEpisode(newEpisode: Episode) {
-		EpisodesRepository.addEpisode(showId, newEpisode)
-	}
-
 	override fun onCleared() {
 		EpisodesRepository.episodesLiveDataById(showId)?.removeObserver(this)
 	}

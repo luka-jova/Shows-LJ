@@ -76,7 +76,7 @@ class EpisodesActivity : AppCompatActivity() {
 		recyclerViewEpisodes.adapter = adapter
 
 		fab.setOnClickListener { view ->
-			startActivityForResult(AddEpisodeActivity.newInstance(this), 1)
+			startActivityForResult(AddEpisodeActivity.newInstance(this, showId), 1)
 		}
 
 		viewModelEpisodes.episodesLiveData.observe(this, Observer {episodesList ->
@@ -85,13 +85,6 @@ class EpisodesActivity : AppCompatActivity() {
 		})
 		updateVisibility()
 
-	}
-
-	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-		if(resultCode == RESULT_OK) {
-			val curEpisode: Episode = data?.getSerializableExtra(AddEpisodeActivity.EPISODE_CODE) as Episode
-			viewModelEpisodes.addEpisode(curEpisode)
-		}
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
