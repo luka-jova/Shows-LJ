@@ -7,22 +7,27 @@ import androidx.lifecycle.ViewModel
 import com.makina.shows_lukajovanovic.data.model.Show
 import com.makina.shows_lukajovanovic.data.repository.ShowsRepository
 
-class ShowsViewModel : ViewModel(), Observer<List<Show>> {
+class ShowsViewModel : ViewModel(), Observer<Map<Int, Show>> {
+	private val showsMapMutableLiveData = MutableLiveData<Map<Int, Show>>()
 
-	private val showsMutableLiveData = MutableLiveData<List<Show>>()
-
-	val showsLiveData: LiveData<List<Show>>
-		get() = showsMutableLiveData
+	val showsMapLiveData: LiveData<Map<Int, Show>>
+		get() = showsMapMutableLiveData
 
 	val showsList: List<Show>
-		get() = showsMutableLiveData.value ?: listOf()
+		get() {
+			val res: MutableList<Show> = mutableListOf()
+			for(i in showsMapLiveData.value?.toList() ?: listOf()) {
+				res.add(i.second)
+			}
+			return res
+		}
 
 	init {
-		ShowsRepository.showsLiveData.observeForever(this)
+		ShowsRepository.showsMapLiveData.observeForever(this)
 	}
 
-	override fun onChanged(showsList: List<Show>?) {
-		showsMutableLiveData.value = showsList
+	override fun onChanged(shows: Map<Int, Show>?) {
+		showsMapMutableLiveData.value = shows
 	}
 
 	fun addShow(newShow: Show) {
@@ -30,6 +35,6 @@ class ShowsViewModel : ViewModel(), Observer<List<Show>> {
 	}
 
 	override fun onCleared() {
-		ShowsRepository.showsLiveData.removeObserver(this)
+		ShowsRepository.showsMapLiveData.removeObserver(this)
 	}
 }

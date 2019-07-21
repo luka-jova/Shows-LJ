@@ -7,8 +7,8 @@ import com.makina.shows_lukajovanovic.data.model.Episode
 
 object EpisodesRepository {
 
-	private var episodes: MutableMap<Int, MutableList<Episode>> = mutableMapOf()
-	private var episodesMutableLiveData: MutableMap<Int, MutableLiveData< List<Episode> > > = mutableMapOf()
+	private val episodes: MutableMap<Int, MutableList<Episode>> = mutableMapOf()
+	private val episodesMutableLiveData: MutableMap<Int, MutableLiveData< List<Episode> > > = mutableMapOf()
 
 	fun episodesLiveDataById(showId: Int): LiveData<List <Episode> >? {
 		return episodesMutableLiveData[ showId ]

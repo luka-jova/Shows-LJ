@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.ui.shows.ShowsActivity
 import com.makina.shows_lukajovanovic.data.model.Episode
+import com.makina.shows_lukajovanovic.data.model.Show
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeActivity
+import com.makina.shows_lukajovanovic.ui.shows.ShowsViewModel
 
 import kotlinx.android.synthetic.main.activity_episodes.*
 
@@ -29,11 +31,12 @@ class EpisodesActivity : AppCompatActivity() {
 		}
 	}
 	var showId = -1
-	private lateinit var viewModel: EpisodesViewModel
+	private lateinit var viewModelEpisodes: EpisodesViewModel
+	private lateinit var viewModelMyShow: EpisodesViewModelShow
 	private lateinit var adapter: EpisodesRecyclerAdapter
 
 	fun updateVisibility() {
-		if(viewModel.episdesList.isNotEmpty()) {
+		if(viewModelEpisodes.episdesList.isNotEmpty()) {
 			defaultLayout.visibility = View.INVISIBLE
 			recyclerViewEpisodes?.visibility = View.VISIBLE
 		}
@@ -51,16 +54,24 @@ class EpisodesActivity : AppCompatActivity() {
 		showId = intent.getIntExtra(SHOW_ID, -1)
 		Log.d("tigar", "otvoren s showId: $showId")
 
-		viewModel = ViewModelProviders.of(this).get(EpisodesViewModel::class.java)
+		viewModelEpisodes = ViewModelProviders.of(this).get(EpisodesViewModel::class.java)
 		//TODO KAKO DA OVO PRENESEM FIKSNO
-		viewModel.showId = showId
-		viewModel.initialize()
+		viewModelEpisodes.showId = showId
+		viewModelEpisodes.initialize()
 
+		viewModelMyShow = ViewModelProviders.of(this).get(EpisodesViewModelShow::class.java)
+		viewModelMyShow.showId = showId
+		viewModelMyShow.initialize()
 
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		supportActionBar?.setDisplayShowHomeEnabled(true)
 		supportActionBar?.title = "IME"
 		textViewDescription.text = "Description"
+
+		viewModelMyShow.showLiveData.observe(this, Observer {show ->
+			supportActionBar?.title = show.name
+			textViewDescription.text = show.showDescription
+		})
 
 		adapter = EpisodesRecyclerAdapter()
 		recyclerViewEpisodes.layoutManager = LinearLayoutManager(this)
@@ -70,7 +81,7 @@ class EpisodesActivity : AppCompatActivity() {
 			startActivityForResult(AddEpisodeActivity.newInstance(this), 1)
 		}
 
-		viewModel.episodesLiveData.observe(this, Observer {episodesList ->
+		viewModelEpisodes.episodesLiveData.observe(this, Observer {episodesList ->
 			adapter.setData(episodesList)
 			this@EpisodesActivity.updateVisibility()
 		})
@@ -81,7 +92,7 @@ class EpisodesActivity : AppCompatActivity() {
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		if(resultCode == RESULT_OK) {
 			val curEpisode: Episode = data?.getSerializableExtra(AddEpisodeActivity.EPISODE_CODE) as Episode
-			viewModel.addEpisode(curEpisode)
+			viewModelEpisodes.addEpisode(curEpisode)
 		}
 	}
 

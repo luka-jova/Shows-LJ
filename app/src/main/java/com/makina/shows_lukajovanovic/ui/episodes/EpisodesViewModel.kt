@@ -20,7 +20,7 @@ class EpisodesViewModel : ViewModel(), Observer<List<Episode>> {
 		get() = episodesLiveData.value ?: listOf()
 
 	fun initialize() {
-		if(EpisodesRepository.episodesLiveDataById(showId) == null) {Log.d("tigar", "wrong id $showId")}
+		if(EpisodesRepository.episodesLiveDataById(showId) == null) {Log.d("tigar", "wrong id $showId in EpisodesViewModel")}
 		EpisodesRepository.episodesLiveDataById(showId)?.observeForever(this)
 	}
 
