@@ -43,7 +43,7 @@ class ShowsActivity : AppCompatActivity() {
 	  })
 
 	  buttonAdd.setOnClickListener {
-		  viewModel.addShow(viewModel.showsList[ 0 ])
+		  viewModel.addShow(Show(viewModel.showsList.size, viewModel.showsList[ 0 ].imageId, viewModel.showsList[ 0 ].name, viewModel.showsList[ 0 ].airDate))
 	  }
   }
 

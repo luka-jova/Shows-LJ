@@ -25,7 +25,6 @@ class ShowsRecyclerAdapter() : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHol
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 		holder.bind(showsList[ position ], position)
-
 	}
 
 	fun setData(showsList: List<Show>) {
@@ -33,7 +32,7 @@ class ShowsRecyclerAdapter() : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHol
 		notifyDataSetChanged()
 	}
 
-	class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+	inner class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
 		fun bind(show: Show, position: Int) {
 			with(itemView) {
 				imageViewShow.setImageResource(show.imageId)
@@ -42,7 +41,7 @@ class ShowsRecyclerAdapter() : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHol
 
 				val cont = context
 				setOnClickListener {
-					startActivity(cont, EpisodesActivity.newInstance(cont, position), null)
+					startActivity(cont, EpisodesActivity.newInstance(cont, showsList[ position ].showId), null)
 				}
 			}
 		}

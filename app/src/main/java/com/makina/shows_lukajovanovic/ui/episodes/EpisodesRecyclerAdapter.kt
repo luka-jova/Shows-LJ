@@ -8,7 +8,8 @@ import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Episode
 import kotlinx.android.synthetic.main.layout_episode.view.*
 
-class EpisodesRecyclerAdapter(val episodeList: MutableList<Episode>) : RecyclerView.Adapter<EpisodesRecyclerAdapter.ViewHolder>() {
+class EpisodesRecyclerAdapter() : RecyclerView.Adapter<EpisodesRecyclerAdapter.ViewHolder>() {
+	var episodeList: List<Episode> = listOf()
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 		val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_episode, parent, false)
 		return ViewHolder(view)
@@ -26,6 +27,10 @@ class EpisodesRecyclerAdapter(val episodeList: MutableList<Episode>) : RecyclerV
 			"S${curEpisode.seasonNum.toString().padStart(2, '0')} E${curEpisode.episodeNum.toString().padStart(2, '0')}"
 	}
 
+	fun setData(episodeList: List<Episode>) {
+		this.episodeList = episodeList
+		notifyDataSetChanged()
+	}
 
 	class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
 }

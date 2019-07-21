@@ -9,7 +9,6 @@ import java.io.ObjectInputStream
 import java.lang.Exception
 
 private const val FILENAME = "Shows.data"
-
 object ShowsRepository {
 	private var showsList: MutableList<Show>
 	private val showsMutableLiveData = MutableLiveData<List<Show>>()
@@ -20,11 +19,16 @@ object ShowsRepository {
 	init {
 		showsList = getData()
 		showsMutableLiveData.value = showsList
+
+		for(i in showsList) {
+			EpisodesRepository.addEmptyShow(i.showId)
+		}
 	}
 
 	fun addShow(newShow: Show) {
 		showsList.add(newShow)
 		showsMutableLiveData.value = showsList
+		EpisodesRepository.addEmptyShow(newShow.showId)
 	}
 
 	private fun getData(): MutableList<Show> {

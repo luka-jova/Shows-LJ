@@ -3,9 +3,13 @@ package com.makina.shows_lukajovanovic.ui.episodes
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.ui.shows.ShowsActivity
@@ -18,16 +22,18 @@ class EpisodesActivity : AppCompatActivity() {
 	companion object {
 		const val SHOW_ID = "SHOW_INDEX"
 
-		fun newInstance(context: Context, showIndex: Int) : Intent {
+		fun newInstance(context: Context, showId: Int) : Intent {
 			val intent = Intent(context, EpisodesActivity::class.java)
-			intent.putExtra(SHOW_ID, showIndex)
+			intent.putExtra(SHOW_ID, showId)
 			return intent
 		}
 	}
 	var showId = -1
-	/*
+	private lateinit var viewModel: EpisodesViewModel
+	private lateinit var adapter: EpisodesRecyclerAdapter
+
 	fun updateVisibility() {
-		if(ShowsActivity.showsList[ position ].episodeList.size > 0) {
+		if(viewModel.episdesList.isNotEmpty()) {
 			defaultLayout.visibility = View.INVISIBLE
 			recyclerViewEpisodes?.visibility = View.VISIBLE
 		}
@@ -39,43 +45,43 @@ class EpisodesActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		/**ShowsActivity.restoreData(applicationContext)*/
 
 		setContentView(R.layout.activity_episodes)
 		setSupportActionBar(toolbarEpisodes)
-		showId = intent.getIntExtra(SHOW_ID, 0)
+		showId = intent.getIntExtra(SHOW_ID, -1)
+		Log.d("tigar", "otvoren s showId: $showId")
 
+		viewModel = ViewModelProviders.of(this).get(EpisodesViewModel::class.java)
+		//TODO KAKO DA OVO PRENESEM FIKSNO
+		viewModel.showId = showId
+		viewModel.initialize()
 
 
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		supportActionBar?.setDisplayShowHomeEnabled(true)
 		supportActionBar?.title = "IME"
-		updateVisibility()
+		textViewDescription.text = "Description"
 
-		textViewDescription.text = ShowsActivity.showsList[ position ].showDescription
-
-		val recyclerViewEpisodes = recyclerViewEpisodes
+		adapter = EpisodesRecyclerAdapter()
 		recyclerViewEpisodes.layoutManager = LinearLayoutManager(this)
-		recyclerViewEpisodes.adapter =
-			EpisodesRecyclerAdapter(ShowsActivity.showsList[position].episodeList)
+		recyclerViewEpisodes.adapter = adapter
 
 		fab.setOnClickListener { view ->
-			//TODO sta je request code?
 			startActivityForResult(AddEpisodeActivity.newInstance(this), 1)
 		}
+
+		viewModel.episodesLiveData.observe(this, Observer {episodesList ->
+			adapter.setData(episodesList)
+			this@EpisodesActivity.updateVisibility()
+		})
+		updateVisibility()
+
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		if(resultCode == RESULT_OK) {
 			val curEpisode: Episode = data?.getSerializableExtra(AddEpisodeActivity.EPISODE_CODE) as Episode
-			val curEpisodeList = ShowsActivity.showsList[ position ].episodeList
-			curEpisodeList.add(curEpisode)
-
-			//TODO promijeni da koristim samo jedan val recyclerViewEpisodes ovdje i u onCreate
-			val recyclerViewEpisodes = recyclerViewEpisodes
-			recyclerViewEpisodes.adapter?.notifyItemInserted(curEpisodeList.size - 1)
-			updateVisibility()
-			/**ShowsActivity.saveData(applicationContext)*/
+			viewModel.addEpisode(curEpisode)
 		}
 	}
 
@@ -86,5 +92,5 @@ class EpisodesActivity : AppCompatActivity() {
 		return super.onOptionsItemSelected(item)
 	}
 
-*/
+
 }

@@ -28,4 +28,8 @@ class ShowsViewModel : ViewModel(), Observer<List<Show>> {
 	fun addShow(newShow: Show) {
 		ShowsRepository.addShow(newShow)
 	}
+
+	override fun onCleared() {
+		ShowsRepository.showsLiveData.removeObserver(this)
+	}
 }
