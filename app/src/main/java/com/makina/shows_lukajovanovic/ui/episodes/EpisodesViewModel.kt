@@ -1,6 +1,5 @@
 package com.makina.shows_lukajovanovic.ui.episodes
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -20,7 +19,6 @@ class EpisodesViewModel : ViewModel(), Observer<List<Episode>> {
 		get() = episodesLiveData.value ?: listOf()
 
 	fun initialize() {
-		if(EpisodesRepository.episodesLiveDataById(showId) == null) {Log.d("tigar", "wrong id $showId in EpisodesViewModel")}
 		EpisodesRepository.episodesLiveDataById(showId)?.observeForever(this)
 	}
 

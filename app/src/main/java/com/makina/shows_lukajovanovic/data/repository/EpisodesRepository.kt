@@ -23,7 +23,6 @@ object EpisodesRepository {
 
 	fun addEpisode(showId: Int, newEpisode: Episode) {
 		if(showId !in episodesMutableLiveData) {
-			Log.d("tigar", "krivi showId($showId) u EpisodesRepository, stvaram prazan")
 			addEmptyShow(showId)
 		}
 		episodes[ showId ]?.add(newEpisode)

@@ -10,13 +10,7 @@ class ShowsApp : Application() {
 
 
 	override fun onCreate() {
-		Log.d("tigar", "onCreate")
 		super.onCreate()
 		instance = this
-	}
-
-	override fun onTerminate() {
-		Log.d("tigar", "onTerminate")
-		super.onTerminate()
 	}
 }

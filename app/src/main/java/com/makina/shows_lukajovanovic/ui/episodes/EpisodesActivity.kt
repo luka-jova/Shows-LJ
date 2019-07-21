@@ -3,7 +3,6 @@ package com.makina.shows_lukajovanovic.ui.episodes
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,7 +51,6 @@ class EpisodesActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_episodes)
 		setSupportActionBar(toolbarEpisodes)
 		showId = intent.getIntExtra(SHOW_ID, -1)
-		Log.d("tigar", "otvoren s showId: $showId")
 
 		viewModelEpisodes = ViewModelProviders.of(this).get(EpisodesViewModel::class.java)
 		//TODO KAKO DA OVO PRENESEM FIKSNO

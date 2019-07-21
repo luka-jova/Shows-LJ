@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
-import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -38,13 +37,8 @@ class ShowsActivity : AppCompatActivity() {
 
 	  viewModel = ViewModelProviders.of(this).get(ShowsViewModel::class.java)
 	  viewModel.showsMapLiveData.observe(this, Observer {
-		  Log.d("tigar", "trigger u ShowsActivity")
 		  adapter.setData(viewModel.showsList)
 	  })
-
-	  buttonAdd.setOnClickListener {
-		  viewModel.addShow(Show(viewModel.showsList.size, viewModel.showsList[ 0 ].imageId, viewModel.showsList[ 0 ].name, viewModel.showsList[ 0 ].airDate))
-	  }
   }
 
 
