@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,13 +30,13 @@ class EpisodesActivity : AppCompatActivity() {
 			return intent
 		}
 	}
-	var showId = -1
-	private lateinit var viewModelEpisodes: EpisodesViewModel
-	private lateinit var viewModelMyShow: EpisodesViewModelShow
+	private var showId = -1
+	private lateinit var viewModel: EpisodesViewModel
 	private lateinit var adapter: EpisodesRecyclerAdapter
 
 	fun updateVisibility() {
-		if(viewModelEpisodes.episdesList.isNotEmpty()) {
+		//TODO jel ok da ovdje pristupam podacima u viewModelu?
+		if(viewModel.episodesList.isNotEmpty()) {
 			defaultLayout.visibility = View.INVISIBLE
 			recyclerViewEpisodes?.visibility = View.VISIBLE
 		}
@@ -52,21 +53,18 @@ class EpisodesActivity : AppCompatActivity() {
 		setSupportActionBar(toolbarEpisodes)
 		showId = intent.getIntExtra(SHOW_ID, -1)
 
-		viewModelEpisodes = ViewModelProviders.of(this).get(EpisodesViewModel::class.java)
-		//TODO KAKO DA OVO PRENESEM FIKSNO
-		viewModelEpisodes.showId = showId
-		viewModelEpisodes.initialize()
-
-		viewModelMyShow = ViewModelProviders.of(this).get(EpisodesViewModelShow::class.java)
-		viewModelMyShow.showId = showId
-		viewModelMyShow.initialize()
+		viewModel = ViewModelProviders.of(this, object: ViewModelProvider.Factory {
+			override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+				return EpisodesViewModel(showId) as T
+			}
+		}).get(EpisodesViewModel::class.java)
 
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		supportActionBar?.setDisplayShowHomeEnabled(true)
 		supportActionBar?.title = "IME"
 		textViewDescription.text = "Description"
 
-		viewModelMyShow.showLiveData.observe(this, Observer {show ->
+		viewModel.showLiveData.observe(this, Observer {show ->
 			supportActionBar?.title = show.name
 			textViewDescription.text = show.showDescription
 		})
@@ -79,7 +77,7 @@ class EpisodesActivity : AppCompatActivity() {
 			startActivityForResult(AddEpisodeActivity.newInstance(this, showId), 1)
 		}
 
-		viewModelEpisodes.episodesLiveData.observe(this, Observer {episodesList ->
+		viewModel.episodesLiveData.observe(this, Observer {episodesList ->
 			adapter.setData(episodesList)
 			this@EpisodesActivity.updateVisibility()
 		})

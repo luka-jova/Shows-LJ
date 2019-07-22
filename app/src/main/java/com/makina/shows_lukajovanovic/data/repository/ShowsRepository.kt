@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.ShowsApp
 import com.makina.shows_lukajovanovic.data.model.Show
-import com.makina.shows_lukajovanovic.ui.shows.ShowsActivity.Companion.showsList
 import java.io.ObjectInputStream
 import java.lang.Exception
 
@@ -33,8 +32,8 @@ object ShowsRepository {
 	init {
 		getData()
 
-		for(i in showsList) {
-			EpisodesRepository.addEmptyShow(i.showId)
+		for(i in showsListId) {
+			EpisodesRepository.addEmptyShow(i)
 		}
 	}
 

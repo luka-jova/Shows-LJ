@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.activity_shows.*
 
 class ShowsActivity : AppCompatActivity() {
 	companion object {
-		val showsList = listOf<Show>()
 		fun newInstance(context: Context) : Intent {
 			val intent = Intent(context, ShowsActivity::class.java)
 			return intent
@@ -36,8 +35,8 @@ class ShowsActivity : AppCompatActivity() {
 	  recyclerViewShows.adapter = adapter
 
 	  viewModel = ViewModelProviders.of(this).get(ShowsViewModel::class.java)
-	  viewModel.showsMapLiveData.observe(this, Observer {
-		  adapter.setData(viewModel.showsList)
+	  viewModel.showsListLiveData.observe(this, Observer {showsList ->
+		  adapter.setData(showsList)
 	  })
   }
 

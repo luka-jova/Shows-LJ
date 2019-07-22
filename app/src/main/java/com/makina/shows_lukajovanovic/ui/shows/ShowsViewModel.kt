@@ -8,26 +8,27 @@ import com.makina.shows_lukajovanovic.data.model.Show
 import com.makina.shows_lukajovanovic.data.repository.ShowsRepository
 
 class ShowsViewModel : ViewModel(), Observer<Map<Int, Show>> {
-	private val showsMapMutableLiveData = MutableLiveData<Map<Int, Show>>()
-
-	val showsMapLiveData: LiveData<Map<Int, Show>>
-		get() = showsMapMutableLiveData
+	private val showsListMutableLiveData = MutableLiveData<List<Show>>()
+	val showsListLiveData: LiveData<List<Show>>
+		get() = showsListMutableLiveData
 
 	val showsList: List<Show>
-		get() {
-			val res: MutableList<Show> = mutableListOf()
-			for(i in showsMapLiveData.value?.toList() ?: listOf()) {
-				res.add(i.second)
-			}
-			return res
-		}
+		get() = showsListLiveData.value ?: listOf()
 
 	init {
 		ShowsRepository.showsMapLiveData.observeForever(this)
 	}
 
+	private fun showsToList(showsMap: Map<Int, Show>?): List<Show> {
+		val res: MutableList<Show> = mutableListOf()
+		for(i in showsMap?.toList() ?: listOf()) {
+			res.add(i.second)
+		}
+		return res
+	}
+
 	override fun onChanged(shows: Map<Int, Show>?) {
-		showsMapMutableLiveData.value = shows
+		showsListMutableLiveData.value = showsToList(shows)
 	}
 
 	fun addShow(newShow: Show) {
