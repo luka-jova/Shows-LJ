@@ -8,25 +8,24 @@ import com.makina.shows_lukajovanovic.data.model.Episode
 object EpisodesRepository {
 
 	private val episodes: MutableMap<Int, MutableList<Episode>> = mutableMapOf()
-	private val episodesMutableLiveData: MutableMap<Int, MutableLiveData< List<Episode> > > = mutableMapOf()
+	private val curEpisodesMutableLiveData = MutableLiveData<List <Episode>>()
+	private var observingShowId = -1
 
 	fun episodesLiveDataById(showId: Int): LiveData<List <Episode> >? {
-		return episodesMutableLiveData[ showId ]
-	}
-
-	fun addEmptyShow(showId: Int) {
-		if(showId in episodes) return
-		episodes[ showId ] = mutableListOf()
-		episodesMutableLiveData[ showId ] = MutableLiveData()
-		episodesMutableLiveData[ showId ]?.value = episodes[ showId ]
+		if(showId !in episodes) episodes[ showId ] = mutableListOf()
+		curEpisodesMutableLiveData.value = episodes[ showId ]
+		observingShowId = showId
+		return curEpisodesMutableLiveData
 	}
 
 	fun addEpisode(showId: Int, newEpisode: Episode) {
-		if(showId !in episodesMutableLiveData) {
-			addEmptyShow(showId)
+		if(showId !in episodes) {
+			episodes[ showId ] = mutableListOf()
 		}
 		episodes[ showId ]?.add(newEpisode)
-		episodesMutableLiveData[ showId ]?.value = episodes[ showId ]
+		if(observingShowId == showId) {
+			curEpisodesMutableLiveData.value = episodes[ showId ]
+		}
 	}
 
 }

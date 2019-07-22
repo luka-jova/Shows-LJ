@@ -19,36 +19,31 @@ object ShowsRepository {
 
 
 	private val shows: MutableMap<Int, Show> = mutableMapOf()
-	private val showsMutableLiveData: MutableMap<Int, MutableLiveData<Show>> = mutableMapOf()
 	private val showsMapMutableLiveData = MutableLiveData<Map<Int, Show>>()
+	private val curShowMutableLiveData = MutableLiveData<Show>()
+	private var observingShowId = -1
 
 	val showsMapLiveData: LiveData<Map<Int, Show>>
 		get() = showsMapMutableLiveData
 
 	fun showLiveDataById(showId: Int): LiveData<Show>? {
-		return showsMutableLiveData[ showId ]
+		curShowMutableLiveData.value = shows[ showId ]
+		observingShowId = showId
+		return curShowMutableLiveData
 	}
 
 	init {
 		getData()
-
-		for(i in showsListId) {
-			EpisodesRepository.addEmptyShow(i)
-		}
 	}
 
 	fun addShow(newShow: Show) {
 		if(newShow.showId in shows) return
 
 		shows[ newShow.showId ] = newShow
-		showsMutableLiveData[ newShow.showId ] = MutableLiveData()
-		showsMutableLiveData[ newShow.showId ]?.value = shows[ newShow.showId ]
 		showsMapMutableLiveData.value = shows
 
 		showsListId.add(newShow.showId)
 		showsListIdMutableLiveData.value = showsListId
-
-		EpisodesRepository.addEmptyShow(newShow.showId)
 	}
 
 	private fun getData() {
