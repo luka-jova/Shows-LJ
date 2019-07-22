@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
@@ -19,35 +18,26 @@ class SeasonEpisodePickerDialog(var curSeason: Int = 1, var curEpisode: Int = 1)
 		const val CUR_EPISODE = "CUR_EPISODE"
 	}
 	lateinit var curView : View
-	init{
-		//TODO zasto se kod rotacije poziva ovaj init? -> da se ne poziva ne bih morao koristiti Bundle
-		Log.d("moj tag", "inicijalizacija")
-	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
-		Log.d("moj tag", "sejvam $curSeason $curEpisode")
 		outState.putInt(CUR_SEASON, curSeason)
 		outState.putInt(CUR_EPISODE, curEpisode)
 		super.onSaveInstanceState(outState)
 	}
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		Log.d("moj tag", "onCreateDialog()")
 		if(curSeason == -1) curSeason = 1
 		if(curEpisode == -1) curEpisode = 1
 		curSeason = savedInstanceState?.getInt(CUR_SEASON)  ?: curSeason
 		curEpisode = savedInstanceState?.getInt(CUR_EPISODE) ?: curEpisode
-		Log.d("moj tag", "loadam $curSeason $curEpisode")
 
 		return activity?.let {
-			//TODO sto radi activity.let
 			val builder = AlertDialog.Builder(it)
 			val inflater = requireActivity().layoutInflater
 
 			//TODO mogu li povecati font texta u neutral buttonu?
 			curView = inflater.inflate(R.layout.layout_fragment_season_episode_picker, null)
 			builder.setView(curView)
-			Log.d("moj tag", "prvotno stanje je ${view == null}")
 			builder.setPositiveButton(
 				R.string.text_save,
 					DialogInterface.OnClickListener { dialog, id ->
@@ -81,7 +71,6 @@ class SeasonEpisodePickerDialog(var curSeason: Int = 1, var curEpisode: Int = 1)
 	internal lateinit var listener: NoticeDialogListener
 
 	interface NoticeDialogListener {
-		//TODO prije je radilo, a sad ne radi da ovdje kao argument primam dialog: DialogFragment, i onda overrideam dialog: SeasonEpisodePickerDialog (sto je takoder DialogFragment)
 		fun onDialogSaveButton(dialog: SeasonEpisodePickerDialog)
 	}
 
