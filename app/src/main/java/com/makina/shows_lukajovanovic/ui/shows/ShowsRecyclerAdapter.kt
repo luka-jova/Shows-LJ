@@ -8,10 +8,9 @@ import kotlinx.android.synthetic.main.layout_show.view.*
 import androidx.core.content.ContextCompat.startActivity
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Show
-import com.makina.shows_lukajovanovic.ui.episodes.EpisodesActivity
 
 
-class ShowsRecyclerAdapter() : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHolder>() {
+class ShowsRecyclerAdapter(val startEpisodesFragment: (Int) -> Unit) : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHolder>() {
 	private var showsList = listOf<Show>()
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,7 +40,7 @@ class ShowsRecyclerAdapter() : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHol
 
 				val cont = context
 				setOnClickListener {
-					startActivity(cont, EpisodesActivity.newInstance(cont, showsList[ position ].showId), null)
+					startEpisodesFragment(showsList[ position ].showId)
 				}
 			}
 		}
