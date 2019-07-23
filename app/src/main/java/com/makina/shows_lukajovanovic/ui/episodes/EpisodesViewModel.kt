@@ -18,8 +18,8 @@ class EpisodesViewModel(val showId: Int) : ViewModel() {
 	val episodesList: List<Episode>
 		get() = episodesLiveData.value ?: listOf()
 
-	private val observerEpisodes = Observer<List<Episode>> {episodesList ->
-		episodesMutableLiveData.value = episodesList
+	private val observerEpisodes = Observer<Map<Int, List<Episode>>> {t ->
+		episodesMutableLiveData.value = t[ showId ] ?: listOf()
 	}
 
 	private val showMutableLiveData = MutableLiveData<Show>()
@@ -29,17 +29,17 @@ class EpisodesViewModel(val showId: Int) : ViewModel() {
 	val show: Show?
 		get() = showLiveData.value
 
-	private val observerShow = Observer<Show> {show ->
-		showMutableLiveData.value = show
+	private val observerShow = Observer<Map<Int, Show>> {t ->
+		showMutableLiveData.value = t[ showId ]
 	}
 
 	init {
-		EpisodesRepository.episodesLiveDataById(showId)?.observeForever(observerEpisodes)
-		ShowsRepository.showLiveDataById(showId)?.observeForever(observerShow)
+		EpisodesRepository.episodesMapLiveData?.observeForever(observerEpisodes)
+		ShowsRepository.showsMapLiveData?.observeForever(observerShow)
 	}
 
 	override fun onCleared() {
-		EpisodesRepository.episodesLiveDataById(showId)?.removeObserver(observerEpisodes)
-		ShowsRepository.showLiveDataById(showId)?.removeObserver(observerShow)
+		EpisodesRepository.episodesMapLiveData?.removeObserver(observerEpisodes)
+		ShowsRepository.showsMapLiveData?.removeObserver(observerShow)
 	}
 }

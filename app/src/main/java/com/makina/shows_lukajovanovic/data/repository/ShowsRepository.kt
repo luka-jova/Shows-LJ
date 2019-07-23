@@ -20,17 +20,8 @@ object ShowsRepository {
 
 	private val shows: MutableMap<Int, Show> = mutableMapOf()
 	private val showsMapMutableLiveData = MutableLiveData<Map<Int, Show>>()
-	private val curShowMutableLiveData = MutableLiveData<Show>()
-	private var observingShowId = -1
-
 	val showsMapLiveData: LiveData<Map<Int, Show>>
 		get() = showsMapMutableLiveData
-
-	fun showLiveDataById(showId: Int): LiveData<Show>? {
-		curShowMutableLiveData.value = shows[ showId ]
-		observingShowId = showId
-		return curShowMutableLiveData
-	}
 
 	init {
 		getData()
