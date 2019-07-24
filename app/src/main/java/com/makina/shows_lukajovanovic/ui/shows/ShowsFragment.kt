@@ -10,10 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
+import com.makina.shows_lukajovanovic.data.model.Episode
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
+import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment.Companion.EPISODES_FRAGMENT_TAG
+import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment.Companion.SHOW_ID_CODE
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_shows.*
+import java.lang.reflect.Array.setInt
 
 class ShowsFragment :Fragment() {
 	companion object {
@@ -27,10 +31,20 @@ class ShowsFragment :Fragment() {
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		Log.d("tigar", "ShowsFragment onViewCreated")
 		adapter = ShowsRecyclerAdapter { showId ->
 			Log.d("tigar", "pokrecem EpisodesFragment sa showId: $showId unutar lambde")
+			if(fragmentManager?.findFragmentByTag(EPISODES_FRAGMENT_TAG) != null) fragmentManager?.popBackStack()
 			fragmentManager?.beginTransaction()?.apply {
-				replace((activity as MainContainerActivity)?.mSlaveContainerId, EpisodesFragment(showId))
+				replace(
+					(activity as MainContainerActivity)?.mSlaveContainerId,
+					EpisodesFragment().apply {
+						arguments = Bundle().apply {
+							putInt(SHOW_ID_CODE, showId)
+						}
+					},
+					EpisodesFragment.EPISODES_FRAGMENT_TAG
+				)
 				addToBackStack("Episodes $showId")
 				commit()
 			}

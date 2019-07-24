@@ -36,8 +36,6 @@
 
 		<activity android:name=".ui.episodes.add.AddEpisodeActivity">
 		</activity>
-		<activity android:name=".ui.episodes.EpisodesActivity"/>
-
 		<activity android:name=".ui.welcome.WelcomeActivity">
 		</activity>
 		<activity android:name=".ui.welcome.LoginActivity">

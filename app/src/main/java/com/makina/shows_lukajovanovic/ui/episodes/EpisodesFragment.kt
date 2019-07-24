@@ -12,10 +12,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
+import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeActivity
 import kotlinx.android.synthetic.main.fragment_episodes.*
 
-class EpisodesFragment(val showId: Int): Fragment() {
+class EpisodesFragment(): Fragment() {
+	companion object {
+		const val SHOW_ID_CODE = "SHOW_ID_CODE"
+		const val EPISODES_FRAGMENT_TAG = "EPISODES_FRAGMENT_TAG"
+	}
+	private var showId = -1
 	private lateinit var viewModel: EpisodesViewModel
 	private lateinit var adapter: EpisodesRecyclerAdapter
 
@@ -24,6 +30,9 @@ class EpisodesFragment(val showId: Int): Fragment() {
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		(activity as MainContainerActivity)?.updateVisibility()
+		//TODO gornja linija
+		showId = arguments?.getInt(SHOW_ID_CODE, -1) ?: -1
 		Log.d("tigar", "EpisodesFragment $showId, onViewCreated")
 		viewModel = ViewModelProviders.of(this, object: ViewModelProvider.Factory {
 			override fun <T : ViewModel?> create(modelClass: Class<T>): T {
