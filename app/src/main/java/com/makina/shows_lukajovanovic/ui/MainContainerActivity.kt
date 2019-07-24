@@ -7,10 +7,15 @@ import android.view.View
 import android.widget.FrameLayout
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
+import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
+import com.makina.shows_lukajovanovic.ui.episodes.add.SeasonEpisodePickerDialog
+import com.makina.shows_lukajovanovic.ui.episodes.add.TakePhotoDialog
 import com.makina.shows_lukajovanovic.ui.shows.ShowsFragment
 import kotlinx.android.synthetic.main.activity_main_container.*
 
-class MainContainerActivity : AppCompatActivity() {
+class MainContainerActivity : AppCompatActivity(),
+	SeasonEpisodePickerDialog.NoticeDialogListener,
+	TakePhotoDialog.TakePhotoDialogListener {
 
 	var mSlaveContainerId: Int = -1
 
@@ -29,7 +34,7 @@ class MainContainerActivity : AppCompatActivity() {
 
 		supportFragmentManager.beginTransaction().apply {
 			//TODO CIJI JE TOCNO OVO id? OD INSTANCE? OD "KLASE"?
-			add(R.id.containerMaster, ShowsFragment())
+			replace(R.id.containerMaster, ShowsFragment())
 			commit()
 		}
 		updateVisibility()
@@ -63,4 +68,15 @@ class MainContainerActivity : AppCompatActivity() {
 		super.onBackPressed()
 		updateVisibility()
 	}
+
+	override fun onDialogSaveButton(dialog: SeasonEpisodePickerDialog) {
+		(supportFragmentManager.findFragmentByTag(AddEpisodeFragment.ADD_EPISODE_TAG) as? AddEpisodeFragment)
+			?.onDialogSaveButton(dialog) ?: Log.d("tigar", "there is no AddEpisodeFragment active")
+	}
+
+	override fun onDialogSelect(which: String) {
+		(supportFragmentManager.findFragmentByTag(AddEpisodeFragment.ADD_EPISODE_TAG) as? AddEpisodeFragment)
+			?.onDialogSelect(which) ?: Log.d("tigar", "there is no AddEpisodeFragment active")
+	}
+
 }

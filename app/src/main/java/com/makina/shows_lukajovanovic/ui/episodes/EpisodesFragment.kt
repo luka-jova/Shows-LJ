@@ -13,13 +13,21 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
-import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeActivity
+import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
 import kotlinx.android.synthetic.main.fragment_episodes.*
 
 class EpisodesFragment(): Fragment() {
 	companion object {
 		const val SHOW_ID_CODE = "SHOW_ID_CODE"
 		const val EPISODES_FRAGMENT_TAG = "EPISODES_FRAGMENT_TAG"
+
+		fun newInstance(showId: Int): EpisodesFragment {
+			return EpisodesFragment().apply {
+				arguments = Bundle().apply {
+					putInt(SHOW_ID_CODE, showId)
+				}
+			}
+		}
 	}
 	private var showId = -1
 	private lateinit var viewModel: EpisodesViewModel
@@ -58,7 +66,15 @@ class EpisodesFragment(): Fragment() {
 		recyclerViewEpisodes.adapter = adapter
 
 		fab.setOnClickListener { view ->
-			startActivityForResult(AddEpisodeActivity.newInstance(requireContext(), showId), 1)
+			fragmentManager?.beginTransaction()?.apply {
+				replace(
+					(activity as MainContainerActivity).mSlaveContainerId,
+					AddEpisodeFragment.newInstance(showId),
+					AddEpisodeFragment.ADD_EPISODE_TAG
+				)
+				addToBackStack("AddEpisodeFragment")
+				commit()
+			}
 		}
 
 		viewModel.episodesLiveData.observe(this, Observer {episodesList ->
@@ -69,7 +85,6 @@ class EpisodesFragment(): Fragment() {
 	}
 
 	fun updateVisibility() {
-		//TODO jel ok da ovdje pristupam podacima u viewModelu?
 		if(viewModel.episodesList.isNotEmpty()) {
 			defaultLayout.visibility = View.INVISIBLE
 			recyclerViewEpisodes?.visibility = View.VISIBLE

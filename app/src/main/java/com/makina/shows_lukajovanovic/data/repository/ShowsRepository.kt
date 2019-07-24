@@ -101,6 +101,17 @@ object ShowsRepository {
 				showDescription = "In April 1986, an explosion at the Chernobyl nuclear power plant in the Union of Soviet Socialist Republics becomes one of the world's worst man-made catastrophes."
 			)
 		)
+		for(i in 7..15) {
+			addShow(
+				Show(
+					i,
+					R.drawable.img_chernobyl,
+					"Chernobyl",
+					"(2019 - 2019)",
+					showDescription = "In April 1986, an explosion at the Chernobyl nuclear power plant in the Union of Soviet Socialist Republics becomes one of the world's worst man-made catastrophes."
+				)
+			)
+		}
 	}
 
 	private fun readShowsFromFile(): MutableList<Show> {

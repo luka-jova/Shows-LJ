@@ -38,11 +38,7 @@ class ShowsFragment :Fragment() {
 			fragmentManager?.beginTransaction()?.apply {
 				replace(
 					(activity as MainContainerActivity)?.mSlaveContainerId,
-					EpisodesFragment().apply {
-						arguments = Bundle().apply {
-							putInt(SHOW_ID_CODE, showId)
-						}
-					},
+					EpisodesFragment.newInstance(showId),
 					EpisodesFragment.EPISODES_FRAGMENT_TAG
 				)
 				addToBackStack("Episodes $showId")

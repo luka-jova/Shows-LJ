@@ -11,7 +11,6 @@ import androidx.fragment.app.DialogFragment
 import com.makina.shows_lukajovanovic.R
 import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.view.*
 
-
 class SeasonEpisodePickerDialog(var curSeason: Int = 1, var curEpisode: Int = 1) : DialogFragment() {
 	companion object {
 		const val CUR_SEASON = "CUR_SEASON"
@@ -41,7 +40,7 @@ class SeasonEpisodePickerDialog(var curSeason: Int = 1, var curEpisode: Int = 1)
 			builder.setPositiveButton(
 				R.string.text_save,
 					DialogInterface.OnClickListener { dialog, id ->
-						listener.onDialogSaveButton(this@SeasonEpisodePickerDialog)
+						listener.onDialogSaveButton(this)
 					})
 
 			with(curView) {
