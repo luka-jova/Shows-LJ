@@ -1,7 +1,6 @@
 package com.makina.shows_lukajovanovic.ui.shows
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,9 +30,7 @@ class ShowsFragment :Fragment() {
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		Log.d("tigar", "ShowsFragment onViewCreated")
 		adapter = ShowsRecyclerAdapter { showId ->
-			Log.d("tigar", "pokrecem EpisodesFragment sa showId: $showId unutar lambde")
 			if(fragmentManager?.findFragmentByTag(EPISODES_FRAGMENT_TAG) != null) fragmentManager?.popBackStack()
 			fragmentManager?.beginTransaction()?.apply {
 				replace(
@@ -53,5 +50,4 @@ class ShowsFragment :Fragment() {
 			adapter.setData(showsList)
 		})
 	}
-
 }

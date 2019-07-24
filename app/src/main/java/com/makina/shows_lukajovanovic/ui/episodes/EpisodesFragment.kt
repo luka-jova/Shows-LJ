@@ -1,7 +1,6 @@
 package com.makina.shows_lukajovanovic.ui.episodes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,9 +38,7 @@ class EpisodesFragment(): Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		(activity as MainContainerActivity)?.updateVisibility()
-		//TODO gornja linija
 		showId = arguments?.getInt(SHOW_ID_CODE, -1) ?: -1
-		Log.d("tigar", "EpisodesFragment $showId, onViewCreated")
 		viewModel = ViewModelProviders.of(this, object: ViewModelProvider.Factory {
 			override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 				return EpisodesViewModel(showId) as T
@@ -94,5 +91,4 @@ class EpisodesFragment(): Fragment() {
 			recyclerViewEpisodes?.visibility = View.INVISIBLE
 		}
 	}
-
 }

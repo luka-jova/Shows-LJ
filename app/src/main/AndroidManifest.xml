@@ -17,11 +17,6 @@
 					android:theme="@style/AppTheme"
 					tools:ignore="GoogleAppIndexingWarning">
 		<activity android:name=".ui.MainContainerActivity">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN"/>
-
-				<category android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
 		</activity>
 
 		<provider
@@ -37,6 +32,11 @@
 		<activity android:name=".ui.welcome.WelcomeActivity">
 		</activity>
 		<activity android:name=".ui.welcome.LoginActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
 		</activity>
 	</application>
 

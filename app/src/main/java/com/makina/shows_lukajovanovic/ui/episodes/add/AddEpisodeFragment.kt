@@ -12,7 +12,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -63,10 +62,7 @@ class AddEpisodeFragment: Fragment() {
 		return inflater.inflate(R.layout.fragment_add_episode, container, false)
 	}
 
-	override fun onActivityCreated(savedInstanceState: Bundle?) {
-		super.onActivityCreated(savedInstanceState)
-	///}(view: View, savedInstanceState: Bundle?) {
-		Log.d("tigar", "onViewCreated in AddEpisodeFragment")
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		toolbarAddEpisode.title = "Add episode"
 		toolbarAddEpisode.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
 		toolbarAddEpisode.setNavigationOnClickListener { activity?.onBackPressed() }
@@ -157,7 +153,6 @@ class AddEpisodeFragment: Fragment() {
 	}
 
 	override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-		///TODO HOCE RADIT TO OVDJE ILI MORAM STAVITI U ACTIVITY? STO AKO OVO OVERRIDEAM U SVAKOM FRAGMENTU NA EKRANU? STO SA ONIMA NE-AKTIVNIMA?
 		for(cur in grantResults) {
 			if(cur != PackageManager.PERMISSION_GRANTED) {
 				Toast.makeText(requireContext(), "Please provide permission.", Toast.LENGTH_SHORT).show()
@@ -172,7 +167,6 @@ class AddEpisodeFragment: Fragment() {
 	}
 
 	private fun handlePermission(curPermissions: Array<String>, requestCode: Int):Boolean {
-		//TODO JEL OVDJE OKE KORISTITI Import za checkSelfPermission iz contextcompat?
 		val reqPermissions: ArrayList<String> = arrayListOf<String>()
 		for(cur in curPermissions) {
 			if(checkSelfPermission(requireContext(), cur) != PackageManager.PERMISSION_GRANTED) {
@@ -255,10 +249,8 @@ class AddEpisodeFragment: Fragment() {
 	}
 
 	private fun getBitmap(uri: Uri): Bitmap? {
-		//TODO try catch?
 		val input: InputStream? = requireContext().contentResolver.openInputStream(uri)
 		val options: BitmapFactory.Options = BitmapFactory.Options()
-		//TODO opcije
 		val resultBitmap: Bitmap? = BitmapFactory.decodeStream(input, null, options)
 		input?.close()
 		return resultBitmap

@@ -1,6 +1,5 @@
 package com.makina.shows_lukajovanovic.data.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.makina.shows_lukajovanovic.data.model.Episode
@@ -9,7 +8,7 @@ object EpisodesRepository {
 
 	private val episodes: MutableMap<Int, MutableList<Episode>> = mutableMapOf()
 	private val episodesMapMutableLiveData = MutableLiveData<Map<Int, List<Episode>>>()
-	val episodesMapLiveData
+	val episodesMapLiveData: LiveData<Map<Int, List<Episode>>>
 		get() = episodesMapMutableLiveData
 
 	fun addEpisode(showId: Int, newEpisode: Episode) {

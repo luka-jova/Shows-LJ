@@ -7,8 +7,8 @@ import android.text.TextWatcher
 import com.makina.shows_lukajovanovic.R
 import kotlinx.android.synthetic.main.activity_login.*
 
-const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._]*@{1}[A-Za-z0-9._]{1,}\.[A-Za-z0-9._]{1,}"""
-
+//const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._]*@{1}[A-Za-z0-9._]{1,}\.[A-Za-z0-9._]{1,}"""
+const val EMAIL_REGEX = "."
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

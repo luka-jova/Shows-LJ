@@ -1,6 +1,5 @@
 package com.makina.shows_lukajovanovic.ui.episodes
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer

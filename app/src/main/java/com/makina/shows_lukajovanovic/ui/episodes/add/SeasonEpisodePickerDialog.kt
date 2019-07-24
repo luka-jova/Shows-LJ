@@ -34,7 +34,6 @@ class SeasonEpisodePickerDialog(var curSeason: Int = 1, var curEpisode: Int = 1)
 			val builder = AlertDialog.Builder(it)
 			val inflater = requireActivity().layoutInflater
 
-			//TODO mogu li povecati font texta u neutral buttonu?
 			curView = inflater.inflate(R.layout.layout_fragment_season_episode_picker, null)
 			builder.setView(curView)
 			builder.setPositiveButton(
