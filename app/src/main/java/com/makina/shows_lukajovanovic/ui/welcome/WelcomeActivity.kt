@@ -30,6 +30,7 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_welcome)
         val username = intent.getStringExtra(USERNAME_CODE)
         textViewWelcomeUser.text = "Welcome, $username"
+        ///TODO "this AsyncTask class should be static... memory leak?
         object: AsyncTask<Unit, Unit, Unit>() {
             override fun doInBackground(vararg p0: Unit?) {
                 try {
