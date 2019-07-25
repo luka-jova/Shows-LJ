@@ -11,5 +11,6 @@
     <color name="colorTextLight">#a0a0a0</color>
     <color name="colorBackgroundShow">#eeeeee</color>
     <color name="colorTransparent">#00000000</color>
+    <color name="colorBackground">#ffffff</color>
 
 </resources>

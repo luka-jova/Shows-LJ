@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
@@ -16,6 +17,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     companion object {
         const val USERNAME_CODE = "USERNAME"
+        const val START_ACTIVITY_CODE = 0
 
         fun newInstance(context: Context, username: String) : Intent {
             val intent = Intent(context, WelcomeActivity::class.java)
@@ -30,22 +32,19 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_welcome)
         val username = intent.getStringExtra(USERNAME_CODE)
         textViewWelcomeUser.text = "Welcome, $username"
-        ///TODO "this AsyncTask class should be static... memory leak?
-        object: AsyncTask<Unit, Unit, Unit>() {
-            override fun doInBackground(vararg p0: Unit?) {
-                try {
-                    Thread.sleep(2000)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
 
-            override fun onPostExecute(result: Unit?) {
-                startActivity(MainContainerActivity.newInstance(this@WelcomeActivity))
-                this@WelcomeActivity.finish()
-            }
+        //TODO jel ovakav Handler u redu? return value true?, ne -> koristi onPostDelayed i trebam u onStop ubiti taj handler
+        val handlerThread = Handler {
+            if(it.what == START_ACTIVITY_CODE)
+            startActivity(MainContainerActivity.newInstance(this@WelcomeActivity))
+            this@WelcomeActivity.finish()
+            true
+        }
+        handlerThread.sendEmptyMessageDelayed(START_ACTIVITY_CODE, 2000)
+    }
 
-        }.execute()
-
+    override fun onStop() {
+        super.onStop()
+        ///ovdje moram ubit handler
     }
 }

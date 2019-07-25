@@ -88,8 +88,6 @@ class AddEpisodeFragment: Fragment() {
 				curEpisode.episodeNum
 			).show(fragmentManager, "timePicker")
 		}
-		editTextEpisodeName!!
-		editTextEpisodeDescription!!
 		editTextEpisodeName.addTextChangedListener(object: TextWatcher {
 			override fun afterTextChanged(p0: Editable?) {
 			}

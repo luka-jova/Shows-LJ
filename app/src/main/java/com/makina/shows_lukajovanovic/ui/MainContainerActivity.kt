@@ -23,52 +23,20 @@ class MainContainerActivity : AppCompatActivity(),
 		}
 	}
 
-	var mSlaveContainerId: Int = -1
+	var slaveContainerId: Int = -1
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main_container)
-		if(containerSlave != null) {
-			mSlaveContainerId = R.id.containerSlave
-		}
-		else {
-			mSlaveContainerId = R.id.containerMaster
-		}
+		slaveContainerId = R.id.containerSlave
 
 		supportFragmentManager.beginTransaction().apply {
-			//TODO CIJI JE TOCNO OVO id? OD INSTANCE? OD "KLASE"?
 			replace(R.id.containerMaster, ShowsFragment())
 			commit()
 		}
-		updateVisibility()
-	}
-
-	fun updateVisibility() {
-		if(MODE_PORTRAIT != null) {
-			///PORTRAIT MODE
-			if(supportFragmentManager.findFragmentByTag(EpisodesFragment.EPISODES_FRAGMENT_TAG) != null) {
-				containerMaster.visibility = View.INVISIBLE
-				containerSlave.visibility = View.VISIBLE
-			}
-			else {
-				containerMaster.visibility = View.VISIBLE
-				containerSlave.visibility = View.INVISIBLE
-			}
-		}
-		else {
-			///LANDSCAPE TABLET MODE
-			containerMaster.visibility = View.VISIBLE
-			containerSlave.visibility = View.VISIBLE
-		}
-	}
-
-	override fun onBackPressed() {
-		super.onBackPressed()
-		updateVisibility()
 	}
 
 
-	///TODO mogu li ikako direktno pozvati ove fje u fragmentu (ne preko Activity-a)?
 	override fun onDialogSaveButton(dialog: SeasonEpisodePickerDialog) {
 		(supportFragmentManager.findFragmentByTag(AddEpisodeFragment.ADD_EPISODE_TAG) as? AddEpisodeFragment)
 			?.onDialogSaveButton(dialog)

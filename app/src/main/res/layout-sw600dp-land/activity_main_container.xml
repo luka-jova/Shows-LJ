@@ -4,7 +4,8 @@
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:orientation="horizontal"
-				android:id="@+id/MODE_LANDSCAPE">
+				android:id="@+id/MODE_LANDSCAPE"
+				android:background="@color/colorBackground">
 
 
 	<FrameLayout

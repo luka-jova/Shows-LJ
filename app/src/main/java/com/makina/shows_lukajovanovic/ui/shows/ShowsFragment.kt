@@ -34,7 +34,7 @@ class ShowsFragment :Fragment() {
 			if(fragmentManager?.findFragmentByTag(EPISODES_FRAGMENT_TAG) != null) fragmentManager?.popBackStack()
 			fragmentManager?.beginTransaction()?.apply {
 				replace(
-					(activity as MainContainerActivity)?.mSlaveContainerId,
+					(activity as MainContainerActivity)?.slaveContainerId,
 					EpisodesFragment.newInstance(showId),
 					EpisodesFragment.EPISODES_FRAGMENT_TAG
 				)

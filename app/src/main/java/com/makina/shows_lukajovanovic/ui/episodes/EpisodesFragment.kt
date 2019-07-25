@@ -37,7 +37,6 @@ class EpisodesFragment(): Fragment() {
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		(activity as MainContainerActivity)?.updateVisibility()
 		showId = arguments?.getInt(SHOW_ID_CODE, -1) ?: -1
 		viewModel = ViewModelProviders.of(this, object: ViewModelProvider.Factory {
 			override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -46,12 +45,12 @@ class EpisodesFragment(): Fragment() {
 		}).get(EpisodesViewModel::class.java)
 
 
-		toolbarEpisodes.title = "Ime"
+		toolbarEpisodes.title = "Episodes"
 		toolbarEpisodes.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
 		toolbarEpisodes.setNavigationOnClickListener {
 			activity?.onBackPressed()
 		}
-		textViewDescription.text = "Description"
+		textViewDescription.text = ""
 
 		viewModel.showLiveData.observe(this, Observer {show ->
 			toolbarEpisodes.title = show.name
@@ -62,10 +61,10 @@ class EpisodesFragment(): Fragment() {
 		recyclerViewEpisodes.layoutManager = LinearLayoutManager(requireContext())
 		recyclerViewEpisodes.adapter = adapter
 
-		fab.setOnClickListener { view ->
+		fab.setOnClickListener {
 			fragmentManager?.beginTransaction()?.apply {
 				replace(
-					(activity as MainContainerActivity).mSlaveContainerId,
+					(activity as MainContainerActivity).slaveContainerId,
 					AddEpisodeFragment.newInstance(showId),
 					AddEpisodeFragment.ADD_EPISODE_TAG
 				)

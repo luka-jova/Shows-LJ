@@ -3,7 +3,8 @@
 				xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:id="@+id/MODE_PORTRAIT">
+				android:id="@+id/MODE_PORTRAIT"
+				android:background="@color/colorBackground">
 
 	<FrameLayout
 					android:layout_width="match_parent"
