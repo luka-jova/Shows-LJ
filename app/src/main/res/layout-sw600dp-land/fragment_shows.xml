@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				xmlns:app="http://schemas.android.com/apk/res-auto"
+				xmlns:tools="http://schemas.android.com/tools"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:background="@color/colorBackground">
+	<TextView
+					android:text="@string/text_shows"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintBottom_toTopOf="@id/recyclerViewShows"
+					android:paddingLeft="16dp"
+					android:paddingTop="24dp"
+					android:paddingBottom="24dp"
+					android:textSize="28sp"
+					android:textColor="@color/colorTextStrong"
+					android:id="@+id/textViewShows"/>
+
+	<androidx.recyclerview.widget.RecyclerView
+					android:layout_width="match_parent"
+					android:layout_height="0dp"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/textViewShows"
+					android:id="@+id/recyclerViewShows"
+					tools:listitem="@layout/layout_show"
+					android:scrollbarAlwaysDrawVerticalTrack="true"
+					android:scrollbarSize="5dp"
+					android:scrollbars="vertical"
+					android:fadeScrollbars="false"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
