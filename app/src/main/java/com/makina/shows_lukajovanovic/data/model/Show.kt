@@ -1,7 +1,28 @@
 package com.makina.shows_lukajovanovic.data.model
 
 import com.makina.shows_lukajovanovic.data.model.Episode
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
-class Show(val showId: Int, val imageId: Int, val name: String, val airDate: String, val showDescription:String = "Default Description") :Serializable {
-}
+@JsonClass(generateAdapter = true)
+data class Show(
+	@Json(name = "_id")
+	val showId: String,
+
+	@Json(name = "imageUrl")
+	val imageUrl: String,
+
+	@Json(name = "title")
+	val name: String,
+
+	@Json(name = "description")
+	val showDescription:String = "Default Description",
+
+	@Transient
+	val imageId: Int = -1,
+
+	@Transient
+	val airDate: String = "? - ?"
+
+) :Serializable

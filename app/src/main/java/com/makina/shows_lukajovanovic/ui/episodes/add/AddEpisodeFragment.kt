@@ -43,10 +43,10 @@ class AddEpisodeFragment: Fragment() {
 		private const val REQUEST_CODE_PERMISSIONS_CAMERA = 2
 		private const val REQUEST_CODE_PERMISSION_SETPHOTO = 3
 
-		fun newInstance(showId: Int): AddEpisodeFragment {
+		fun newInstance(showId: String): AddEpisodeFragment {
 			return AddEpisodeFragment().apply {
 				arguments = Bundle().apply {
-					putInt(SHOW_ID_CODE, showId)
+					putString(SHOW_ID_CODE, showId)
 				}
 			}
 		}
@@ -55,7 +55,7 @@ class AddEpisodeFragment: Fragment() {
 	private var photoUri: Uri? = null
 	private var bitmapEpisode: Bitmap? = null
 	private var curEpisode: Episode = Episode()
-	private var showId = -1
+	private var showId = ""
 	private lateinit var viewModel: AddEpisodeViewModel
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -67,7 +67,7 @@ class AddEpisodeFragment: Fragment() {
 		toolbarAddEpisode.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
 		toolbarAddEpisode.setNavigationOnClickListener { activity?.onBackPressed() }
 
-		showId = arguments?.getInt(SHOW_ID_CODE, -1) ?: -1
+		showId = arguments?.getString(SHOW_ID_CODE, "") ?: ""
 		viewModel = ViewModelProviders.of(this).get(AddEpisodeViewModel::class.java)
 
 		curEpisode = (savedInstanceState?.getSerializable(EPISODE_CODE) as? Episode) ?: Episode()

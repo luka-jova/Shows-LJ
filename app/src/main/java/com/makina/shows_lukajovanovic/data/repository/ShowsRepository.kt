@@ -1,26 +1,26 @@
 package com.makina.shows_lukajovanovic.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.ShowsApp
 import com.makina.shows_lukajovanovic.data.model.Show
+import com.makina.shows_lukajovanovic.data.model.ShowResponse
+import com.makina.shows_lukajovanovic.data.model.ShowsListResponse
+import com.makina.shows_lukajovanovic.data.network.Api
+import com.makina.shows_lukajovanovic.data.network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.ObjectInputStream
 import java.lang.Exception
 
 private const val FILENAME = "Shows.data"
 object ShowsRepository {
-
-	private val showsListId: MutableList<Int> = mutableListOf()
-	private val showsListIdMutableLiveData = MutableLiveData<List<Int>>()
-
-	val showsListIdLiveData: LiveData<List<Int>>
-		get() = showsListIdMutableLiveData
-
-
-	private val shows: MutableMap<Int, Show> = mutableMapOf()
-	private val showsMapMutableLiveData = MutableLiveData<Map<Int, Show>>()
-	val showsMapLiveData: LiveData<Map<Int, Show>>
+	private val shows: MutableMap<String, Show> = mutableMapOf()
+	private val showsMapMutableLiveData = MutableLiveData<Map<String, Show>>()
+	val showsMapLiveData: LiveData<Map<String, Show>>
 		get() = showsMapMutableLiveData
 
 	init {
@@ -32,12 +32,10 @@ object ShowsRepository {
 
 		shows[ newShow.showId ] = newShow
 		showsMapMutableLiveData.value = shows
-
-		showsListId.add(newShow.showId)
-		showsListIdMutableLiveData.value = showsListId
 	}
 
 	private fun getData() {
+		/*
 		addShow(
 			Show(
 				0,
@@ -112,16 +110,60 @@ object ShowsRepository {
 				)
 			)
 		}
+		*/
 	}
 
-	private fun readShowsFromFile(): MutableList<Show> {
-		return try {
-			ObjectInputStream(ShowsApp.instance.openFileInput(FILENAME)).use {
-				it.readObject() as MutableList<Show>
+	private val apiService = RetrofitClient.retrofitInstance?.create(Api::class.java)
+
+	private fun downloadShow(showId: String) {
+		apiService?.getShowById(showId)?.enqueue(object : Callback<ShowResponse> {
+
+			override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
+				//do something when we get error, always notify the user
+				Log.d("tigar", "failed in onFailure for $showId")
 			}
-		} catch (e: Exception) {
-			return mutableListOf()
-		}
+
+			override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
+				with(response) {
+					if (isSuccessful && body() != null) {
+						Log.d("tigar", ShowResponse(
+							show = body()?.show,
+							isSuccessful = true
+						).toString())
+						val buf = body()?.show
+						if(buf != null) {addShow(buf)} else {}
+					} else {
+						Log.d("tigar", "failed in onResponse for $showId")
+					}
+				}
+			}
+		})
+	}
+
+	fun fetchWebData() {
+		apiService?.getShowsIdList()?.enqueue(object : Callback<ShowsListResponse> {
+
+			override fun onFailure(call: Call<ShowsListResponse>, t: Throwable) {
+				//do something when we get error, always notify the user
+				Log.d("tigar", "failed in onFailure")
+			}
+
+			override fun onResponse(call: Call<ShowsListResponse>, response: Response<ShowsListResponse>) {
+				with(response) {
+					if (isSuccessful && body() != null) {
+							Log.d("tigar", ShowsListResponse(
+								showsIdList = body()?.showsIdList,
+								isSuccessful = true
+							).toString())
+						for(i in body()?.showsIdList ?: listOf()) {
+							downloadShow(i.showId)
+						}
+					} else {
+						Log.d("tigar", "failed in onResponse")
+					}
+				}
+			}
+		})
 	}
 
 }

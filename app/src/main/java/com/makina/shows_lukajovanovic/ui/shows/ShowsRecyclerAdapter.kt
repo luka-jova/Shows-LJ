@@ -1,5 +1,6 @@
 package com.makina.shows_lukajovanovic.ui.shows
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +9,11 @@ import kotlinx.android.synthetic.main.layout_show.view.*
 import androidx.core.content.ContextCompat.startActivity
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Show
+import com.makina.shows_lukajovanovic.data.network.RetrofitClient
+import com.squareup.picasso.Picasso
 
 
-class ShowsRecyclerAdapter(val startEpisodesFragment: (Int) -> Unit) : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHolder>() {
+class ShowsRecyclerAdapter(val startEpisodesFragment: (String) -> Unit) : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHolder>() {
 	private var showsList = listOf<Show>()
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,7 +37,13 @@ class ShowsRecyclerAdapter(val startEpisodesFragment: (Int) -> Unit) : RecyclerV
 	inner class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
 		fun bind(show: Show, position: Int) {
 			with(itemView) {
-				imageViewShow.setImageResource(show.imageId)
+				if(show.imageId != -1) imageViewShow.setImageResource(show.imageId)
+				else {
+					Log.d("tigar", show.imageUrl)
+					Picasso.get().load(RetrofitClient.BASE_URL + show.imageUrl)
+						.placeholder(R.drawable.ic_camera).error(android.R.drawable.stat_notify_error)
+						.into(imageViewShow)
+				}
 				textViewShowName.text = show.name
 				textViewShowDate.text = show.airDate
 

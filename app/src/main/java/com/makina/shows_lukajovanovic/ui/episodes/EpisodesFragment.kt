@@ -1,6 +1,7 @@
 package com.makina.shows_lukajovanovic.ui.episodes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
+import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
 import kotlinx.android.synthetic.main.fragment_episodes.*
@@ -20,15 +22,15 @@ class EpisodesFragment(): Fragment() {
 		const val SHOW_ID_CODE = "SHOW_ID_CODE"
 		const val EPISODES_FRAGMENT_TAG = "EPISODES_FRAGMENT_TAG"
 
-		fun newInstance(showId: Int): EpisodesFragment {
+		fun newInstance(showId: String): EpisodesFragment {
 			return EpisodesFragment().apply {
 				arguments = Bundle().apply {
-					putInt(SHOW_ID_CODE, showId)
+					putString(SHOW_ID_CODE, showId)
 				}
 			}
 		}
 	}
-	private var showId = -1
+	private var showId = ""
 	private lateinit var viewModel: EpisodesViewModel
 	private lateinit var adapter: EpisodesRecyclerAdapter
 
@@ -37,7 +39,7 @@ class EpisodesFragment(): Fragment() {
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		showId = arguments?.getInt(SHOW_ID_CODE, -1) ?: -1
+		showId = arguments?.getString(SHOW_ID_CODE, "") ?: ""
 		viewModel = ViewModelProviders.of(this, object: ViewModelProvider.Factory {
 			override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 				return EpisodesViewModel(showId) as T
@@ -78,6 +80,11 @@ class EpisodesFragment(): Fragment() {
 			this@EpisodesFragment.updateVisibility()
 		})
 		updateVisibility()
+		Log.d("tigar", "postavljam on click")
+		buttonDownloadEpisodes.setOnClickListener {
+			Log.d("tigar", "Downloading...")
+			EpisodesRepository.fetchDataFromWeb(showId)
+		}
 	}
 
 	fun updateVisibility() {

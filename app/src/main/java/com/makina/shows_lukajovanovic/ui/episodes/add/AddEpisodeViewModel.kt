@@ -6,7 +6,7 @@ import com.makina.shows_lukajovanovic.data.model.Episode
 import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 
 class AddEpisodeViewModel : ViewModel() {
-	fun addEpisode(showId: Int, newEpisode: Episode) {
+	fun addEpisode(showId: String, newEpisode: Episode) {
 		EpisodesRepository.addEpisode(showId, newEpisode)
 	}
 }

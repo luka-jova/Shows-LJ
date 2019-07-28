@@ -9,7 +9,7 @@ import com.makina.shows_lukajovanovic.data.model.Show
 import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 import com.makina.shows_lukajovanovic.data.repository.ShowsRepository
 
-class EpisodesViewModel(val showId: Int) : ViewModel() {
+class EpisodesViewModel(val showId: String) : ViewModel() {
 	private val episodesMutableLiveData = MutableLiveData<List<Episode>>()
 	val episodesLiveData: LiveData<List<Episode>>
 		get() = episodesMutableLiveData
@@ -17,7 +17,7 @@ class EpisodesViewModel(val showId: Int) : ViewModel() {
 	val episodesList: List<Episode>
 		get() = episodesLiveData.value ?: listOf()
 
-	private val observerEpisodes = Observer<Map<Int, List<Episode>>> {t ->
+	private val observerEpisodes = Observer<Map<String, List<Episode>>> {t ->
 		episodesMutableLiveData.value = t[ showId ] ?: listOf()
 	}
 
@@ -28,7 +28,7 @@ class EpisodesViewModel(val showId: Int) : ViewModel() {
 	val show: Show?
 		get() = showLiveData.value
 
-	private val observerShow = Observer<Map<Int, Show>> {t ->
+	private val observerShow = Observer<Map<String, Show>> {t ->
 		showMutableLiveData.value = t[ showId ]
 	}
 

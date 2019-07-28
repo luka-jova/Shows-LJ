@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Episode
+import com.makina.shows_lukajovanovic.data.repository.ShowsRepository
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment.Companion.EPISODES_FRAGMENT_TAG
@@ -49,5 +50,8 @@ class ShowsFragment :Fragment() {
 		viewModel.showsListLiveData.observe(this, Observer {showsList ->
 			adapter.setData(showsList)
 		})
+		buttonDownload.setOnClickListener {
+			ShowsRepository.fetchWebData()
+		}
 	}
 }
