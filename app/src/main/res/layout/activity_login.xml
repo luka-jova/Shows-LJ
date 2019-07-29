@@ -67,5 +67,16 @@
                 android:textColor="@color/colorLoginText"
                 android:id="@+id/buttonLogin"/>
 
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_an_account"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/buttonLogin"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="32dp"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/textViewCreateAccount"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

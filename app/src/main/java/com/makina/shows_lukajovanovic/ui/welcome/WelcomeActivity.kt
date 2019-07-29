@@ -45,6 +45,6 @@ class WelcomeActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        ///ovdje moram ubit handler
+        ///TODO ovdje moram ubit handler
     }
 }

@@ -1,13 +1,8 @@
 package com.makina.shows_lukajovanovic.data.network
 
-import com.makina.shows_lukajovanovic.data.model.EpisodesListResponse
-import com.makina.shows_lukajovanovic.data.model.Show
-import com.makina.shows_lukajovanovic.data.model.ShowResponse
-import com.makina.shows_lukajovanovic.data.model.ShowsListResponse
+import com.makina.shows_lukajovanovic.data.model.*
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Url
+import retrofit2.http.*
 
 interface Api {
 	@GET("/api/shows/")
@@ -18,4 +13,10 @@ interface Api {
 
 	@GET("/api/shows/{showId}/episodes")
 	fun getEpisodesListById(@Path("showId") showId: String): Call<EpisodesListResponse>
+
+	@POST("/api/users/sessions")
+	fun loginUser(@Body user: LoginData): Call<TokenResponse>
+
+	@POST("/api/users/")
+	fun registerUser(@Body user: LoginData): Call<RegisterResponse>
 }

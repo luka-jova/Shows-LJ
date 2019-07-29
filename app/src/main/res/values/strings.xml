@@ -28,5 +28,9 @@
 	</string>
 	<string name="gallery">Gallery</string>
 	<string name="camera">Camera</string>
+	<string name="e_mail">E-mail</string>
+	<string name="re_enter_password">Password again</string>
+	<string name="register">REGISTER</string>
+	<string name="create_an_account"><b>Create an account</b></string>
 
 </resources>

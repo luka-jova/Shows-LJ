@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<androidx.appcompat.widget.Toolbar
+					app:layout_constraintTop_toTopOf="parent"
+					android:layout_width="match_parent"
+					android:layout_height="?attr/actionBarSize"
+					android:background="@color/colorPrimary"
+					android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+					android:id="@+id/toolbarRegister"/>
+
+	<androidx.constraintlayout.widget.Guideline
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/guidelineLeft"
+					android:outlineAmbientShadowColor="@color/colorBackground"
+					app:layout_constraintGuide_percent="@dimen/guideline_add_episode_left"
+					android:orientation="vertical"/>
+	<androidx.constraintlayout.widget.Guideline
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/guidelineRight"
+					app:layout_constraintGuide_percent="@dimen/guideline_add_episode_right"
+					android:orientation="vertical"/>
+
+	<com.google.android.material.textfield.TextInputLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"
+					app:layout_constraintRight_toRightOf="@id/guidelineRight"
+					app:layout_constraintTop_toBottomOf="@id/toolbarRegister"
+					android:layout_marginLeft="16dp"
+					android:layout_marginRight="16dp"
+					android:layout_marginTop="64dp"
+					android:id="@+id/textInputLayoutEmail">
+
+		<EditText
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:inputType="textEmailAddress"
+						android:hint="@string/e_mail"
+						android:id="@+id/editTextEmail"/>
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"
+					app:layout_constraintRight_toRightOf="@id/guidelineRight"
+					app:layout_constraintTop_toBottomOf="@id/textInputLayoutEmail"
+					android:layout_marginTop="32dp"
+					android:layout_marginRight="16dp"
+					android:layout_marginLeft="16dp"
+					app:passwordToggleContentDescription="password_eye"
+					app:passwordToggleTint="@color/colorAccent"
+					app:passwordToggleEnabled="true"
+					app:passwordToggleDrawable="@drawable/ic_show_password"
+					android:id="@+id/textInputLayoutPassword">
+
+		<EditText
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:inputType="textPassword"
+						android:hint="@string/hint_password"
+						android:id="@+id/editTextPassword"/>
+	</com.google.android.material.textfield.TextInputLayout>
+	<com.google.android.material.textfield.TextInputLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"
+					app:layout_constraintRight_toRightOf="@id/guidelineRight"
+					app:layout_constraintTop_toBottomOf="@id/textInputLayoutPassword"
+					android:layout_marginTop="32dp"
+					android:layout_marginRight="16dp"
+					android:layout_marginLeft="16dp"
+					app:passwordToggleContentDescription="password_eye"
+					app:passwordToggleTint="@color/colorAccent"
+					app:passwordToggleEnabled="true"
+					app:passwordToggleDrawable="@drawable/ic_show_password"
+					android:id="@+id/textInputLayoutRepeatPassword">
+
+		<EditText
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:inputType="textPassword"
+						android:hint="@string/re_enter_password"
+						android:id="@+id/editTextRepeatPassword"/>
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<Button
+					android:text="@string/register"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"
+					app:layout_constraintRight_toRightOf="@id/guidelineRight"
+					app:layout_constraintTop_toBottomOf="@id/textInputLayoutRepeatPassword"
+					android:layout_marginRight="16dp"
+					android:layout_marginLeft="16dp"
+					android:layout_marginTop="32dp"
+					android:background="@drawable/custom_button"
+					android:textColor="@color/colorLoginText"
+					android:id="@+id/buttonRegister"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
