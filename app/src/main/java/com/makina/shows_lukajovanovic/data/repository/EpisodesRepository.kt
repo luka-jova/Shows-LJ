@@ -26,7 +26,6 @@ object EpisodesRepository {
 		episodesMapMutableLiveData.value = episodes
 	}
 
-	//TODO jel smijem napraviti dva apia?
 	private val apiService = RetrofitClient.retrofitInstance?.create(Api::class.java)
 	fun fetchDataFromWeb(showId: String) {
 		apiService?.getEpisodesListById(showId)?.enqueue(object : Callback<EpisodesListResponse> {

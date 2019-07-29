@@ -41,4 +41,8 @@ class EpisodesViewModel(val showId: String) : ViewModel() {
 		EpisodesRepository.episodesMapLiveData?.removeObserver(observerEpisodes)
 		ShowsRepository.showsMapLiveData?.removeObserver(observerShow)
 	}
+
+	fun getData() {
+		EpisodesRepository.fetchDataFromWeb(showId)
+	}
 }

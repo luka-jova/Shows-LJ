@@ -80,11 +80,7 @@ class EpisodesFragment(): Fragment() {
 			this@EpisodesFragment.updateVisibility()
 		})
 		updateVisibility()
-		Log.d("tigar", "postavljam on click")
-		buttonDownloadEpisodes.setOnClickListener {
-			Log.d("tigar", "Downloading...")
-			EpisodesRepository.fetchDataFromWeb(showId)
-		}
+		viewModel.getData()
 	}
 
 	fun updateVisibility() {

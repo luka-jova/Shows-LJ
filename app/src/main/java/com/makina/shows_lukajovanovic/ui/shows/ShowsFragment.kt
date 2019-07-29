@@ -50,8 +50,6 @@ class ShowsFragment :Fragment() {
 		viewModel.showsListLiveData.observe(this, Observer {showsList ->
 			adapter.setData(showsList)
 		})
-		buttonDownload.setOnClickListener {
-			ShowsRepository.fetchWebData()
-		}
+		viewModel.getData()
 	}
 }

@@ -41,7 +41,7 @@ class ShowsRecyclerAdapter(val startEpisodesFragment: (String) -> Unit) : Recycl
 				else {
 					Log.d("tigar", show.imageUrl)
 					Picasso.get().load(RetrofitClient.BASE_URL + show.imageUrl)
-						.placeholder(R.drawable.ic_camera).error(android.R.drawable.stat_notify_error)
+						.placeholder(R.drawable.ic_logo_mark).error(android.R.drawable.stat_notify_error)
 						.into(imageViewShow)
 				}
 				textViewShowName.text = show.name

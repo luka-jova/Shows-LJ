@@ -38,4 +38,8 @@ class ShowsViewModel : ViewModel(), Observer<Map<String, Show>> {
 	override fun onCleared() {
 		ShowsRepository.showsMapLiveData.removeObserver(this)
 	}
+
+	fun getData() {
+		ShowsRepository.fetchWebData()
+	}
 }

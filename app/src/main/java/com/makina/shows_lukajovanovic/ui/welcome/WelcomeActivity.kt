@@ -33,7 +33,7 @@ class WelcomeActivity : AppCompatActivity() {
         val username = intent.getStringExtra(USERNAME_CODE)
         textViewWelcomeUser.text = "Welcome, $username"
 
-        //TODO jel ovakav Handler u redu? return value true?, ne -> koristi onPostDelayed i trebam u onStop ubiti taj handler
+        //TODO popravi handler
         val handlerThread = Handler {
             if(it.what == START_ACTIVITY_CODE)
             startActivity(MainContainerActivity.newInstance(this@WelcomeActivity))
