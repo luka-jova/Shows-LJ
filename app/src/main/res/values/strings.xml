@@ -32,5 +32,6 @@
 	<string name="re_enter_password">Password again</string>
 	<string name="register">REGISTER</string>
 	<string name="create_an_account"><b>Create an account</b></string>
+	<string name="remember_me">Remember me</string>
 
 </resources>

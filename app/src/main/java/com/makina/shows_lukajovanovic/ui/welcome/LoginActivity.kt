@@ -7,6 +7,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.ShowsApp
 import com.makina.shows_lukajovanovic.data.model.LoginData
@@ -22,23 +24,26 @@ import retrofit2.Response
 const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._]*@{1}[A-Za-z0-9._]{1,}\.[A-Za-z0-9._]{1,}"""
 //const val EMAIL_REGEX = "."
 class LoginActivity : AppCompatActivity() {
+    private lateinit var viewModel: AuthorizationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         buttonLogin.isEnabled = false
 
+        viewModel = ViewModelProviders.of(this).get(AuthorizationViewModel::class.java)
+        viewModel.tokenLiveData.observe(this, Observer {token ->
+            if(token.isNotEmpty()) {
+                Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+                startActivity(MainContainerActivity.newInstance(this))
+                finish()
+            }
+        })
+
         buttonLogin.setOnClickListener {
             val usernameInput:String = editTextUsername.text.toString()
             val passwordInput:String = editTextPassword.text.toString()
-
-            ShowsApp.login(
-                usernameInput,
-                passwordInput,
-                this)
-                {
-                    startActivity(MainContainerActivity.newInstance(this))
-                }
+            viewModel.login(usernameInput, passwordInput, this, checkBoxRememberMe.isChecked)
         }
 
 
@@ -81,7 +86,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun updateButton() {
-        buttonLogin.isEnabled = isEmailValid(editTextUsername.text.toString()) && editTextPassword.text.length >= 8
+        buttonLogin.isEnabled = isEmailValid(editTextUsername.text.toString()) && editTextPassword.text.length >= 1
     }
 
 
