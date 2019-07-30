@@ -3,7 +3,6 @@ package com.makina.shows_lukajovanovic.ui.welcome
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -38,43 +37,36 @@ class RegisterActivity : AppCompatActivity() {
 		toolbarRegister.setNavigationOnClickListener { onBackPressed() }
 
 		viewModel = ViewModelProviders.of(this).get(AuthorizationViewModel::class.java)
-		viewModel.tokenLiveData.observe(this, Observer {token ->
-			if(token.isNotEmpty()) {
-				val bufIntent = WelcomeActivity.newInstance(this@RegisterActivity, editTextEmail.text.toString())
-				bufIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-				startActivity(bufIntent)
+		viewModel.tokenResponseLiveData.observe(this, Observer {response ->
+			if(response.isSuccessful) {
+				if(response.token.isNotEmpty()) {
+					val bufIntent = WelcomeActivity.newInstance(this@RegisterActivity, editTextEmail.text.toString())
+					bufIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+					startActivity(bufIntent)
+				}
+			}
+			else {
+				Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
+			}
+		})
+
+		//TODO nakon registera nemoj da se mogu mijenjati podaci
+		viewModel.registerResponseLiveData.observe(this, Observer {response ->
+			if(response.isSuccessful) {
+				Toast.makeText(this, "Successful registration", Toast.LENGTH_SHORT).show()
+				viewModel.login(editTextEmail.text.toString(), editTextPassword.text.toString(), false)
+			}
+			else {
+				Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show()
 			}
 		})
 
 		buttonRegister.setOnClickListener {
 			if(editTextPassword.text.toString() != editTextRepeatPassword.text.toString()) {
-				Toast.makeText(this, "Invalid password", Toast.LENGTH_SHORT).show()
+				Toast.makeText(this, "Please repeat correct password", Toast.LENGTH_SHORT).show()
 			}
 			else {
-				val apiService = RetrofitClient.retrofitInstance?.create(Api::class.java)
-				apiService
-					?.registerUser(LoginData(editTextEmail.text.toString(), editTextPassword.text.toString()))
-					?.enqueue(object: Callback<RegisterResponse> {
-						override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-							Toast.makeText(this@RegisterActivity, "Error", Toast.LENGTH_SHORT).show()
-						}
-
-						override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-							if(response.isSuccessful) {
-								Toast.makeText(this@RegisterActivity, "Successful registration", Toast.LENGTH_SHORT).show()
-								viewModel.login(
-									editTextEmail.text.toString(),
-									editTextPassword.text.toString(),
-									this@RegisterActivity,
-									false
-								)
-							}
-							else {
-								//TODO zasto javi da je onSuccessful == true ako vec postoji account?
-								Toast.makeText(this@RegisterActivity, "Wrong username or password", Toast.LENGTH_SHORT).show()
-							}
-						}
-					})
+				viewModel.register(editTextEmail.text.toString(), editTextPassword.text.toString())
 			}
 		}
 

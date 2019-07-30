@@ -1,6 +1,5 @@
 package com.makina.shows_lukajovanovic.ui.shows
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +38,6 @@ class ShowsRecyclerAdapter(val startEpisodesFragment: (String, String) -> Unit) 
 			with(itemView) {
 				if(show.imageId != -1) imageViewShow.setImageResource(show.imageId)
 				else {
-					Log.d("tigar", show.imageUrl)
 					Picasso.get().load(RetrofitClient.BASE_URL + show.imageUrl)
 						.placeholder(R.drawable.ic_logo_mark).error(android.R.drawable.stat_notify_error)
 						.into(imageViewShow)

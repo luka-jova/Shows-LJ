@@ -15,7 +15,7 @@ interface Api {
 	fun getEpisodesListById(@Path("showId") showId: String): Call<EpisodesListResponse>
 
 	@POST("/api/users/sessions")
-	fun loginUser(@Body user: LoginData): Call<TokenResponse>
+	fun loginUser(@Body user: LoginData): Call<TokenResponseFromWeb>
 
 	@POST("/api/users/")
 	fun registerUser(@Body user: LoginData): Call<RegisterResponse>

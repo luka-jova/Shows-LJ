@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -25,25 +24,30 @@ const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._]*@{1}[A-Za-z0-9._]{1,}\.[A-Za-z
 //const val EMAIL_REGEX = "."
 class LoginActivity : AppCompatActivity() {
     private lateinit var viewModel: AuthorizationViewModel
-
+    //TODO ovdje i u RegisterActivity popraviti da ako je failed login i user rotira ekran, da se ne pokazuje stalno poruka login failed
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         buttonLogin.isEnabled = false
 
         viewModel = ViewModelProviders.of(this).get(AuthorizationViewModel::class.java)
-        viewModel.tokenLiveData.observe(this, Observer {token ->
-            if(token.isNotEmpty()) {
-                Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                startActivity(MainContainerActivity.newInstance(this))
-                finish()
+        viewModel.tokenResponseLiveData.observe(this, Observer {response ->
+            if(response.isSuccessful) {
+                if(response.token.isNotEmpty()) {
+                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+                    startActivity(MainContainerActivity.newInstance(this))
+                    finish()
+                }
+            }
+            else {
+                Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
             }
         })
 
         buttonLogin.setOnClickListener {
             val usernameInput:String = editTextUsername.text.toString()
             val passwordInput:String = editTextPassword.text.toString()
-            viewModel.login(usernameInput, passwordInput, this, checkBoxRememberMe.isChecked)
+            viewModel.login(usernameInput, passwordInput, checkBoxRememberMe.isChecked)
         }
 
 
