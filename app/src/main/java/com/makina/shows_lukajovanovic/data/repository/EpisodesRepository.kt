@@ -6,6 +6,7 @@ import com.makina.shows_lukajovanovic.data.model.EpisodesFragmentResponse
 import com.makina.shows_lukajovanovic.data.model.EpisodesListResponse
 import com.makina.shows_lukajovanovic.data.model.ShowResponse
 import com.makina.shows_lukajovanovic.data.network.Api
+import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.data.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,27 +24,32 @@ object EpisodesRepository {
 
 	fun addEpisode(showId: String, newEpisode: Episode) {
 		if(showId !in episodesFragmentResponseData) {
-			episodesFragmentResponseData[ showId ] = EpisodesFragmentResponse(null, mutableListOf(), true)
+			episodesFragmentResponseData[ showId ] = EpisodesFragmentResponse(null, mutableListOf(), ResponseStatus.SUCCESS)
 		}
 		episodesFragmentResponseData[ showId ]?.episodesList?.add(newEpisode)
 		episodesFragmentResponseMutableLiveData.value = episodesFragmentResponseData[ showId ]
 	}
 
 	fun fetchDataFromWeb(showId: String) {
-		if(showId in episodesFragmentResponseData && episodesFragmentResponseData[ showId ]?.isSuccessful == true) {
-			//Data is already downloaded
+		if(showId in episodesFragmentResponseData && episodesFragmentResponseData[ showId ]?.status == ResponseStatus.SUCCESS
+			|| episodesFragmentResponseData[ showId ]?.status == ResponseStatus.DOWNLOADING) {
+			//Data is already downloaded or currently downloading
 			return
 		}
-
+		episodesFragmentResponseMutableLiveData.value = EpisodesFragmentResponse(status = ResponseStatus.DOWNLOADING)
 		var episodesListResponse: EpisodesListResponse? = null
 		var showResponse: ShowResponse? = null
 		fun updateData() {
 			if(episodesListResponse != null && showResponse != null) {
+				var status: Int = ResponseStatus.FAIL
+				if((showResponse?.isSuccessful ?: false) and (episodesListResponse?.isSuccessful ?: false))
+					status = ResponseStatus.SUCCESS
+
 				episodesFragmentResponseData[ showId ] =
 					EpisodesFragmentResponse(
-						showResponse?.show,
-						episodesListResponse?.episodesList?.toMutableList() ?: mutableListOf(),
-						(showResponse?.isSuccessful ?: false) and (episodesListResponse?.isSuccessful ?: false)
+						show = showResponse?.show,
+						episodesList = episodesListResponse?.episodesList?.toMutableList() ?: mutableListOf(),
+						status = status
 					)
 				episodesFragmentResponseMutableLiveData.value = episodesFragmentResponseData[ showId ]
 			}

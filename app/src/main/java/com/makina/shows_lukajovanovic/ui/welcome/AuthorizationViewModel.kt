@@ -13,6 +13,8 @@ class AuthorizationViewModel: ViewModel() {
 	private val registerResponseMutableLiveData = MutableLiveData<RegisterResponse>()
 	val registerResponseLiveData: LiveData<RegisterResponse>
 		get() = registerResponseMutableLiveData
+	val registerResponse: RegisterResponse?
+		get() = registerResponseLiveData.value
 
 	val observerRegister = Observer<RegisterResponse> {response ->
 		registerResponseMutableLiveData.value = response
@@ -21,6 +23,9 @@ class AuthorizationViewModel: ViewModel() {
 	private val tokenResponseMutableLiveData = MutableLiveData<TokenResponse>()
 	val tokenResponseLiveData: LiveData<TokenResponse>
 		get() = tokenResponseMutableLiveData
+	val tokenResponse: TokenResponse?
+		get() = tokenResponseLiveData.value
+
 	val observerToken = Observer<TokenResponse> {response ->
 		tokenResponseMutableLiveData.value = response
 	}

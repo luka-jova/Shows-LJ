@@ -1,24 +1,18 @@
 package com.makina.shows_lukajovanovic.ui.welcome
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.makina.shows_lukajovanovic.R
-import com.makina.shows_lukajovanovic.ShowsApp
-import com.makina.shows_lukajovanovic.data.model.LoginData
 import com.makina.shows_lukajovanovic.data.model.TokenResponse
-import com.makina.shows_lukajovanovic.data.network.Api
-import com.makina.shows_lukajovanovic.data.network.RetrofitClient
+import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import kotlinx.android.synthetic.main.activity_login.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._]*@{1}[A-Za-z0-9._]{1,}\.[A-Za-z0-9._]{1,}"""
 //const val EMAIL_REGEX = "."
@@ -29,19 +23,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         buttonLogin.isEnabled = false
+        progressBarDownloading.visibility = View.INVISIBLE
 
         viewModel = ViewModelProviders.of(this).get(AuthorizationViewModel::class.java)
         viewModel.tokenResponseLiveData.observe(this, Observer {response ->
-            if(response.isSuccessful) {
-                if(response.token.isNotEmpty()) {
-                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                    startActivity(MainContainerActivity.newInstance(this))
-                    finish()
-                }
-            }
-            else {
-                Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
-            }
+            updateUI(response)
         })
 
         buttonLogin.setOnClickListener {
@@ -91,6 +77,29 @@ class LoginActivity : AppCompatActivity() {
 
     fun updateButton() {
         buttonLogin.isEnabled = isEmailValid(editTextUsername.text.toString()) && editTextPassword.text.length >= 1
+    }
+
+    fun updateUI(response: TokenResponse) {
+        when(response.status) {
+            ResponseStatus.SUCCESS -> {
+                if (response.token.isNotEmpty()) {
+                    progressBarDownloading.visibility = View.INVISIBLE
+                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+                    startActivity(MainContainerActivity.newInstance(this))
+                    finish()
+                }
+                updateButton()
+            }
+            ResponseStatus.FAIL -> {
+                Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
+                progressBarDownloading.visibility = View.INVISIBLE
+                updateButton()
+            }
+            ResponseStatus.DOWNLOADING -> {
+                progressBarDownloading.visibility = View.VISIBLE
+                buttonLogin.isEnabled = false
+            }
+        }
     }
 
 

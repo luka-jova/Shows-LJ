@@ -1,15 +1,16 @@
 package com.makina.shows_lukajovanovic.data.model
 
+import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 
 data class EpisodesFragmentResponse(
-	val show: Show?,
+	val show: Show? = null,
 	val episodesList: MutableList<Episode> = mutableListOf(),
 
 	@Transient
-	var isSuccessful: Boolean = true
+	var status: Int = ResponseStatus.SUCCESS
 )
 
 @JsonClass(generateAdapter = true)

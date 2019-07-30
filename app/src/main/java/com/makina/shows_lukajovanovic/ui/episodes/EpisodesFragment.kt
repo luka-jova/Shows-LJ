@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.EpisodesFragmentResponse
+import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
@@ -83,12 +84,19 @@ class EpisodesFragment(): Fragment() {
 		textViewDescription.text = response?.show?.showDescription ?: ""
 		adapter.setData(response?.episodesList ?: listOf())
 		updateVisibility()
-		if(response?.isSuccessful == false) {
+		if(response?.status == ResponseStatus.FAIL) {
 			Toast.makeText(requireContext(), "Download error", Toast.LENGTH_SHORT).show()
 		}
 	}
 
 	private fun updateVisibility() {
+		if(viewModel.episodesFragmentResponse?.status == ResponseStatus.DOWNLOADING) {
+			progressBarDownloading.visibility = View.VISIBLE
+		}
+		else {
+			progressBarDownloading.visibility = View.INVISIBLE
+		}
+
 		if(viewModel.episodesFragmentResponse?.episodesList?.isNotEmpty() == true) {
 			defaultLayout.visibility = View.INVISIBLE
 			recyclerViewEpisodes?.visibility = View.VISIBLE

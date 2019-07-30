@@ -104,5 +104,14 @@
 					android:background="@drawable/custom_button"
 					android:textColor="@color/colorLoginText"
 					android:id="@+id/buttonRegister"/>
+	<ProgressBar
+					style="?android:attr/progressBarStyle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					android:layout_marginBottom="16dp"
+					android:id="@+id/progressBarDownloading"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

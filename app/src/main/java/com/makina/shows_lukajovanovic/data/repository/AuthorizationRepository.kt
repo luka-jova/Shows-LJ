@@ -1,12 +1,11 @@
 package com.makina.shows_lukajovanovic.data.repository
 
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.makina.shows_lukajovanovic.ShowsApp
 import com.makina.shows_lukajovanovic.data.model.*
-import com.makina.shows_lukajovanovic.data.network.Api
+import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.data.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,14 +26,15 @@ object AuthorizationRepository {
 	init {
 		val bufToken= ShowsApp.instance.getSharedPreferences(LOGIN_DATA, Context.MODE_PRIVATE).getString(TOKEN_CODE, "") ?: ""
 		if(bufToken.isNotEmpty()) {
-			tokenResponseMutableLiveData.value = TokenResponse(bufToken, true)
+			tokenResponseMutableLiveData.value = TokenResponse(bufToken, status = ResponseStatus.SUCCESS)
 		}
 	}
 
 	fun login(username: String, password: String, rememberMe: Boolean) {
+		tokenResponseMutableLiveData.value = TokenResponse(status = ResponseStatus.DOWNLOADING)
 		RetrofitClient.apiService?.loginUser(LoginData(username, password))?.enqueue(object: Callback<TokenResponseFromWeb> {
 			override fun onFailure(call: Call<TokenResponseFromWeb>, t: Throwable) {
-				tokenResponseMutableLiveData.value = TokenResponse(isSuccessful = false)
+				tokenResponseMutableLiveData.value = TokenResponse(status = ResponseStatus.FAIL)
 			}
 
 			override fun onResponse(call: Call<TokenResponseFromWeb>, response: Response<TokenResponseFromWeb>) {
@@ -50,11 +50,11 @@ object AuthorizationRepository {
 						tokenResponseMutableLiveData.value =
 							TokenResponse(
 								bufToken,
-								isSuccessful = true
+								status = ResponseStatus.SUCCESS
 							)
 					}
 					else {
-						tokenResponseMutableLiveData.value = TokenResponse(isSuccessful = false)
+						tokenResponseMutableLiveData.value = TokenResponse(status = ResponseStatus.FAIL)
 					}
 				}
 			}
@@ -62,13 +62,21 @@ object AuthorizationRepository {
 	}
 
 	fun register(username: String, password: String) {
+		registerResponseMutableLiveData.value = RegisterResponse(status = ResponseStatus.DOWNLOADING)
 		RetrofitClient.apiService?.registerUser(LoginData(username, password))?.enqueue(object : Callback<RegisterResponse> {
 				override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-					registerResponseMutableLiveData.value = RegisterResponse(isSuccessful = false)
+					registerResponseMutableLiveData.value = RegisterResponse(status = ResponseStatus.FAIL)
 				}
 
 				override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-					registerResponseMutableLiveData.value = RegisterResponse(isSuccessful = response.isSuccessful)
+					registerResponseMutableLiveData.value =
+						RegisterResponse(
+							status =
+								when(response.isSuccessful) {
+									true -> ResponseStatus.SUCCESS
+									false -> ResponseStatus.FAIL
+								}
+						)
 				}
 			})
 	}

@@ -1,11 +1,12 @@
 package com.makina.shows_lukajovanovic.data.model
 
+import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 data class TokenResponse(
 	val token: String = "",
-	val isSuccessful: Boolean = true
+	val status: Int = ResponseStatus.SUCCESS
 )
 
 @JsonClass(generateAdapter = true)

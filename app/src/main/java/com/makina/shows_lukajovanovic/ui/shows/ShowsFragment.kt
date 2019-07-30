@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Episode
 import com.makina.shows_lukajovanovic.data.model.ShowsListResponse
+import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.data.repository.ShowsRepository
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
@@ -52,14 +53,23 @@ class ShowsFragment :Fragment() {
 		viewModel.showsListResponseLiveData.observe(this, Observer {showsListResponse ->
 			updateUI(showsListResponse)
 		})
+		progressBarDownloading.visibility = View.INVISIBLE
 		viewModel.getShowsList()
 	}
 
-	fun updateUI(response: ShowsListResponse) {
-		if(response.isSuccessful) {
-			adapter.setData(response.showsList ?: listOf())
-		} else {
-			Toast.makeText(requireContext(), "Downloading failed", Toast.LENGTH_SHORT).show()
+	fun updateUI(response: ShowsListResponse?) {
+		when(response?.status) {
+			ResponseStatus.SUCCESS -> {
+				adapter.setData(response.showsList ?: listOf())
+				progressBarDownloading.visibility = View.INVISIBLE
+			}
+			ResponseStatus.DOWNLOADING -> {
+				progressBarDownloading.visibility = View.VISIBLE
+			}
+			ResponseStatus.FAIL -> {
+				progressBarDownloading.visibility = View.INVISIBLE
+				Toast.makeText(requireContext(), "Downloading failed", Toast.LENGTH_SHORT).show()
+			}
 		}
 	}
 
