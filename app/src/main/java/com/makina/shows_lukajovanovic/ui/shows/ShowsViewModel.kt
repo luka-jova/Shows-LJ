@@ -5,41 +5,27 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.makina.shows_lukajovanovic.data.model.Show
+import com.makina.shows_lukajovanovic.data.model.ShowsListResponse
 import com.makina.shows_lukajovanovic.data.repository.ShowsRepository
 
-class ShowsViewModel : ViewModel(), Observer<Map<String, Show>> {
-	private val showsListMutableLiveData = MutableLiveData<List<Show>>()
-	val showsListLiveData: LiveData<List<Show>>
-		get() = showsListMutableLiveData
-
-	val showsList: List<Show>
-		get() = showsListLiveData.value ?: listOf()
+class ShowsViewModel : ViewModel(), Observer<ShowsListResponse> {
+	private val showsListResponseMutableLiveData = MutableLiveData<ShowsListResponse>()
+	val showsListResponseLiveData: LiveData<ShowsListResponse>
+		get() = showsListResponseMutableLiveData
 
 	init {
-		ShowsRepository.showsMapLiveData.observeForever(this)
+		ShowsRepository.showsListResponseLiveData.observeForever(this)
 	}
 
-	private fun showsToList(showsMap: Map<String, Show>?): List<Show> {
-		val res: MutableList<Show> = mutableListOf()
-		for(i in showsMap?.toList() ?: listOf()) {
-			res.add(i.second)
-		}
-		return res
-	}
-
-	override fun onChanged(shows: Map<String, Show>?) {
-		showsListMutableLiveData.value = showsToList(shows)
-	}
-
-	fun addShow(newShow: Show) {
-		ShowsRepository.addShow(newShow)
+	override fun onChanged(response: ShowsListResponse?) {
+		showsListResponseMutableLiveData.value = response
 	}
 
 	override fun onCleared() {
-		ShowsRepository.showsMapLiveData.removeObserver(this)
+		ShowsRepository.showsListResponseLiveData.removeObserver(this)
 	}
 
-	fun getData() {
-		ShowsRepository.fetchWebData()
+	fun getShowsList() {
+		ShowsRepository.fetchShowsListWebData()
 	}
 }

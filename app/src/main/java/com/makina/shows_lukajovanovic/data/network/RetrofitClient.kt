@@ -18,4 +18,6 @@ object RetrofitClient {
 			}
 			return retrofit
 		}
+
+	val apiService = retrofitInstance?.create(Api::class.java)
 }

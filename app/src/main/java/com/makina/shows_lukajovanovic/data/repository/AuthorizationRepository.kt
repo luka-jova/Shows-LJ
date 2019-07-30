@@ -29,8 +29,7 @@ object AuthorizationRepository {
 	}
 
 	fun login(username: String, password: String, context: Context, rememberMe: Boolean) {
-		val apiService = RetrofitClient.retrofitInstance?.create(Api::class.java)
-		apiService?.loginUser(LoginData(username, password))?.enqueue(object: Callback<TokenResponse> {
+		RetrofitClient.apiService?.loginUser(LoginData(username, password))?.enqueue(object: Callback<TokenResponse> {
 			override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
 				Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
 			}

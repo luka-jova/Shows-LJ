@@ -6,7 +6,7 @@ import retrofit2.http.*
 
 interface Api {
 	@GET("/api/shows/")
-	fun getShowsIdList(): Call<ShowsListResponse>
+	fun getShowsList(): Call<ShowsListResponse>
 
 	@GET("/api/shows/{showId}")
 	fun getShowById(@Path("showId") showId: String): Call<ShowResponse>

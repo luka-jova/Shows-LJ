@@ -1,15 +1,18 @@
 package com.makina.shows_lukajovanovic.ui.shows
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Episode
+import com.makina.shows_lukajovanovic.data.model.ShowsListResponse
 import com.makina.shows_lukajovanovic.data.repository.ShowsRepository
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
@@ -31,12 +34,12 @@ class ShowsFragment :Fragment() {
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		adapter = ShowsRecyclerAdapter { showId ->
+		adapter = ShowsRecyclerAdapter { showId, title ->
 			if(fragmentManager?.findFragmentByTag(EPISODES_FRAGMENT_TAG) != null) fragmentManager?.popBackStack()
 			fragmentManager?.beginTransaction()?.apply {
 				replace(
 					(activity as MainContainerActivity)?.slaveContainerId,
-					EpisodesFragment.newInstance(showId),
+					EpisodesFragment.newInstance(showId, title),
 					EpisodesFragment.EPISODES_FRAGMENT_TAG
 				)
 				addToBackStack("Episodes $showId")
@@ -47,9 +50,18 @@ class ShowsFragment :Fragment() {
 		recyclerViewShows.adapter = adapter
 
 		viewModel = ViewModelProviders.of(this).get(ShowsViewModel::class.java)
-		viewModel.showsListLiveData.observe(this, Observer {showsList ->
-			adapter.setData(showsList)
+		viewModel.showsListResponseLiveData.observe(this, Observer {showsListResponse ->
+			updateUI(showsListResponse)
 		})
-		viewModel.getData()
+		viewModel.getShowsList()
 	}
+
+	fun updateUI(response: ShowsListResponse) {
+		if(response.isSuccessful) {
+			adapter.setData(response.showsList ?: listOf())
+		} else {
+			Toast.makeText(requireContext(), "Downloading failed", Toast.LENGTH_SHORT).show()
+		}
+	}
+
 }

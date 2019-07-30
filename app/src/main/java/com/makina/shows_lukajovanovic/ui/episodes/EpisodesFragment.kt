@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
+import com.makina.shows_lukajovanovic.data.model.EpisodesFragmentResponse
 import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
@@ -20,11 +22,13 @@ import kotlinx.android.synthetic.main.fragment_episodes.*
 class EpisodesFragment(): Fragment() {
 	companion object {
 		const val SHOW_ID_CODE = "SHOW_ID_CODE"
+		const val TITLE_CODE = "TITLE_CODE"
 		const val EPISODES_FRAGMENT_TAG = "EPISODES_FRAGMENT_TAG"
 
-		fun newInstance(showId: String): EpisodesFragment {
+		fun newInstance(showId: String, title: String): EpisodesFragment {
 			return EpisodesFragment().apply {
 				arguments = Bundle().apply {
+					putString(TITLE_CODE, title)
 					putString(SHOW_ID_CODE, showId)
 				}
 			}
@@ -47,17 +51,12 @@ class EpisodesFragment(): Fragment() {
 		}).get(EpisodesViewModel::class.java)
 
 
-		toolbarEpisodes.title = "Episodes"
+		toolbarEpisodes.title = arguments?.getString(TITLE_CODE, "") ?: ""
 		toolbarEpisodes.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
 		toolbarEpisodes.setNavigationOnClickListener {
 			activity?.onBackPressed()
 		}
 		textViewDescription.text = ""
-
-		viewModel.showLiveData.observe(this, Observer {show ->
-			toolbarEpisodes.title = show.name
-			textViewDescription.text = show.showDescription
-		})
 
 		adapter = EpisodesRecyclerAdapter()
 		recyclerViewEpisodes.layoutManager = LinearLayoutManager(requireContext())
@@ -74,17 +73,24 @@ class EpisodesFragment(): Fragment() {
 				commit()
 			}
 		}
-
-		viewModel.episodesLiveData.observe(this, Observer {episodesList ->
-			adapter.setData(episodesList)
-			this@EpisodesFragment.updateVisibility()
+		viewModel.episodesFragmentResponseLiveData.observe(this, Observer {response ->
+			updateUI(response)
 		})
 		updateVisibility()
 		viewModel.getData()
 	}
 
-	fun updateVisibility() {
-		if(viewModel.episodesList.isNotEmpty()) {
+	private fun updateUI(response: EpisodesFragmentResponse?) {
+		textViewDescription.text = response?.show?.showDescription ?: ""
+		adapter.setData(response?.episodesList ?: listOf())
+		updateVisibility()
+		if(response?.isSuccessful == false) {
+			Toast.makeText(requireContext(), "Download error", Toast.LENGTH_SHORT).show()
+		}
+	}
+
+	private fun updateVisibility() {
+		if(viewModel.episodesFragmentResponse?.episodesList?.isNotEmpty() == true) {
 			defaultLayout.visibility = View.INVISIBLE
 			recyclerViewEpisodes?.visibility = View.VISIBLE
 		}

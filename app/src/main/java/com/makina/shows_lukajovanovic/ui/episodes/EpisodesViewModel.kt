@@ -5,44 +5,32 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.makina.shows_lukajovanovic.data.model.Episode
+import com.makina.shows_lukajovanovic.data.model.EpisodesFragmentResponse
 import com.makina.shows_lukajovanovic.data.model.Show
 import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 import com.makina.shows_lukajovanovic.data.repository.ShowsRepository
 
-class EpisodesViewModel(val showId: String) : ViewModel() {
-	private val episodesMutableLiveData = MutableLiveData<List<Episode>>()
-	val episodesLiveData: LiveData<List<Episode>>
-		get() = episodesMutableLiveData
-
-	val episodesList: List<Episode>
-		get() = episodesLiveData.value ?: listOf()
-
-	private val observerEpisodes = Observer<Map<String, List<Episode>>> {t ->
-		episodesMutableLiveData.value = t[ showId ] ?: listOf()
-	}
-
-	private val showMutableLiveData = MutableLiveData<Show>()
-	val showLiveData: LiveData<Show>
-		get() = showMutableLiveData
-
-	val show: Show?
-		get() = showLiveData.value
-
-	private val observerShow = Observer<Map<String, Show>> {t ->
-		showMutableLiveData.value = t[ showId ]
-	}
+class EpisodesViewModel(val showId: String) : ViewModel(), Observer<EpisodesFragmentResponse> {
+	private val episodesFragmentResponseMutableLiveData = MutableLiveData<EpisodesFragmentResponse>()
+	val episodesFragmentResponseLiveData: LiveData<EpisodesFragmentResponse>
+		get() = episodesFragmentResponseMutableLiveData
+	val episodesFragmentResponse: EpisodesFragmentResponse?
+		get() = episodesFragmentResponseLiveData.value
 
 	init {
-		EpisodesRepository.episodesMapLiveData?.observeForever(observerEpisodes)
-		ShowsRepository.showsMapLiveData?.observeForever(observerShow)
+		EpisodesRepository.episodesFragmentResponseLiveData?.observeForever(this)
+		EpisodesRepository.observe(showId)
 	}
 
-	override fun onCleared() {
-		EpisodesRepository.episodesMapLiveData?.removeObserver(observerEpisodes)
-		ShowsRepository.showsMapLiveData?.removeObserver(observerShow)
+	override fun onChanged(response: EpisodesFragmentResponse?) {
+		episodesFragmentResponseMutableLiveData.value = response
 	}
 
 	fun getData() {
 		EpisodesRepository.fetchDataFromWeb(showId)
+	}
+
+	override fun onCleared() {
+		EpisodesRepository.episodesFragmentResponseLiveData?.removeObserver(this)
 	}
 }

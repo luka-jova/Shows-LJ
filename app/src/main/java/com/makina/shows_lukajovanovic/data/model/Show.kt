@@ -8,13 +8,13 @@ import java.io.Serializable
 @JsonClass(generateAdapter = true)
 data class Show(
 	@Json(name = "_id")
-	val showId: String,
+	val showId: String = "",
 
 	@Json(name = "imageUrl")
-	val imageUrl: String,
+	val imageUrl: String = "",
 
 	@Json(name = "title")
-	val name: String,
+	val name: String = "",
 
 	@Json(name = "description")
 	val showDescription:String = "Default Description",
