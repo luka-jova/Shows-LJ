@@ -50,11 +50,9 @@ class SplashActivity: AppCompatActivity() {
 
 	}
 
-	private val handlerThread = Handler {
-		if(it.what == START_ACTIVITY_CODE)
-			startActivity(LoginActivity.newInstance(this@SplashActivity))
-		this@SplashActivity.finish()
-		true
+	private val handlerThread = Handler()
+	private val startActivityRunnable = Runnable {
+		startActivity(LoginActivity.newInstance(this))
 	}
 
 	fun animateTitle() {
@@ -69,15 +67,14 @@ class SplashActivity: AppCompatActivity() {
 		valueAnimator.interpolator = OvershootInterpolator()
 		valueAnimator.duration = 500
 		valueAnimator.doOnEnd {
-			handlerThread.sendEmptyMessageDelayed(START_ACTIVITY_CODE, 2000)
+			//TODO ne smijem dodati ako je activity ugasen
+			handlerThread.postDelayed(startActivityRunnable, 2000)
 		}
 		valueAnimator.start()
 	}
 
 	override fun onStop() {
-		//TODO ne radi remove
-		handlerThread.removeCallbacksAndMessages(Any())
-		handlerThread.removeMessages(START_ACTIVITY_CODE)
+		handlerThread.removeCallbacks(startActivityRunnable)
 		super.onStop()
 		finish()
 	}

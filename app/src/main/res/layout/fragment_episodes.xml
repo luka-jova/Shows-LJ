@@ -58,8 +58,9 @@
 					android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
 					app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 					android:id="@+id/toolbarEpisodes"/>
-	<TextView
-					android:text="Description"
+	<!--TODO makni crtu ispod teksta-->
+	<com.makina.shows_lukajovanovic.ui.custom_views.TextViewPrinter
+					tools:text="Description"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					app:layout_constraintTop_toBottomOf="@id/toolbarEpisodes"
