@@ -1,5 +1,7 @@
 package com.makina.shows_lukajovanovic.ui.welcome
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,6 +19,12 @@ import kotlinx.android.synthetic.main.activity_login.*
 const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._]*@{1}[A-Za-z0-9._]{1,}\.[A-Za-z0-9._]{1,}"""
 //const val EMAIL_REGEX = "."
 class LoginActivity : AppCompatActivity() {
+    companion object {
+        fun newInstance(context: Context): Intent {
+            return Intent(context, LoginActivity::class.java)
+        }
+    }
+
     private lateinit var viewModel: AuthorizationViewModel
     //TODO ovdje i u RegisterActivity popraviti da ako je failed login i user rotira ekran, da se ne pokazuje stalno poruka login failed
     override fun onCreate(savedInstanceState: Bundle?) {

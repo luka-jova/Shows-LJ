@@ -27,24 +27,28 @@ class WelcomeActivity : AppCompatActivity() {
 
     }
 
+    private val handlerThread = Handler {
+        if(it.what == START_ACTIVITY_CODE)
+            startActivity(MainContainerActivity.newInstance(this@WelcomeActivity))
+        this@WelcomeActivity.finish()
+        true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
         val username = intent.getStringExtra(USERNAME_CODE)
         textViewWelcomeUser.text = "Welcome, $username"
+    }
 
-        //TODO popravi handler
-        val handlerThread = Handler {
-            if(it.what == START_ACTIVITY_CODE)
-            startActivity(MainContainerActivity.newInstance(this@WelcomeActivity))
-            this@WelcomeActivity.finish()
-            true
-        }
+    override fun onResume() {
+        super.onResume()
         handlerThread.sendEmptyMessageDelayed(START_ACTIVITY_CODE, 2000)
     }
 
     override fun onStop() {
+        //TODO ne radi remove
+        handlerThread.removeCallbacksAndMessages(null)
         super.onStop()
-        ///TODO ovdje moram ubit handler
     }
 }

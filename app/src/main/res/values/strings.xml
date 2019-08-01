@@ -33,5 +33,6 @@
 	<string name="register">REGISTER</string>
 	<string name="create_an_account"><b>Create an account</b></string>
 	<string name="remember_me">Remember me</string>
+	<string name="title"><b>Shows</b></string>
 
 </resources>

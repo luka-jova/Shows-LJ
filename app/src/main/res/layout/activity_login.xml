@@ -76,8 +76,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginBottom="50dp"
-                android:background="@drawable/custom_button"
-                android:textColor="@color/colorLoginText"
+                style="@style/Button"
                 android:id="@+id/buttonLogin"/>
 
         <TextView

@@ -134,13 +134,11 @@
 							android:text="@string/button_save"
 							android:layout_width="0dp"
 							android:layout_height="wrap_content"
-
 							app:layout_constraintBottom_toBottomOf="parent"
 							app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"
 							app:layout_constraintRight_toRightOf="@id/guidelineRight"
 							android:layout_marginBottom="32dp"
-							android:background="@drawable/custom_button"
-							android:textColor="@color/colorPrimary"
+							style="@style/Button"
 							android:id="@+id/buttonSave"/>
 
 
