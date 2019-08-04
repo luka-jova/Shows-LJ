@@ -26,6 +26,7 @@ class ShowsFragment :Fragment() {
 	companion object {
 		const val FRAGMENT_NAME = "Shows_FRAGMENT"
 	}
+	//TODO handle error messages for this and other Fragments
 	private lateinit var adapter: ShowsRecyclerAdapter
 	private lateinit var viewModel: ShowsViewModel
 
