@@ -20,7 +20,7 @@ class SplashActivity: AppCompatActivity() {
 	companion object {
 		const val START_ACTIVITY_CODE = 1
 	}
-
+///TODO resolve-aj PR za 7. zadacu (netowrking)
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_splash)

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -25,23 +26,33 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var viewModel: AuthorizationViewModel
-    //TODO ovdje i u RegisterActivity popraviti da ako je failed login i user rotira ekran, da se ne pokazuje stalno poruka login failed
+    private lateinit var viewModel: LoginViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         buttonLogin.isEnabled = false
         progressBarDownloading.visibility = View.INVISIBLE
 
-        viewModel = ViewModelProviders.of(this).get(AuthorizationViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
         viewModel.tokenResponseLiveData.observe(this, Observer {response ->
+            if(response == null) return@Observer
             updateUI(response)
         })
 
         buttonLogin.setOnClickListener {
             val usernameInput:String = editTextUsername.text.toString()
             val passwordInput:String = editTextPassword.text.toString()
-            viewModel.login(usernameInput, passwordInput, checkBoxRememberMe.isChecked)
+            viewModel.login(usernameInput, passwordInput, checkBoxRememberMe.isChecked) { messageCode ->
+                Toast.makeText(
+                    this,
+                    when(messageCode) {
+                        ResponseStatus.INFO_ERROR_INTERNET -> "Check your internet connection"
+                        ResponseStatus.INFO_ERROR_LOGIN -> "Login failed"
+                        else -> ""
+                    },
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
 
@@ -87,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
         buttonLogin.isEnabled = isEmailValid(editTextUsername.text.toString()) && editTextPassword.text.length >= 1
     }
 
-    fun updateUI(response: TokenResponse) {
+    private fun updateUI(response: TokenResponse) {
         when(response.status) {
             ResponseStatus.SUCCESS -> {
                 if (response.token.isNotEmpty()) {
@@ -99,7 +110,6 @@ class LoginActivity : AppCompatActivity() {
                 updateButton()
             }
             ResponseStatus.FAIL -> {
-                Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
                 progressBarDownloading.visibility = View.INVISIBLE
                 updateButton()
             }

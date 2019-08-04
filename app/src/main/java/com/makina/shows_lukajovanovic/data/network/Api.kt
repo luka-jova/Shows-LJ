@@ -18,5 +18,5 @@ interface Api {
 	fun loginUser(@Body user: LoginData): Call<TokenResponseFromWeb>
 
 	@POST("/api/users/")
-	fun registerUser(@Body user: LoginData): Call<RegisterResponse>
+	fun registerUser(@Body user: LoginData): Call<CreateAccountResponse>
 }
