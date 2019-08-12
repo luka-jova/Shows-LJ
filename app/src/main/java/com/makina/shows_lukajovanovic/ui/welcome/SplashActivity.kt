@@ -88,7 +88,7 @@ class SplashActivity: AppCompatActivity() {
 			duration = 500
 			doOnEnd {
 				if (active)
-					handlerThread.postDelayed(startActivityRunnable, 2000)
+					handlerThread.postDelayed(startActivityRunnable, 0)
 			}
 			start()
 		}

@@ -3,9 +3,12 @@ package com.makina.shows_lukajovanovic.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.makina.shows_lukajovanovic.R
+import com.makina.shows_lukajovanovic.data.model.Show
 import com.makina.shows_lukajovanovic.data.model.ShowsListResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.data.network.RetrofitClient
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,6 +21,15 @@ object ShowsRepository {
 		get() = showsListResponseMutableLiveData
 
 	fun fetchShowsListWebData() {
+		val buff:MutableList<Show> = mutableListOf()
+		for(i in 1..10) {
+			buff.add(Show(showId = "prvi$i", name = "Chernobyl", imageId = R.drawable.img_chernobyl))
+			buff.add(Show(showId = "drugi$i", name = "Two and a half men", imageId = R.drawable.img_men))
+			buff.add(Show(showId = "treci$i", name = "Sherlock", imageId = R.drawable.img_sherlock))
+			buff.add(Show(showId = "cetvri$i", name = "Dr House", imageId = R.drawable.img_dr_house))
+		}
+		showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.SUCCESS, showsList = buff)
+		return
 		if(dataUpToDate && showsListResponseLiveData.value?.status == ResponseStatus.SUCCESS) {
 			//Already downloaded
 			return
@@ -42,5 +54,6 @@ object ShowsRepository {
 				}
 			}
 		})
+		val buf = mutableListOf<Show>()
 	}
 }

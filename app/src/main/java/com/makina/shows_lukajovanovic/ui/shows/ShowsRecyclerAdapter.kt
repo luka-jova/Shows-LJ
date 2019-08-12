@@ -5,18 +5,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.layout_show.view.*
-import androidx.core.content.ContextCompat.startActivity
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Show
 import com.makina.shows_lukajovanovic.data.network.RetrofitClient
 import com.squareup.picasso.Picasso
 
 
-class ShowsRecyclerAdapter(val startEpisodesFragment: (String, String) -> Unit) : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHolder>() {
+class ShowsRecyclerAdapter(val viewId: Int, val startEpisodesFragment: (String, String) -> Unit) : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHolder>() {
 	private var showsList = listOf<Show>()
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-		val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_show, parent, false)
+		val view = LayoutInflater.from(parent.context).inflate(viewId, parent, false)
 		return ViewHolder(view)
 	}
 
@@ -39,11 +38,12 @@ class ShowsRecyclerAdapter(val startEpisodesFragment: (String, String) -> Unit) 
 				if(show.imageId != -1) imageViewShow.setImageResource(show.imageId)
 				else {
 					Picasso.get().load(RetrofitClient.BASE_URL + show.imageUrl)
-						.placeholder(R.drawable.ic_logo_mark).error(android.R.drawable.stat_notify_error)
+						.placeholder(R.drawable.ic_logo_mark)
+						.error(android.R.drawable.stat_notify_error)
 						.into(imageViewShow)
 				}
 				textViewShowName.text = show.name
-				textViewShowDate.text = show.airDate
+				///textViewShowDate.text = show.airDate
 
 				val cont = context
 				setOnClickListener {
