@@ -21,15 +21,15 @@ object ShowsRepository {
 		get() = showsListResponseMutableLiveData
 
 	fun fetchShowsListWebData() {
-		val buff:MutableList<Show> = mutableListOf()
+		/*val buff:MutableList<Show> = mutableListOf()
 		for(i in 1..10) {
-			buff.add(Show(showId = "prvi$i", name = "Chernobyl", imageId = R.drawable.img_chernobyl))
-			buff.add(Show(showId = "drugi$i", name = "Two and a half men", imageId = R.drawable.img_men))
+			buff.add(Show(showId = "prvi$i", name = "Chernobyl", imageId = R.drawable.img_chernobyl, likeNumber = 10))
+			buff.add(Show(showId = "drugi$i", name = "Two and a half men", imageId = R.drawable.img_men, likeNumber = 2))
 			buff.add(Show(showId = "treci$i", name = "Sherlock", imageId = R.drawable.img_sherlock))
 			buff.add(Show(showId = "cetvri$i", name = "Dr House", imageId = R.drawable.img_dr_house))
 		}
 		showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.SUCCESS, showsList = buff)
-		return
+		return*/
 		if(dataUpToDate && showsListResponseLiveData.value?.status == ResponseStatus.SUCCESS) {
 			//Already downloaded
 			return

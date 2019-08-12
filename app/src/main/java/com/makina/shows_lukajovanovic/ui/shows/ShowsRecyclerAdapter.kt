@@ -43,7 +43,8 @@ class ShowsRecyclerAdapter(val viewId: Int, val startEpisodesFragment: (String, 
 						.into(imageViewShow)
 				}
 				textViewShowName.text = show.name
-				///textViewShowDate.text = show.airDate
+
+				if(textViewLikeNumber != null) textViewLikeNumber.text = show.likeNumber.toString()
 
 				val cont = context
 				setOnClickListener {

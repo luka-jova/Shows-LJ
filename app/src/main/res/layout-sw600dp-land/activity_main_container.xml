@@ -5,8 +5,9 @@
 				android:layout_height="match_parent"
 				android:orientation="horizontal"
 				android:id="@+id/MODE_LANDSCAPE"
-				android:background="@color/colorBackground">
-
+				android:background="@color/colorBackground"
+				android:showDividers="middle"
+				android:divider="?android:dividerVertical">
 
 	<FrameLayout
 					android:layout_weight="1"

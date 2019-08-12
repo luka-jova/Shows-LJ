@@ -1,6 +1,7 @@
 package com.makina.shows_lukajovanovic.data.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.makina.shows_lukajovanovic.ShowsApp
@@ -105,4 +106,15 @@ object AuthorizationRepository {
 		})
 	}
 
+	fun logout() {
+		ShowsApp.instance.getSharedPreferences(LOGIN_DATA, Context.MODE_PRIVATE)
+			.edit()
+			.putString(TOKEN_CODE, "")
+			.apply()
+		tokenResponseMutableLiveData.value =
+			TokenResponse(
+				"",
+				status = ResponseStatus.SUCCESS
+			)
+	}
 }

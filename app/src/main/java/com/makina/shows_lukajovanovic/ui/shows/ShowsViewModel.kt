@@ -28,4 +28,5 @@ class ShowsViewModel : ViewModel(), Observer<ShowsListResponse> {
 	fun getShowsList() {
 		ShowsRepository.fetchShowsListWebData()
 	}
+
 }

@@ -26,6 +26,10 @@ class LoginViewModel: ViewModel(), Observer<TokenResponse> {
 		AuthorizationRepository.login(username, password, rememberMe, showInfo)
 	}
 
+	fun logout() {
+		AuthorizationRepository.logout()
+	}
+
 	override fun onCleared() {
 		AuthorizationRepository.tokenResponseLiveData.removeObserver(this)
 	}
