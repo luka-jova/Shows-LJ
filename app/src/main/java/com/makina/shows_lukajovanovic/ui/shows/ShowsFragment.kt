@@ -35,6 +35,8 @@ import java.lang.IllegalStateException
 class ShowsFragment : Fragment() {
 	companion object {
 		const val SHOWS_FRAGMENT_TAG = "SHOWS_FRAGMENT_TAG"
+		const val SHOW_POSITION_TAG = "SHOW_POSITION_TAG"
+		const val SHOW_LAYOUT_STATE_TAG = "SHOW_LAYOUT_STATE_TAG"
 		const val LAYOUT_LIST = 0
 		const val LAYOUT_GRID = 1
 	}
@@ -60,27 +62,38 @@ class ShowsFragment : Fragment() {
 			updateUI()
 		})
 
-		generateRecyclerView()
+		curLayout = savedInstanceState?.getInt(SHOW_LAYOUT_STATE_TAG) ?: LAYOUT_GRID
+		generateRecyclerView(savedInstanceState?.getInt(SHOW_POSITION_TAG) ?: 0)
+
 		progressBarDownloading.visibility = View.INVISIBLE
 		viewModel.getShowsList()
 		fabToggleLayout.setOnClickListener {
 			curLayout =
 				if(curLayout == LAYOUT_LIST) LAYOUT_GRID
 				else LAYOUT_LIST
-			generateRecyclerView()
+			generateRecyclerView(getScrollPosition())
 		}
 		buttonLogout.setOnClickListener {
 			LogoutConfirmDialogFragment().show(fragmentManager, "Confirm logout dialog")
 		}
 	}
 
-	private fun generateRecyclerView() {
-		val scrollPosition =
-			when {
-				recyclerViewShows.layoutManager is LinearLayoutManager -> (recyclerViewShows.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-				recyclerViewShows.layoutManager is GridLayoutManager -> (recyclerViewShows.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
-				else -> 0
-			}
+	override fun onSaveInstanceState(outState: Bundle) {
+		Log.d("tigar", "sejv")
+		outState.putInt(SHOW_POSITION_TAG, getScrollPosition())
+		outState.putInt(SHOW_LAYOUT_STATE_TAG, curLayout)
+
+	}
+
+	private fun getScrollPosition(): Int {
+		return when {
+			recyclerViewShows.layoutManager is LinearLayoutManager -> (recyclerViewShows.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+			recyclerViewShows.layoutManager is GridLayoutManager -> (recyclerViewShows.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+			else -> 0
+		}
+	}
+
+	private fun generateRecyclerView(scrollPosition: Int) {
 		val viewId = if (curLayout == LAYOUT_LIST) R.layout.layout_show else R.layout.layout_show_card
 		adapter = ShowsRecyclerAdapter(viewId) { showId, title ->
 			if (fragmentManager?.findFragmentByTag(EPISODES_FRAGMENT_TAG) != null) fragmentManager?.popBackStack()

@@ -31,9 +31,12 @@ class MainContainerActivity : AppCompatActivity(),
 		setContentView(R.layout.activity_main_container)
 		slaveContainerId = R.id.containerSlave
 
-		supportFragmentManager.beginTransaction().apply {
-			replace(R.id.containerMaster, ShowsFragment(), ShowsFragment.SHOWS_FRAGMENT_TAG)
-			commit()
+		//ovaj upit mi je potreban jer se inace pozove onViewCreated u ShowsFragmentu dva puta za redom s tim da u drugom pozivu je savedInstaceState uvijek null
+		if(savedInstanceState == null) {
+			supportFragmentManager.beginTransaction().apply {
+				replace(R.id.containerMaster, ShowsFragment(), ShowsFragment.SHOWS_FRAGMENT_TAG)
+				commit()
+			}
 		}
 	}
 

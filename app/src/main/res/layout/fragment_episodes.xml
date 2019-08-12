@@ -59,7 +59,7 @@
 					app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 					android:id="@+id/toolbarEpisodes"/>
 	<!--TODO makni crtu ispod teksta-->
-	<com.makina.shows_lukajovanovic.ui.custom_views.TextViewPrinter
+	<TextView
 					tools:text="Description"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
