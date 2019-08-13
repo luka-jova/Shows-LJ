@@ -13,11 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
-import com.makina.shows_lukajovanovic.data.model.EpisodesFragmentResponse
+import com.makina.shows_lukajovanovic.data.model.ShowDetailsResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
-import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
-import com.makina.shows_lukajovanovic.ui.MainContainerActivity
-import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
 import kotlinx.android.synthetic.main.fragment_episodes.*
 
 class EpisodesFragment: Fragment() {
@@ -78,14 +75,14 @@ class EpisodesFragment: Fragment() {
 				e.printStackTrace()
 			}
 		}
-		viewModel.episodesFragmentResponseLiveData.observe(this, Observer {response ->
+		viewModel.showDetailsResponseLiveData.observe(this, Observer { response ->
 			updateUI(response)
 		})
 		updateUI(null)
 		viewModel.getData()
 	}
 
-	private fun updateUI(response: EpisodesFragmentResponse?) {
+	private fun updateUI(response: ShowDetailsResponse?) {
 		adapter.setData(response?.episodesList ?: listOf(), response?.show?.showDescription ?: "")
 		textViewLikesCount.text = likesNumber.toString()
 		textViewLikesCount.setTypeface(textViewLikesCount.typeface, Typeface.BOLD)
@@ -96,7 +93,7 @@ class EpisodesFragment: Fragment() {
 	}
 
 	private fun updateVisibility() {
-		if(viewModel.episodesFragmentResponse?.status == ResponseStatus.DOWNLOADING) {
+		if(viewModel.showDetailsResponse?.status == ResponseStatus.DOWNLOADING) {
 			progressBarDownloading.visibility = View.VISIBLE
 		}
 		else {

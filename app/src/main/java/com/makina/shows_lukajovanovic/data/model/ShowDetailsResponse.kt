@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 
-data class EpisodesFragmentResponse(
+data class ShowDetailsResponse(
 	val show: Show? = null,
 	val episodesList: MutableList<Episode> = mutableListOf(),
 

@@ -4,26 +4,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.makina.shows_lukajovanovic.data.model.Episode
-import com.makina.shows_lukajovanovic.data.model.EpisodesFragmentResponse
-import com.makina.shows_lukajovanovic.data.model.Show
+import com.makina.shows_lukajovanovic.data.model.ShowDetailsResponse
 import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
-import com.makina.shows_lukajovanovic.data.repository.ShowsRepository
 
-class EpisodesViewModel(val showId: String) : ViewModel(), Observer<EpisodesFragmentResponse> {
-	private val episodesFragmentResponseMutableLiveData = MutableLiveData<EpisodesFragmentResponse>()
-	val episodesFragmentResponseLiveData: LiveData<EpisodesFragmentResponse>
-		get() = episodesFragmentResponseMutableLiveData
-	val episodesFragmentResponse: EpisodesFragmentResponse?
-		get() = episodesFragmentResponseLiveData.value
+class EpisodesViewModel(val showId: String) : ViewModel(), Observer<ShowDetailsResponse> {
+	private val showDetailsResponseMutableLiveData = MutableLiveData<ShowDetailsResponse>()
+	val showDetailsResponseLiveData: LiveData<ShowDetailsResponse>
+		get() = showDetailsResponseMutableLiveData
+	val showDetailsResponse: ShowDetailsResponse?
+		get() = showDetailsResponseLiveData.value
 
 	init {
-		EpisodesRepository.episodesFragmentResponseLiveData?.observeForever(this)
+		EpisodesRepository.showDetailsResponseLiveData.observeForever(this)
 		EpisodesRepository.observe(showId)
 	}
 
-	override fun onChanged(response: EpisodesFragmentResponse?) {
-		episodesFragmentResponseMutableLiveData.value = response
+	override fun onChanged(response: ShowDetailsResponse?) {
+		showDetailsResponseMutableLiveData.value = response
 	}
 
 	fun getData() {
@@ -31,6 +28,6 @@ class EpisodesViewModel(val showId: String) : ViewModel(), Observer<EpisodesFrag
 	}
 
 	override fun onCleared() {
-		EpisodesRepository.episodesFragmentResponseLiveData?.removeObserver(this)
+		EpisodesRepository.showDetailsResponseLiveData.removeObserver(this)
 	}
 }

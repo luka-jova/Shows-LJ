@@ -2,10 +2,9 @@ package com.makina.shows_lukajovanovic.data.repository
 
 import androidx.lifecycle.MutableLiveData
 import com.makina.shows_lukajovanovic.data.model.Episode
-import com.makina.shows_lukajovanovic.data.model.EpisodesFragmentResponse
+import com.makina.shows_lukajovanovic.data.model.ShowDetailsResponse
 import com.makina.shows_lukajovanovic.data.model.EpisodesListResponse
 import com.makina.shows_lukajovanovic.data.model.ShowResponse
-import com.makina.shows_lukajovanovic.data.network.Api
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.data.network.RetrofitClient
 import retrofit2.Call
@@ -13,30 +12,30 @@ import retrofit2.Callback
 import retrofit2.Response
 
 object EpisodesRepository {
-	private val episodesFragmentResponseData = mutableMapOf<String, EpisodesFragmentResponse>()
-	private val episodesFragmentResponseMutableLiveData = MutableLiveData<EpisodesFragmentResponse>()
-	val episodesFragmentResponseLiveData
-		get() = episodesFragmentResponseMutableLiveData
+	private val showDetailsResponseData = mutableMapOf<String, ShowDetailsResponse>()
+	private val showDetailsResponseMutableLiveData = MutableLiveData<ShowDetailsResponse>()
+	val showDetailsResponseLiveData
+		get() = showDetailsResponseMutableLiveData
 
 	fun observe(showId: String) {
-		episodesFragmentResponseMutableLiveData.value = episodesFragmentResponseData[ showId ]
+		showDetailsResponseMutableLiveData.value = showDetailsResponseData[ showId ]
 	}
 
 	fun addEpisode(showId: String, newEpisode: Episode) {
-		if(showId !in episodesFragmentResponseData) {
-			episodesFragmentResponseData[ showId ] = EpisodesFragmentResponse(null, mutableListOf(), ResponseStatus.SUCCESS)
+		if(showId !in showDetailsResponseData) {
+			showDetailsResponseData[ showId ] = ShowDetailsResponse(null, mutableListOf(), ResponseStatus.SUCCESS)
 		}
-		episodesFragmentResponseData[ showId ]?.episodesList?.add(newEpisode)
-		episodesFragmentResponseMutableLiveData.value = episodesFragmentResponseData[ showId ]
+		showDetailsResponseData[ showId ]?.episodesList?.add(newEpisode)
+		showDetailsResponseMutableLiveData.value = showDetailsResponseData[ showId ]
 	}
 
 	fun fetchDataFromWeb(showId: String) {
-		if(showId in episodesFragmentResponseData && episodesFragmentResponseData[ showId ]?.status == ResponseStatus.SUCCESS
-			|| episodesFragmentResponseData[ showId ]?.status == ResponseStatus.DOWNLOADING) {
+		if(showId in showDetailsResponseData && showDetailsResponseData[ showId ]?.status == ResponseStatus.SUCCESS
+			|| showDetailsResponseData[ showId ]?.status == ResponseStatus.DOWNLOADING) {
 			//Data is already downloaded or currently downloading
 			return
 		}
-		episodesFragmentResponseMutableLiveData.value = EpisodesFragmentResponse(status = ResponseStatus.DOWNLOADING)
+		showDetailsResponseMutableLiveData.value = ShowDetailsResponse(status = ResponseStatus.DOWNLOADING)
 		var episodesListResponse: EpisodesListResponse? = null
 		var showResponse: ShowResponse? = null
 		fun updateData() {
@@ -45,13 +44,13 @@ object EpisodesRepository {
 				if((showResponse?.isSuccessful ?: false) and (episodesListResponse?.isSuccessful ?: false))
 					status = ResponseStatus.SUCCESS
 
-				episodesFragmentResponseData[ showId ] =
-					EpisodesFragmentResponse(
+				showDetailsResponseData[ showId ] =
+					ShowDetailsResponse(
 						show = showResponse?.show,
 						episodesList = episodesListResponse?.episodesList?.toMutableList() ?: mutableListOf(),
 						status = status
 					)
-				episodesFragmentResponseMutableLiveData.value = episodesFragmentResponseData[ showId ]
+				showDetailsResponseMutableLiveData.value = showDetailsResponseData[ showId ]
 			}
 		}
 
