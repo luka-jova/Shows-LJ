@@ -10,6 +10,7 @@ import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
 import com.makina.shows_lukajovanovic.ui.episodes.add.SeasonEpisodePickerDialog
 import com.makina.shows_lukajovanovic.ui.episodes.add.TakePhotoDialog
+import com.makina.shows_lukajovanovic.ui.episodes.comments.CommentsFragment
 import com.makina.shows_lukajovanovic.ui.episodes.details.EpisodeDetailsFragment
 import com.makina.shows_lukajovanovic.ui.shows.LogoutConfirmDialogFragment
 import com.makina.shows_lukajovanovic.ui.shows.ShowsFragment
@@ -97,7 +98,15 @@ class MainContainerActivity : AppCompatActivity(),
 	}
 
 	override fun startEpisodeComments(showId: String, episodeId: String) {
-		Log.d("tigar", "comments")
+		supportFragmentManager?.beginTransaction()?.apply {
+			replace(
+				slaveContainerId,
+				CommentsFragment.newInstance(showId, episodeId),
+				CommentsFragment.COMMENTS_FRAGMENT_CODE
+			)
+			addToBackStack("CommentsFragment")
+			commit()
+		}
 	}
 
 }
