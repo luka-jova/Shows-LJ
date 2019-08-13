@@ -1,5 +1,6 @@
 package com.makina.shows_lukajovanovic.ui.episodes
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,22 +20,25 @@ import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
 import kotlinx.android.synthetic.main.fragment_episodes.*
 
-class EpisodesFragment(): Fragment() {
+class EpisodesFragment: Fragment() {
 	companion object {
 		const val SHOW_ID_CODE = "SHOW_ID_CODE"
 		const val TITLE_CODE = "TITLE_CODE"
 		const val EPISODES_FRAGMENT_TAG = "EPISODES_FRAGMENT_TAG"
+		const val LIKES_NUMBER_CODE = "LIKES_NUMBER_CODE"
 
-		fun newInstance(showId: String, title: String): EpisodesFragment {
+		fun newInstance(showId: String, title: String, likesNumber: Int): EpisodesFragment {
 			return EpisodesFragment().apply {
 				arguments = Bundle().apply {
 					putString(TITLE_CODE, title)
 					putString(SHOW_ID_CODE, showId)
+					putInt(LIKES_NUMBER_CODE, likesNumber)
 				}
 			}
 		}
 	}
 	private var showId = ""
+	private var likesNumber = 0
 	private lateinit var viewModel: EpisodesViewModel
 	private lateinit var adapter: EpisodesRecyclerAdapter
 
@@ -42,8 +46,14 @@ class EpisodesFragment(): Fragment() {
 		return inflater.inflate(R.layout.fragment_episodes, container, false)
 	}
 
+	interface EpisodesFragmentContainer {
+		fun startAddEpisodeFragment(showId: String)
+		fun startEpisodeDetailsFragment()
+	}
+
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		showId = arguments?.getString(SHOW_ID_CODE, "") ?: ""
+		showId = arguments?.getString(SHOW_ID_CODE) ?: ""
+		likesNumber = arguments?.getInt(LIKES_NUMBER_CODE) ?: 0
 		viewModel = ViewModelProviders.of(this, object: ViewModelProvider.Factory {
 			override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 				return EpisodesViewModel(showId) as T
@@ -56,33 +66,29 @@ class EpisodesFragment(): Fragment() {
 		toolbarEpisodes.setNavigationOnClickListener {
 			activity?.onBackPressed()
 		}
-		textViewDescription.text = ""
 
 		adapter = EpisodesRecyclerAdapter()
 		recyclerViewEpisodes.layoutManager = LinearLayoutManager(requireContext())
 		recyclerViewEpisodes.adapter = adapter
 
 		fab.setOnClickListener {
-			fragmentManager?.beginTransaction()?.apply {
-				replace(
-					(activity as MainContainerActivity).slaveContainerId,
-					AddEpisodeFragment.newInstance(showId),
-					AddEpisodeFragment.ADD_EPISODE_TAG
-				)
-				addToBackStack("AddEpisodeFragment")
-				commit()
+			try {
+				(activity as EpisodesFragmentContainer).startAddEpisodeFragment(showId)
+			} catch (e: ClassCastException) {
+				e.printStackTrace()
 			}
 		}
 		viewModel.episodesFragmentResponseLiveData.observe(this, Observer {response ->
 			updateUI(response)
 		})
-		updateVisibility()
+		updateUI(null)
 		viewModel.getData()
 	}
 
 	private fun updateUI(response: EpisodesFragmentResponse?) {
-		textViewDescription.text = response?.show?.showDescription ?: ""
-		adapter.setData(response?.episodesList ?: listOf())
+		adapter.setData(response?.episodesList ?: listOf(), response?.show?.showDescription ?: "")
+		textViewLikesCount.text = likesNumber.toString()
+		textViewLikesCount.setTypeface(textViewLikesCount.typeface, Typeface.BOLD)
 		updateVisibility()
 		if(response?.status == ResponseStatus.FAIL) {
 			Toast.makeText(requireContext(), "Download error", Toast.LENGTH_SHORT).show()
@@ -95,15 +101,6 @@ class EpisodesFragment(): Fragment() {
 		}
 		else {
 			progressBarDownloading.visibility = View.INVISIBLE
-		}
-
-		if(viewModel.episodesFragmentResponse?.episodesList?.isNotEmpty() == true) {
-			defaultLayout.visibility = View.INVISIBLE
-			recyclerViewEpisodes?.visibility = View.VISIBLE
-		}
-		else {
-			defaultLayout.visibility = View.VISIBLE
-			recyclerViewEpisodes?.visibility = View.INVISIBLE
 		}
 	}
 }

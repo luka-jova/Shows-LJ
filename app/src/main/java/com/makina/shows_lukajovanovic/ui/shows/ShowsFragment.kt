@@ -79,10 +79,8 @@ class ShowsFragment : Fragment() {
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
-		Log.d("tigar", "sejv")
 		outState.putInt(SHOW_POSITION_TAG, getScrollPosition())
 		outState.putInt(SHOW_LAYOUT_STATE_TAG, curLayout)
-
 	}
 
 	private fun getScrollPosition(): Int {
@@ -93,18 +91,17 @@ class ShowsFragment : Fragment() {
 		}
 	}
 
+	interface ShowsFragmentContainer {
+		fun startEpisodesFragment(showId: String, title: String, likesNumber: Int)
+	}
+
 	private fun generateRecyclerView(scrollPosition: Int) {
 		val viewId = if (curLayout == LAYOUT_LIST) R.layout.layout_show else R.layout.layout_show_card
-		adapter = ShowsRecyclerAdapter(viewId) { showId, title ->
-			if (fragmentManager?.findFragmentByTag(EPISODES_FRAGMENT_TAG) != null) fragmentManager?.popBackStack()
-			fragmentManager?.beginTransaction()?.apply {
-				replace(
-					(activity as MainContainerActivity).slaveContainerId,
-					EpisodesFragment.newInstance(showId, title),
-					EpisodesFragment.EPISODES_FRAGMENT_TAG
-				)
-				addToBackStack("Episodes $showId")
-				commit()
+		adapter = ShowsRecyclerAdapter(viewId) { showId, title, likesNumber ->
+			try {
+				(activity as ShowsFragmentContainer).startEpisodesFragment(showId, title, likesNumber)
+			} catch (e: ClassCastException) {
+				e.printStackTrace()
 			}
 		}
 		recyclerViewShows.adapter = adapter

@@ -11,7 +11,7 @@ import com.makina.shows_lukajovanovic.data.network.RetrofitClient
 import com.squareup.picasso.Picasso
 
 
-class ShowsRecyclerAdapter(val viewId: Int, val startEpisodesFragment: (String, String) -> Unit) : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHolder>() {
+class ShowsRecyclerAdapter(val viewId: Int, val startEpisodesFragment: (String, String, Int) -> Unit) : RecyclerView.Adapter<ShowsRecyclerAdapter.ViewHolder>() {
 	private var showsList = listOf<Show>()
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -48,7 +48,7 @@ class ShowsRecyclerAdapter(val viewId: Int, val startEpisodesFragment: (String, 
 
 				val cont = context
 				setOnClickListener {
-					startEpisodesFragment(showsList[ position ].showId, showsList[ position ].name)
+					startEpisodesFragment(showsList[ position ].showId, showsList[ position ].name, showsList[ position ].likeNumber)
 				}
 			}
 		}
