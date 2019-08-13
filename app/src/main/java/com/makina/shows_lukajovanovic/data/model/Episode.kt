@@ -17,7 +17,10 @@ class Episode(
 	var episodeNumString: String = "1",
 
 	@Json(name = "description")
-	var episodeDescription:String = ""
+	var episodeDescription:String = "",
+
+	@Json(name = "_id")
+	var episodeId: String = ""
 
 ) :Serializable {
 	var seasonNum: Int

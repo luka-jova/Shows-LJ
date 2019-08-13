@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				xmlns:app="http://schemas.android.com/apk/res-auto"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:orientation="vertical">
+	<!--TODO collapsing toolbar -->
+	<androidx.appcompat.widget.Toolbar
+					android:layout_width="match_parent"
+					android:layout_height="?attr/actionBarSize"
+					android:background="@color/colorPrimary"
+					android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+					app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+					android:id="@+id/toolbarEpisodeDetails"/>
+
+	<TextView android:layout_width="match_parent"
+	          android:layout_height="wrap_content"
+	          android:layout_marginTop="16dp"
+	          android:layout_marginLeft="24dp"
+	          android:layout_marginRight="24dp"
+	          android:textSize="28sp"
+	          android:textColor="@color/colorTextStrong"
+	          android:text="Episode name"
+	          android:textStyle="bold"
+	          android:id="@+id/textViewEpisodeName"/>
+
+	<TextView android:layout_width="match_parent"
+	          android:layout_height="wrap_content"
+	          android:textSize="16sp"
+	          android:layout_marginLeft="24dp"
+	          android:layout_marginRight="24dp"
+	          android:textColor="@color/colorAccent"
+	          android:text="S1 E2"
+	          android:textStyle="bold"
+	          android:id="@+id/textViewSE"/>
+	<TextView android:layout_width="match_parent"
+	          android:layout_height="wrap_content"
+	          android:textSize="16sp"
+	          android:layout_marginTop="16dp"
+	          android:layout_marginLeft="24dp"
+	          android:layout_marginRight="24dp"
+	          android:textColor="@color/colorTextNormal"
+	          android:text="Description"
+	          android:id="@+id/textViewEpisodeDescription"/>
+	<Button android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="24dp"
+	        android:layout_marginRight="24dp"
+	        android:layout_marginTop="24dp"
+	        android:text="Comments"
+	        android:textAllCaps="false"
+	        style="@style/Widget.AppCompat.Button.Borderless"
+	        android:drawableLeft="@drawable/ic_message_circle"
+	        android:gravity="left|center_vertical"
+	        android:drawablePadding="8dp"
+	        android:padding="16dp"
+	        android:id="@+id/buttonComments"/>
+
+
+</LinearLayout>

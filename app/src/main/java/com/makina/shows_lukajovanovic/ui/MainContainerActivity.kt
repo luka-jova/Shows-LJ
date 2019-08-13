@@ -3,12 +3,14 @@ package com.makina.shows_lukajovanovic.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
 import com.makina.shows_lukajovanovic.ui.episodes.add.SeasonEpisodePickerDialog
 import com.makina.shows_lukajovanovic.ui.episodes.add.TakePhotoDialog
+import com.makina.shows_lukajovanovic.ui.episodes.details.EpisodeDetailsFragment
 import com.makina.shows_lukajovanovic.ui.shows.LogoutConfirmDialogFragment
 import com.makina.shows_lukajovanovic.ui.shows.ShowsFragment
 
@@ -17,7 +19,8 @@ class MainContainerActivity : AppCompatActivity(),
 	TakePhotoDialog.TakePhotoDialogListener,
 	LogoutConfirmDialogFragment.LogoutDialogListener,
 	ShowsFragment.ShowsFragmentContainer,
-	EpisodesFragment.EpisodesFragmentContainer {
+	EpisodesFragment.EpisodesFragmentContainer,
+	EpisodeDetailsFragment.EpisodeDetailsFragmentContainer {
 
 	companion object {
 		fun newInstance(context: Context): Intent {
@@ -81,8 +84,20 @@ class MainContainerActivity : AppCompatActivity(),
 		}
 	}
 
-	override fun startEpisodeDetailsFragment() {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+	override fun startEpisodeDetailsFragment(showId: String, episodeId: String) {
+		supportFragmentManager?.beginTransaction()?.apply {
+			replace(
+				slaveContainerId,
+				EpisodeDetailsFragment.newInstance(showId, episodeId),
+				EpisodeDetailsFragment.EPISODE_DETAILS_FRAGMENT_TAG
+			)
+			addToBackStack("EpisodeDetailsFragment")
+			commit()
+		}
+	}
+
+	override fun startEpisodeComments(showId: String, episodeId: String) {
+		Log.d("tigar", "comments")
 	}
 
 }

@@ -17,7 +17,7 @@ import com.makina.shows_lukajovanovic.data.model.ShowDetailsResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import kotlinx.android.synthetic.main.fragment_episodes.*
 
-class EpisodesFragment: Fragment() {
+class EpisodesFragment : Fragment() {
 	companion object {
 		const val SHOW_ID_CODE = "SHOW_ID_CODE"
 		const val TITLE_CODE = "TITLE_CODE"
@@ -34,6 +34,7 @@ class EpisodesFragment: Fragment() {
 			}
 		}
 	}
+
 	private var showId = ""
 	private var likesNumber = 0
 	private lateinit var viewModel: EpisodesViewModel
@@ -45,13 +46,13 @@ class EpisodesFragment: Fragment() {
 
 	interface EpisodesFragmentContainer {
 		fun startAddEpisodeFragment(showId: String)
-		fun startEpisodeDetailsFragment()
+		fun startEpisodeDetailsFragment(showId: String, episodeId: String)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		showId = arguments?.getString(SHOW_ID_CODE) ?: ""
 		likesNumber = arguments?.getInt(LIKES_NUMBER_CODE) ?: 0
-		viewModel = ViewModelProviders.of(this, object: ViewModelProvider.Factory {
+		viewModel = ViewModelProviders.of(this, object : ViewModelProvider.Factory {
 			override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 				return EpisodesViewModel(showId) as T
 			}
@@ -64,7 +65,13 @@ class EpisodesFragment: Fragment() {
 			activity?.onBackPressed()
 		}
 
-		adapter = EpisodesRecyclerAdapter()
+		adapter = EpisodesRecyclerAdapter { episodeId ->
+			try {
+				(activity as EpisodesFragmentContainer).startEpisodeDetailsFragment(showId, episodeId)
+			} catch (e: ClassCastException) {
+				e.printStackTrace()
+			}
+		}
 		recyclerViewEpisodes.layoutManager = LinearLayoutManager(requireContext())
 		recyclerViewEpisodes.adapter = adapter
 
@@ -87,16 +94,15 @@ class EpisodesFragment: Fragment() {
 		textViewLikesCount.text = likesNumber.toString()
 		textViewLikesCount.setTypeface(textViewLikesCount.typeface, Typeface.BOLD)
 		updateVisibility()
-		if(response?.status == ResponseStatus.FAIL) {
+		if (response?.status == ResponseStatus.FAIL) {
 			Toast.makeText(requireContext(), "Download error", Toast.LENGTH_SHORT).show()
 		}
 	}
 
 	private fun updateVisibility() {
-		if(viewModel.showDetailsResponse?.status == ResponseStatus.DOWNLOADING) {
+		if (viewModel.showDetailsResponse?.status == ResponseStatus.DOWNLOADING) {
 			progressBarDownloading.visibility = View.VISIBLE
-		}
-		else {
+		} else {
 			progressBarDownloading.visibility = View.INVISIBLE
 		}
 	}

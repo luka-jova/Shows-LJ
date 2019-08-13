@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_episodes_header.view.*
 import kotlinx.android.synthetic.main.layout_episode.view.*
 import java.io.FileDescriptor
 
-class EpisodesRecyclerAdapter: RecyclerView.Adapter<EpisodesRecyclerAdapter.ViewHolder>() {
+class EpisodesRecyclerAdapter(val onEpisodeClick: (String) -> Unit): RecyclerView.Adapter<EpisodesRecyclerAdapter.ViewHolder>() {
 	companion object {
 		const val CODE_HEADER = 0
 		const val CODE_EPISODE = 1
@@ -49,6 +49,9 @@ class EpisodesRecyclerAdapter: RecyclerView.Adapter<EpisodesRecyclerAdapter.View
 		holder.itemView.textViewEpisode.text = curEpisode.name
 		holder.itemView.textViewEpisodeSENumber.text =
 			"S${curEpisode.seasonNum.toString().padStart(2, '0')} E${curEpisode.episodeNum.toString().padStart(2, '0')}"
+		holder.itemView.setOnClickListener {
+			onEpisodeClick(episodeList[ position - 1 ].episodeId)
+		}
 	}
 
 	fun setData(episodeList: List<Episode>, episodeDescription: String) {
