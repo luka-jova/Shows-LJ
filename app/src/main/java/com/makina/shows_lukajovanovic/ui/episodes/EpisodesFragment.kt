@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.ShowDetailsResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
+import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 import kotlinx.android.synthetic.main.fragment_episodes.*
 
 class EpisodesFragment : Fragment() {
@@ -85,12 +87,44 @@ class EpisodesFragment : Fragment() {
 		viewModel.showDetailsResponseLiveData.observe(this, Observer { response ->
 			updateUI(response)
 		})
+
+		viewModel.likeStatusListLiveData.observe(this, Observer {likeStatusList ->
+			updateVisibility()
+			if(likeStatusList.status == ResponseStatus.SUCCESS) {
+				if(!likeStatusList.likeStatus.containsKey(showId)
+					|| likeStatusList.likeStatus[ showId ] == EpisodesRepository.NONE_STATUS) {
+					buttonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
+					buttonDislike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
+				}
+				else {
+					when(likeStatusList.likeStatus[ showId ]) {
+						EpisodesRepository.LIKE_STATUS -> {
+							buttonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle_filled)
+							buttonDislike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
+						}
+						else -> {
+							buttonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
+							buttonDislike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle_filled)
+						}
+					}
+				}
+			}
+		})
+
+		buttonLike.setOnClickListener {
+			viewModel.postLikeStatus(showId, EpisodesRepository.LIKE_STATUS)
+		}
+		buttonDislike.setOnClickListener {
+			viewModel.postLikeStatus(showId, EpisodesRepository.DISLIKE_STATUS)
+		}
+
 		updateUI(null)
 		viewModel.getData()
 	}
 
 	private fun updateUI(response: ShowDetailsResponse?) {
 		adapter.setData(response?.episodesList ?: listOf(), response?.show?.showDescription ?: "")
+		likesNumber = response?.show?.likeNumber ?: likesNumber
 		textViewLikesCount.text = likesNumber.toString()
 		textViewLikesCount.setTypeface(textViewLikesCount.typeface, Typeface.BOLD)
 		updateVisibility()
@@ -100,7 +134,8 @@ class EpisodesFragment : Fragment() {
 	}
 
 	private fun updateVisibility() {
-		if (viewModel.showDetailsResponse?.status == ResponseStatus.DOWNLOADING) {
+		if (viewModel.showDetailsResponse?.status == ResponseStatus.DOWNLOADING
+			|| viewModel.likeStatusList?.status == ResponseStatus.DOWNLOADING) {
 			progressBarDownloading.visibility = View.VISIBLE
 		} else {
 			progressBarDownloading.visibility = View.INVISIBLE

@@ -59,19 +59,23 @@ object CommentsRepository {
 
 	}
 
+	var call: Call<CommentPostResponse>? = null
+
 	fun addComment(showId: String, episodeId: String, text: String) {
 		commentsListResponseMutableLiveData.value?.status = ResponseStatus.DOWNLOADING
 		refresh()
 
 		//TODO necu to iz repo-a cupat
-		RetrofitClient.apiService?.postComment(
+		call = RetrofitClient.apiService?.postComment(
 			AuthorizationRepository.tokenResponseLiveData.value?.token ?: "",
 			CommentPostData(text = text, episodeId = episodeId)
-		)?.enqueue(object: Callback<CommentPostResponse> {
+		)
+		call?.enqueue(object: Callback<CommentPostResponse> {
 			override fun onFailure(call: Call<CommentPostResponse>, t: Throwable) {
-				listener?.displayMessage("Error", "No internet while posting comment.")
 				commentsListResponseMutableLiveData.value?.status = ResponseStatus.FAIL
 				refresh()
+				if(call.isCanceled) return
+				listener?.displayMessage("Error", "No internet.")
 			}
 
 			override fun onResponse(call: Call<CommentPostResponse>, response: Response<CommentPostResponse>) {

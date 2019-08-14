@@ -74,7 +74,7 @@ class ShowsFragment : Fragment() {
 			generateRecyclerView(getScrollPosition())
 		}
 		buttonLogout.setOnClickListener {
-			LogoutConfirmDialogFragment().show(fragmentManager, "Confirm logout dialog")
+			LogoutConfirmDialogFragment().show(requireFragmentManager(), "Confirm logout dialog")
 		}
 	}
 
@@ -173,7 +173,7 @@ class LogoutConfirmDialogFragment: DialogFragment() {
 		} ?: throw IllegalStateException("Activity cannot be null")
 	}
 
-	override fun onAttach(context: Context?) {
+	override fun onAttach(context: Context) {
 		super.onAttach(context)
 		try {
 			listener = context as LogoutDialogListener

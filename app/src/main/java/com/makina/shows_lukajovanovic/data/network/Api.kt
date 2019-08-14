@@ -25,4 +25,10 @@ interface Api {
 
 	@GET("/api/episodes/{episodeId}/comments")
 	fun getCommentsList(@Path("episodeId") episodeId: String): Call<CommentsListResponse>
+
+	@POST("/api/shows/{showId}/like")
+	fun postLike(@Header("Authorization") tokenHeader: String, @Path("showId") showId: String): Call<Show>
+
+	@POST("/api/shows/{showId}/dislike")
+	fun postDislike(@Header("Authorization") tokenHeader: String, @Path("showId") showId: String): Call<Show>
 }

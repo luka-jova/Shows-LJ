@@ -1,24 +1,22 @@
 package com.makina.shows_lukajovanovic.ui.episodes.comments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
-import com.makina.shows_lukajovanovic.data.model.Comment
 import com.makina.shows_lukajovanovic.data.model.CommentsListResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
-import com.makina.shows_lukajovanovic.ui.shared.InfoAllertDialog
 import kotlinx.android.synthetic.main.fragment_comments.*
-import retrofit2.Response
 
-class CommentsFragment: Fragment() {
+
+class CommentsFragment : Fragment() {
 	companion object {
 		const val COMMENTS_FRAGMENT_CODE = "COMMENTS_FRAGMENT_CODE"
 		const val SHOW_ID_CODE = "SHOW_ID_CODE"
@@ -48,7 +46,7 @@ class CommentsFragment: Fragment() {
 		episodeId = arguments?.getString(EPISODE_ID_CODE) ?: ""
 
 		viewModel = ViewModelProviders.of(this).get(CommentsViewModel::class.java)
-		viewModel.commentsListResponseLiveData.observe(this, Observer {response ->
+		viewModel.commentsListResponseLiveData.observe(this, Observer { response ->
 			updateUI(response)
 		})
 		viewModel.getComments(showId, episodeId)
@@ -57,7 +55,7 @@ class CommentsFragment: Fragment() {
 			activity?.onBackPressed()
 		}
 
-		buttonSubmit.setOnClickListener {
+		buttonPost.setOnClickListener {
 			viewModel.addComment(
 				showId,
 				episodeId,
@@ -65,22 +63,25 @@ class CommentsFragment: Fragment() {
 			)
 		}
 
+		textInputLayoutComments.showDividers = LinearLayout.SHOW_DIVIDER_BEGINNING
+
 		adapter = CommentsRecyclerAdapter()
 		recyclerViewComments.adapter = adapter
 		recyclerViewComments.layoutManager = LinearLayoutManager(requireContext())
+		recyclerViewComments.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+
 	}
 
 	private fun updateUI(response: CommentsListResponse) {
-		if(response.commentsList.isEmpty()) {
+		if (response.commentsList.isEmpty()) {
 			defaultLayout.visibility = View.VISIBLE
 			recyclerViewComments.visibility = View.INVISIBLE
-		}
-		else {
+		} else {
 			defaultLayout.visibility = View.INVISIBLE
 			recyclerViewComments.visibility = View.VISIBLE
 		}
 		adapter.setData(response.commentsList)
-		when(response.status) {
+		when (response.status) {
 			ResponseStatus.SUCCESS -> {
 				progressBarDownloading.visibility = View.INVISIBLE
 			}

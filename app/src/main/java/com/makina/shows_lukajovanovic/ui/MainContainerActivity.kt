@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.makina.shows_lukajovanovic.R
+import com.makina.shows_lukajovanovic.data.network.RetrofitClient
 import com.makina.shows_lukajovanovic.data.repository.CommentsRepository
+import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 import com.makina.shows_lukajovanovic.data.repository.RepositoryInfoHandler
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
@@ -34,6 +36,7 @@ class MainContainerActivity : AppCompatActivity(),
 	}
 
 	var slaveContainerId: Int = -1
+	private var active = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -47,10 +50,14 @@ class MainContainerActivity : AppCompatActivity(),
 				commit()
 			}
 		}
-
 		CommentsRepository.listener = this
+		EpisodesRepository.listener = this
 	}
 
+	override fun onResume() {
+		active = true
+		super.onResume()
+	}
 
 	override fun onDialogSaveButton(dialog: SeasonEpisodePickerDialog) {
 		(supportFragmentManager.findFragmentByTag(AddEpisodeFragment.ADD_EPISODE_TAG) as? AddEpisodeFragment)
@@ -115,8 +122,14 @@ class MainContainerActivity : AppCompatActivity(),
 		}
 	}
 
+	override fun onStop() {
+		active = false
+		super.onStop()
+	}
+
 	override fun displayMessage(title: String, message: String) {
-		InfoAllertDialog.newInstance(title, message).show(supportFragmentManager, "Message fragment")
+		if(active)
+			InfoAllertDialog.newInstance(title, message).show(supportFragmentManager, "Message fragment")
 	}
 
 }

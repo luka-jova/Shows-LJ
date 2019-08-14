@@ -86,7 +86,7 @@ class AddEpisodeFragment: Fragment() {
 			SeasonEpisodePickerDialog(
 				curEpisode.seasonNum,
 				curEpisode.episodeNum
-			).show(fragmentManager, "timePicker")
+			).show(requireFragmentManager(), "timePicker")
 		}
 		editTextEpisodeName.addTextChangedListener(object: TextWatcher {
 			override fun afterTextChanged(p0: Editable?) {
@@ -115,7 +115,7 @@ class AddEpisodeFragment: Fragment() {
 		})
 
 		imageButtonTakePhoto.setOnClickListener {
-			TakePhotoDialog().show(fragmentManager, "takePhotoDialog")
+			TakePhotoDialog().show(requireFragmentManager(), "takePhotoDialog")
 		}
 	}
 

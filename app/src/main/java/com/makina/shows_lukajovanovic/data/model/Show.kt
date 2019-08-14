@@ -20,7 +20,7 @@ data class Show(
 	val showDescription:String = "Default Description",
 
 	@Json(name = "likesCount")
-	val likeNumber: Int = 0,
+	var likeNumber: Int = 0,
 
 	@Transient
 	val imageId: Int = -1,

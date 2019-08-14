@@ -3,6 +3,7 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#aaaaaa</color>
     <color name="colorAccent">#ff758c</color>
+    <color name="colorOutlineStrong">#2e2e2e</color>
     <color name="colorLoginDisabled">#ffccd5</color>
     <color name="colorLoginText">#ffffff</color>
     <color name="colorBlack">#000000</color>
