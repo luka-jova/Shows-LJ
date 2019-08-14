@@ -6,12 +6,15 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.makina.shows_lukajovanovic.R
+import com.makina.shows_lukajovanovic.data.repository.CommentsRepository
+import com.makina.shows_lukajovanovic.data.repository.RepositoryInfoHandler
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
 import com.makina.shows_lukajovanovic.ui.episodes.add.SeasonEpisodePickerDialog
 import com.makina.shows_lukajovanovic.ui.episodes.add.TakePhotoDialog
 import com.makina.shows_lukajovanovic.ui.episodes.comments.CommentsFragment
 import com.makina.shows_lukajovanovic.ui.episodes.details.EpisodeDetailsFragment
+import com.makina.shows_lukajovanovic.ui.shared.InfoAllertDialog
 import com.makina.shows_lukajovanovic.ui.shows.LogoutConfirmDialogFragment
 import com.makina.shows_lukajovanovic.ui.shows.ShowsFragment
 
@@ -21,7 +24,8 @@ class MainContainerActivity : AppCompatActivity(),
 	LogoutConfirmDialogFragment.LogoutDialogListener,
 	ShowsFragment.ShowsFragmentContainer,
 	EpisodesFragment.EpisodesFragmentContainer,
-	EpisodeDetailsFragment.EpisodeDetailsFragmentContainer {
+	EpisodeDetailsFragment.EpisodeDetailsFragmentContainer,
+	RepositoryInfoHandler {
 
 	companion object {
 		fun newInstance(context: Context): Intent {
@@ -43,6 +47,8 @@ class MainContainerActivity : AppCompatActivity(),
 				commit()
 			}
 		}
+
+		CommentsRepository.listener = this
 	}
 
 
@@ -107,6 +113,10 @@ class MainContainerActivity : AppCompatActivity(),
 			addToBackStack("CommentsFragment")
 			commit()
 		}
+	}
+
+	override fun displayMessage(title: String, message: String) {
+		InfoAllertDialog.newInstance(title, message).show(supportFragmentManager, "Message fragment")
 	}
 
 }

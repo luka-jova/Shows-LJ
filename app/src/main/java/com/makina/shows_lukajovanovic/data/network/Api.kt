@@ -19,4 +19,10 @@ interface Api {
 
 	@POST("/api/users/")
 	fun registerUser(@Body user: LoginData): Call<CreateAccountResponse>
+
+	@POST("/api/comments")
+	fun postComment(@Header("Authorization") tokenHeader: String, @Body comment: CommentPostData): Call<CommentPostResponse>
+
+	@GET("/api/episodes/{episodeId}/comments")
+	fun getCommentsList(@Path("episodeId") episodeId: String): Call<CommentsListResponse>
 }

@@ -9,7 +9,7 @@ data class Comment(
 	var episodeId: String = "",
 
 	@Json(name="userEmail")
-	var userEmail: String,
+	var userEmail: String = "",
 
 	@Json(name="text")
 	var text: String = "",

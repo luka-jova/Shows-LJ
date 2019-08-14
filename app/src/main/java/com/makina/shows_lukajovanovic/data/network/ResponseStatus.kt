@@ -10,4 +10,6 @@ object ResponseStatus {
 	const val INFO_ERROR_INTERNET = -1
 	const val INFO_ERROR_LOGIN = -2
 	const val INFO_ERROR_REGISTER = -3
+	const val INFO_ERROR_POST_COMMENT = -4
+	const val INFO_ERROR_GET_COMMENTS = -5
 }

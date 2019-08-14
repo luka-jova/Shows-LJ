@@ -14,7 +14,9 @@ import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Comment
 import com.makina.shows_lukajovanovic.data.model.CommentsListResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
+import com.makina.shows_lukajovanovic.ui.shared.InfoAllertDialog
 import kotlinx.android.synthetic.main.fragment_comments.*
+import retrofit2.Response
 
 class CommentsFragment: Fragment() {
 	companion object {
@@ -56,8 +58,11 @@ class CommentsFragment: Fragment() {
 		}
 
 		buttonSubmit.setOnClickListener {
-			Log.d("tigar", "dodajem")
-			viewModel.addComment(showId, episodeId, Comment(userEmail = "novi user", text = editTextComment.text.toString()))
+			viewModel.addComment(
+				showId,
+				episodeId,
+				editTextComment.text.toString()
+			)
 		}
 
 		adapter = CommentsRecyclerAdapter()
@@ -66,12 +71,26 @@ class CommentsFragment: Fragment() {
 	}
 
 	private fun updateUI(response: CommentsListResponse) {
-		if(response.status == ResponseStatus.SUCCESS) {
-			adapter.setData(response.commentsList)
+		if(response.commentsList.isEmpty()) {
+			defaultLayout.visibility = View.VISIBLE
+			recyclerViewComments.visibility = View.INVISIBLE
 		}
 		else {
-			Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+			defaultLayout.visibility = View.INVISIBLE
+			recyclerViewComments.visibility = View.VISIBLE
 		}
-	}
+		adapter.setData(response.commentsList)
+		when(response.status) {
+			ResponseStatus.SUCCESS -> {
+				progressBarDownloading.visibility = View.INVISIBLE
+			}
+			ResponseStatus.DOWNLOADING -> {
+				progressBarDownloading.visibility = View.VISIBLE
+			}
+			ResponseStatus.FAIL -> {
+				progressBarDownloading.visibility = View.INVISIBLE
+			}
+		}
 
+	}
 }

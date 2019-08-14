@@ -25,8 +25,8 @@ class CommentsViewModel: ViewModel(), Observer<CommentsListResponse> {
 		CommentsRepository.fetchDataFromWeb(showId, episodeId)
 	}
 
-	fun addComment(showId: String, episodeId: String, comment: Comment) {
-		CommentsRepository.addComment(showId, episodeId, comment)
+	fun addComment(showId: String, episodeId: String, text: String) {
+		CommentsRepository.addComment(showId, episodeId, text)
 	}
 
 	override fun onCleared() {
