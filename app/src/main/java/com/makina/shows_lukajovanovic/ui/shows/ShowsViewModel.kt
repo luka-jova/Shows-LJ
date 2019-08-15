@@ -21,12 +21,13 @@ class ShowsViewModel : ViewModel(), Observer<ShowsListResponse> {
 		showsListResponseMutableLiveData.value = response
 	}
 
-	override fun onCleared() {
-		ShowsRepository.showsListResponseLiveData.removeObserver(this)
-	}
-
 	fun getShowsList() {
 		ShowsRepository.fetchShowsListWebData()
+	}
+
+	override fun onCleared() {
+		ShowsRepository.cancelCalls()
+		ShowsRepository.showsListResponseLiveData.removeObserver(this)
 	}
 
 }

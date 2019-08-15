@@ -7,10 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.network.RetrofitClient
-import com.makina.shows_lukajovanovic.data.repository.AddEpisodeRepository
-import com.makina.shows_lukajovanovic.data.repository.CommentsRepository
-import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
-import com.makina.shows_lukajovanovic.data.repository.RepositoryInfoHandler
+import com.makina.shows_lukajovanovic.data.repository.*
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
 import com.makina.shows_lukajovanovic.ui.episodes.add.SeasonEpisodePickerDialog
@@ -54,6 +51,7 @@ class MainContainerActivity : AppCompatActivity(),
 		CommentsRepository.listener = this
 		EpisodesRepository.listener = this
 		AddEpisodeRepository.listener = this
+		ShowsRepository.listener = this
 	}
 
 	override fun onResume() {

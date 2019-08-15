@@ -19,7 +19,7 @@ data class ShowResponse(
 	val show: Show? = null,
 
 	@Transient
-	var isSuccessful: Boolean = true
+	var status: Int = ResponseStatus.SUCCESS
 )
 
 @JsonClass(generateAdapter = true)
@@ -28,5 +28,5 @@ data class EpisodesListResponse(
 	val episodesList: List<Episode>? = arrayListOf(),
 
 	@Transient
-	var isSuccessful: Boolean = true
+	var status: Int = ResponseStatus.SUCCESS
 )

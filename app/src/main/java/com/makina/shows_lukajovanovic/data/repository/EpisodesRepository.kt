@@ -40,13 +40,11 @@ object EpisodesRepository {
 		showDetailsResponseMutableLiveData.value = showDetailsResponseData[showId]
 	}
 
+	private var callEpisodesList: Call<EpisodesListResponse>? = null
+	private  var callShow: Call<ShowResponse>? = null
+
 	fun fetchDataFromWeb(showId: String) {
-		/*if(showId in showDetailsResponseData && showDetailsResponseData[ showId ]?.status == ResponseStatus.SUCCESS
-			|| showDetailsResponseData[ showId ]?.status == ResponseStatus.DOWNLOADING) {
-			//Data is already downloaded or currently downloading
-			return
-		}*/
-		if (showId in showDetailsResponseData && showDetailsResponseData[showId]?.status == ResponseStatus.DOWNLOADING) {
+		if (showDetailsResponseLiveData.value?.status == ResponseStatus.DOWNLOADING) {
 			//Data is currently downloading
 			return
 		}
@@ -56,56 +54,63 @@ object EpisodesRepository {
 		fun updateData() {
 			if (episodesListResponse != null && showResponse != null) {
 				var status: Int = ResponseStatus.FAIL
-				if ((showResponse?.isSuccessful ?: false) and (episodesListResponse?.isSuccessful ?: false))
+				if(showResponse?.status == ResponseStatus.SUCCESS && episodesListResponse?.status == ResponseStatus.SUCCESS)
 					status = ResponseStatus.SUCCESS
 
-				showDetailsResponseData[showId] =
+				showDetailsResponseData[ showId ] =
 					ShowDetailsResponse(
 						show = showResponse?.show,
 						episodesList = episodesListResponse?.episodesList?.toMutableList() ?: mutableListOf(),
 						status = status
 					)
-				showDetailsResponseMutableLiveData.value = showDetailsResponseData[showId]
+				showDetailsResponseMutableLiveData.value = showDetailsResponseData[ showId ]
 			}
 		}
-
-		RetrofitClient.apiService?.getEpisodesListById(showId)?.enqueue(object : Callback<EpisodesListResponse> {
+		callEpisodesList = RetrofitClient.apiService?.getEpisodesListById(showId)
+		callEpisodesList?.enqueue(object : Callback<EpisodesListResponse> {
 			override fun onFailure(call: Call<EpisodesListResponse>, t: Throwable) {
-				episodesListResponse = EpisodesListResponse(isSuccessful = false)
+				episodesListResponse = EpisodesListResponse(status = ResponseStatus.FAIL)
 				updateData()
+				callShow?.cancel()
+				if(!call.isCanceled) listener?.displayMessage("Error", "Connection error.")
 			}
 
 			override fun onResponse(call: Call<EpisodesListResponse>, response: Response<EpisodesListResponse>) {
-				with(response) {
-					if (isSuccessful && body() != null) {
-						episodesListResponse = EpisodesListResponse(
-							episodesList = body()?.episodesList,
-							isSuccessful = true
-						)
-					} else {
-						episodesListResponse = EpisodesListResponse(isSuccessful = false)
-					}
+				if(!response.isSuccessful || response.body() == null) {
+					episodesListResponse = EpisodesListResponse(status = ResponseStatus.FAIL)
+					listener?.displayMessage("Error", "Error while downloading")
+					callShow?.cancel()
+				}
+				else {
+					episodesListResponse = EpisodesListResponse(
+						episodesList = response.body()?.episodesList,
+						status = ResponseStatus.SUCCESS
+					)
 				}
 				updateData()
 			}
 		})
 
-		RetrofitClient.apiService?.getShowById(showId)?.enqueue(object : Callback<ShowResponse> {
+		callShow = RetrofitClient.apiService?.getShowById(showId)
+		callShow?.enqueue(object : Callback<ShowResponse> {
 			override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
-				showResponse = ShowResponse(isSuccessful = false)
+				showResponse = ShowResponse(status = ResponseStatus.FAIL)
 				updateData()
+				callEpisodesList?.cancel()
+				if(!call.isCanceled) listener?.displayMessage("Error", "Connection error.")
 			}
 
 			override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
-				with(response) {
-					if (isSuccessful && body() != null) {
-						showResponse = ShowResponse(
-							show = body()?.show,
-							isSuccessful = true
+				if(!response.isSuccessful || response.body() == null) {
+					showResponse = ShowResponse(status = ResponseStatus.FAIL)
+					listener?.displayMessage("Error", "Error while downloading.")
+					callEpisodesList?.cancel()
+				} else {
+					showResponse =
+						ShowResponse(
+							show = response.body()?.show,
+							status = ResponseStatus.SUCCESS
 						)
-					} else {
-						showResponse = ShowResponse(isSuccessful = false)
-					}
 				}
 				updateData()
 			}
@@ -127,8 +132,7 @@ object EpisodesRepository {
 		callLikeStatus?.enqueue(object : Callback<Show> {
 			override fun onFailure(call: Call<Show>, t: Throwable) {
 				saveLikeStatus(oldStatus.copy(status = ResponseStatus.FAIL))
-				if(call.isCanceled) return
-				listener?.displayMessage("Error", "Connection error")
+				if(!call.isCanceled) listener?.displayMessage("Error", "Connection error")
 			}
 
 			override fun onResponse(call: Call<Show>, response: Response<Show>) {
@@ -149,7 +153,8 @@ object EpisodesRepository {
 
 	fun cancelCalls() {
 		callLikeStatus?.cancel()
-		//TODO makni progress bar
+		callEpisodesList?.cancel()
+		callShow?.cancel()
 	}
 
 	private val databaseLikeStatus: LikeStatusDatabase = Room.databaseBuilder(

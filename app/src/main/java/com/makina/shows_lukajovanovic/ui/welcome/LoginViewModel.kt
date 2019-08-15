@@ -22,8 +22,8 @@ class LoginViewModel: ViewModel(), Observer<TokenResponse> {
 		AuthorizationRepository.tokenResponseLiveData.observeForever(this)
 	}
 
-	fun login(username: String, password: String, rememberMe: Boolean, showInfo: (Int) -> Unit) {
-		AuthorizationRepository.login(username, password, rememberMe, showInfo)
+	fun login(username: String, password: String, rememberMe: Boolean) {
+		AuthorizationRepository.login(username, password, rememberMe)
 	}
 
 	fun logout() {
@@ -32,5 +32,6 @@ class LoginViewModel: ViewModel(), Observer<TokenResponse> {
 
 	override fun onCleared() {
 		AuthorizationRepository.tokenResponseLiveData.removeObserver(this)
+		AuthorizationRepository.cancelCalls()
 	}
 }

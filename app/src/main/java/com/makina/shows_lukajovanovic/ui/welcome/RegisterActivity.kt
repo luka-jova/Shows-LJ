@@ -11,11 +11,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
+import com.makina.shows_lukajovanovic.data.repository.AuthorizationRepository
+import com.makina.shows_lukajovanovic.data.repository.RepositoryInfoHandler
+import com.makina.shows_lukajovanovic.ui.shared.InfoAllertDialog
 
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.activity_register.editTextPassword
 
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 	companion object {
 		fun newInstance(context: Context) : Intent {
 			return Intent(context, RegisterActivity::class.java)
@@ -23,6 +26,8 @@ class RegisterActivity : AppCompatActivity() {
 	}
 
 	private lateinit var viewModel: RegisterViewModel
+	private var active = false
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_register)
@@ -30,6 +35,8 @@ class RegisterActivity : AppCompatActivity() {
 		toolbarRegister.title = "Registration"
 		toolbarRegister.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
 		toolbarRegister.setNavigationOnClickListener { onBackPressed() }
+
+		AuthorizationRepository.listener = this
 
 		viewModel = ViewModelProviders.of(this).get(RegisterViewModel::class.java)
 		viewModel.registrationResponseLiveData.observe(this, Observer {response ->
@@ -48,7 +55,7 @@ class RegisterActivity : AppCompatActivity() {
 				Toast.makeText(this, "Please repeat correct password", Toast.LENGTH_SHORT).show()
 			}
 			else {
-				viewModel.register(editTextEmail.text.toString(), editTextPassword.text.toString(), ::showInfo)
+				viewModel.register(editTextEmail.text.toString(), editTextPassword.text.toString())
 			}
 		}
 		updateUI()
@@ -71,16 +78,19 @@ class RegisterActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun showInfo(messageCode: Int) {
-		Toast.makeText(
-			this,
-			when(messageCode) {
-				ResponseStatus.INFO_ERROR_INTERNET -> "Check your internet connection"
-				ResponseStatus.INFO_ERROR_LOGIN -> "Login failed"
-				ResponseStatus.INFO_ERROR_REGISTER -> "Registration failed"
-				else -> ""
-			},
-			Toast.LENGTH_SHORT
-		).show()
+	override fun onResume() {
+		super.onResume()
+		active = true
 	}
+
+	override fun onStop() {
+		active = false
+		super.onStop()
+	}
+
+	override fun displayMessage(title: String, message: String) {
+		if(active)
+			InfoAllertDialog.newInstance(title, message).show(supportFragmentManager, "Message fragment")
+	}
+
 }

@@ -20,8 +20,43 @@ object ShowsRepository {
 	val showsListResponseLiveData: LiveData<ShowsListResponse>
 		get() = showsListResponseMutableLiveData
 
+	var listener: RepositoryInfoHandler? = null
+
+	private var callShows: Call<ShowsListResponse>? = null
+
 	fun fetchShowsListWebData() {
-		/*val buff:MutableList<Show> = mutableListOf()
+		if(dataUpToDate && showsListResponseLiveData.value?.status == ResponseStatus.SUCCESS
+			|| showsListResponseLiveData.value?.status == ResponseStatus.DOWNLOADING) {
+			//Already downloaded or downloading
+			return
+		}
+		showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.DOWNLOADING)
+		callShows = RetrofitClient.apiService?.getShowsList()
+		callShows?.enqueue(object : Callback<ShowsListResponse> {
+			override fun onFailure(call: Call<ShowsListResponse>, t: Throwable) {
+				showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.FAIL)
+				if(!call.isCanceled) listener?.displayMessage("Error", "Connection error")
+			}
+
+			override fun onResponse(call: Call<ShowsListResponse>, response: Response<ShowsListResponse>) {
+				if(!response.isSuccessful || response.body() == null) {
+					listener?.displayMessage("Error", "Error while downloading shows")
+					showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.FAIL)
+				}
+				else {
+					showsListResponseMutableLiveData.value =
+						ShowsListResponse(
+							showsList = response.body()?.showsList ?: listOf(),
+							status = ResponseStatus.SUCCESS
+						)
+					dataUpToDate = true
+				}
+			}
+		})
+	}
+
+	fun fetchMockData() {
+		val buff:MutableList<Show> = mutableListOf()
 		for(i in 1..10) {
 			buff.add(Show(showId = "prvi$i", name = "Chernobyl", imageId = R.drawable.img_chernobyl, likeNumber = 10))
 			buff.add(Show(showId = "drugi$i", name = "Two and a half men", imageId = R.drawable.img_men, likeNumber = 2))
@@ -29,31 +64,9 @@ object ShowsRepository {
 			buff.add(Show(showId = "cetvri$i", name = "Dr House", imageId = R.drawable.img_dr_house))
 		}
 		showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.SUCCESS, showsList = buff)
-		return*/
-		if(dataUpToDate && showsListResponseLiveData.value?.status == ResponseStatus.SUCCESS) {
-			//Already downloaded
-			return
-		}
-		showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.DOWNLOADING)
-		RetrofitClient.apiService?.getShowsList()?.enqueue(object : Callback<ShowsListResponse> {
-			override fun onFailure(call: Call<ShowsListResponse>, t: Throwable) {
-				showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.FAIL)
-			}
+	}
 
-			override fun onResponse(call: Call<ShowsListResponse>, response: Response<ShowsListResponse>) {
-				with(response) {
-					if(isSuccessful && body() != null) {
-						showsListResponseMutableLiveData.value = ShowsListResponse(
-							showsList = body()?.showsList ?: listOf(),
-							status = ResponseStatus.SUCCESS
-						)
-						dataUpToDate = true
-					} else {
-						showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.FAIL)
-					}
-				}
-			}
-		})
-		val buf = mutableListOf<Show>()
+	fun cancelCalls() {
+		callShows?.cancel()
 	}
 }

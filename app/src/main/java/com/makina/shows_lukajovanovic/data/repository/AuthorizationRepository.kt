@@ -31,12 +31,19 @@ object AuthorizationRepository {
 		}
 	}
 
-	fun login(username: String, password: String, rememberMe: Boolean, showInfo: (Int) -> Unit = {}) {
+	var listener: RepositoryInfoHandler? = null
+
+	var callLogin: Call<TokenResponseFromWeb>? = null
+
+	fun login(username: String, password: String, rememberMe: Boolean) {
+		if(tokenResponseLiveData.value?.status == ResponseStatus.DOWNLOADING) return
+
 		tokenResponseMutableLiveData.value = TokenResponse(status = ResponseStatus.DOWNLOADING)
-		RetrofitClient.apiService?.loginUser(LoginData(username, password))?.enqueue(object: Callback<TokenResponseFromWeb> {
+		callLogin = RetrofitClient.apiService?.loginUser(LoginData(username, password))
+		callLogin?.enqueue(object: Callback<TokenResponseFromWeb> {
 			override fun onFailure(call: Call<TokenResponseFromWeb>, t: Throwable) {
 				tokenResponseMutableLiveData.value = TokenResponse(status = ResponseStatus.FAIL)
-				showInfo(ResponseStatus.INFO_ERROR_INTERNET)
+				if(!call.isCanceled) listener?.displayMessage("Error", "Connection error.")
 			}
 
 			override fun onResponse(call: Call<TokenResponseFromWeb>, response: Response<TokenResponseFromWeb>) {
@@ -57,37 +64,43 @@ object AuthorizationRepository {
 					}
 					else {
 						tokenResponseMutableLiveData.value = TokenResponse(status = ResponseStatus.FAIL)
-						showInfo(ResponseStatus.INFO_ERROR_LOGIN)
+						listener?.displayMessage("Error", "Authorization failed")
 					}
 				}
 			}
 		})
 	}
 
-	fun register(username: String, password: String, showInfo: (Int) -> Unit = {}) {
+	var callRegister: Call<CreateAccountResponse>? = null
+
+	fun register(username: String, password: String) {
+		if(registrationResponseLiveData.value?.status == ResponseStatus.DOWNLOADING) return
+
 		registrationResponseMutableLiveData.value = RegistrationResponse(status = ResponseStatus.DOWNLOADING)
-		RetrofitClient.apiService?.registerUser(LoginData(username, password))?.enqueue(object : Callback<CreateAccountResponse> {
+		callRegister = RetrofitClient.apiService?.registerUser(LoginData(username, password))
+		callRegister?.enqueue(object : Callback<CreateAccountResponse> {
 				override fun onFailure(call: Call<CreateAccountResponse>, t: Throwable) {
 					registrationResponseMutableLiveData.value = RegistrationResponse(status = ResponseStatus.FAIL)
-					showInfo(ResponseStatus.INFO_ERROR_INTERNET)
+					if(!call.isCanceled) listener?.displayMessage("Error", "Connection error")
 				}
 
 				override fun onResponse(call: Call<CreateAccountResponse>, response: Response<CreateAccountResponse>) {
 					if(!response.isSuccessful) {
 						registrationResponseMutableLiveData.value = RegistrationResponse(status = ResponseStatus.FAIL)
-						showInfo(ResponseStatus.INFO_ERROR_REGISTER)
-						return
+						listener?.displayMessage("Error", "Failed to create account")
+					} else {
+						loginAfterRegistration(username, password)
 					}
-					loginAfterRegistration(username, password, showInfo)
 				}
 			})
 	}
 
-	private fun loginAfterRegistration(username: String, password: String, showInfo: (Int) -> Unit) {
-		RetrofitClient.apiService?.loginUser(LoginData(username, password))?.enqueue(object: Callback<TokenResponseFromWeb> {
+	private fun loginAfterRegistration(username: String, password: String) {
+		callLogin = RetrofitClient.apiService?.loginUser(LoginData(username, password))
+		callLogin?.enqueue(object: Callback<TokenResponseFromWeb> {
 			override fun onFailure(call: Call<TokenResponseFromWeb>, t: Throwable) {
 				registrationResponseMutableLiveData.value = RegistrationResponse(status = ResponseStatus.FAIL)
-				showInfo(ResponseStatus.INFO_ERROR_INTERNET)
+				if(!call.isCanceled) listener?.displayMessage("Error", "Connection error")
 			}
 
 			override fun onResponse(call: Call<TokenResponseFromWeb>, response: Response<TokenResponseFromWeb>) {
@@ -99,7 +112,7 @@ object AuthorizationRepository {
 					}
 					else {
 						registrationResponseMutableLiveData.value = RegistrationResponse(status = ResponseStatus.FAIL)
-						showInfo(ResponseStatus.INFO_ERROR_LOGIN)
+						listener?.displayMessage("Error", "Failed to login in new account")
 					}
 				}
 			}
@@ -116,5 +129,10 @@ object AuthorizationRepository {
 				"",
 				status = ResponseStatus.SUCCESS
 			)
+	}
+
+	fun cancelCalls() {
+		callLogin?.cancel()
+		callRegister?.cancel()
 	}
 }

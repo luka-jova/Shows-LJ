@@ -123,9 +123,6 @@ class EpisodesFragment : Fragment() {
 		textViewLikesCount.text = likesNumber.toString()
 		textViewLikesCount.setTypeface(textViewLikesCount.typeface, Typeface.BOLD)
 		updateVisibility()
-		if (response?.status == ResponseStatus.FAIL) {
-			Toast.makeText(requireContext(), "Download error", Toast.LENGTH_SHORT).show()
-		}
 	}
 
 	private fun updateVisibility() {

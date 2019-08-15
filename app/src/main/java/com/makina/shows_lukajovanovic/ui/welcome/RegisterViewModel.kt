@@ -22,8 +22,8 @@ class RegisterViewModel: ViewModel(), Observer<RegistrationResponse> {
 		registrationResponseMutableLiveData.value = response
 	}
 
-	fun register(username: String, password: String, showInfo: (Int) -> Unit) {
-		AuthorizationRepository.register(username, password, showInfo)
+	fun register(username: String, password: String) {
+		AuthorizationRepository.register(username, password)
 	}
 
 	override fun onCleared() {

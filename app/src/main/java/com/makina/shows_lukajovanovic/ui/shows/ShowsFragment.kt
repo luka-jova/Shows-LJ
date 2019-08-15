@@ -41,7 +41,6 @@ class ShowsFragment : Fragment() {
 		const val LAYOUT_GRID = 1
 	}
 
-	//TODO handle error messages for this and other Fragments
 	private lateinit var adapter: ShowsRecyclerAdapter
 	private lateinit var viewModel: ShowsViewModel
 	private lateinit var viewModelAuthorization: LoginViewModel
@@ -141,7 +140,6 @@ class ShowsFragment : Fragment() {
 			}
 			ResponseStatus.FAIL -> {
 				progressBarDownloading.visibility = View.INVISIBLE
-				Toast.makeText(requireContext(), "Downloading failed", Toast.LENGTH_SHORT).show()
 			}
 		}
 	}

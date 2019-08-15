@@ -20,6 +20,5 @@ object EpisodeDetailsRepository {
 				return
 			}
 		}
-		//TODO handle error
 	}
 }

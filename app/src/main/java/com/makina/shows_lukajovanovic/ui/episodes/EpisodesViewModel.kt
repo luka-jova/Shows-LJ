@@ -49,9 +49,11 @@ class EpisodesViewModel(val showId: String) : ViewModel() {
 	}
 
 	fun postLikeStatus(showId: String, likeStatus: Int) {
+		val oldStatus = likeStatusLiveData.value ?: LikeStatus()
+		if(oldStatus.likeStatus == likeStatus) {return}
 		EpisodesRepository.postLikeStatus(
 			LikeStatus(id = likeStatusLiveData.value?.id ?: 0, showId = showId, likeStatus = likeStatus),
-			(likeStatusLiveData.value ?: LikeStatus())
+			oldStatus
 		)
 	}
 
