@@ -28,7 +28,6 @@ class SplashActivity: AppCompatActivity() {
 	}
 	private var active = true
 
-///TODO resolve-aj PR za 7. zadacu (netowrking)
 
 	private lateinit var viewModel: LoginViewModel
 
@@ -88,7 +87,7 @@ class SplashActivity: AppCompatActivity() {
 			duration = 500
 			doOnEnd {
 				if (active)
-					handlerThread.postDelayed(startActivityRunnable, 0)
+					handlerThread.postDelayed(startActivityRunnable, 2000)
 			}
 			start()
 		}
