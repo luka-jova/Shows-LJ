@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Episode
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
+import com.makina.shows_lukajovanovic.data.repository.AddEpisodeRepository
 import kotlinx.android.synthetic.main.fragment_add_episode.*
 import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.view.*
 import retrofit2.Response
@@ -33,7 +34,7 @@ import java.io.InputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AddEpisodeFragment: Fragment() {
+class AddEpisodeFragment: Fragment(), AddEpisodeRepository.AddEpisodeFragmentListener {
 	companion object {
 		const val ADD_EPISODE_TAG = "ADD_EPISODE_TAG"
 		const val EPISODE_CODE = "EPISODE_CODE"
@@ -45,6 +46,9 @@ class AddEpisodeFragment: Fragment() {
 		private const val REQUEST_CODE_PERMISSIONS_CAMERA = 2
 		private const val REQUEST_CODE_PERMISSION_SETPHOTO = 3
 
+		private const val PHOTO_STATE_ORIGINAL = 0
+		private const val PHOTO_STATE_LOADED = 1
+
 		fun newInstance(showId: String): AddEpisodeFragment {
 			return AddEpisodeFragment().apply {
 				arguments = Bundle().apply {
@@ -52,6 +56,10 @@ class AddEpisodeFragment: Fragment() {
 				}
 			}
 		}
+	}
+
+	override fun onSuccessUpload() {
+		activity?.onBackPressed()
 	}
 
 	private var photoUri: Uri? = null
@@ -71,7 +79,7 @@ class AddEpisodeFragment: Fragment() {
 
 		showId = arguments?.getString(SHOW_ID_CODE, "") ?: ""
 		viewModel = ViewModelProviders.of(this).get(AddEpisodeViewModel::class.java)
-
+		viewModel.addListener(this)
 		curEpisode = (savedInstanceState?.getSerializable(EPISODE_CODE) as? Episode) ?: Episode()
 
 		editTextEpisodeName.setText(curEpisode.name)
@@ -83,7 +91,7 @@ class AddEpisodeFragment: Fragment() {
 		buttonSave.setOnClickListener {
 			viewModel.addEpisode(showId, curEpisode, photoUri)
 		}
-		linearLayoutSeasonEpisodePicker.setOnClickListener {
+		linearLayoutSE.setOnClickListener {
 			SeasonEpisodePickerDialog(
 				curEpisode.seasonNum,
 				curEpisode.episodeNum
@@ -98,8 +106,7 @@ class AddEpisodeFragment: Fragment() {
 
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				curEpisode.name = p0.toString()
-				//TODO iduca linija PONEKAD srusi app s null-ptr-exc ako je nesto uneseno u editText polje i rotiram uredaj??
-				//curEpisode.name = editTextEpisodeName.text.toString()
+				updateUi()
 			}
 		})
 		editTextEpisodeDescription.addTextChangedListener(object: TextWatcher {
@@ -111,15 +118,15 @@ class AddEpisodeFragment: Fragment() {
 
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				curEpisode.episodeDescription = p0.toString()
-				//curEpisode.episodeDescription = editTextEpisodeDescription.text.toString()
+				updateUi()
 			}
 		})
 
-		imageButtonTakePhoto.setOnClickListener {
+		linearLayoutPhoto.setOnClickListener {
 			TakePhotoDialog().show(requireFragmentManager(), "takePhotoDialog")
 		}
 
-		viewModel.episodePostResponseLiveData.observe(this, androidx.lifecycle.Observer{
+		viewModel.episodePostResponseLiveData.observe(this, androidx.lifecycle.Observer{response ->
 			updateUi()
 		})
 		updateUi()
@@ -224,7 +231,7 @@ class AddEpisodeFragment: Fragment() {
 
 	private fun setPhoto() {
 		if(photoUri == null) {
-			imageButtonTakePhoto.setImageResource(R.drawable.ic_camera)
+			updatePhotoVisibility(PHOTO_STATE_ORIGINAL)
 			return
 		}
 		if(!handlePermission(
@@ -237,10 +244,26 @@ class AddEpisodeFragment: Fragment() {
 			bitmapEpisode = getBitmap(this)
 		}
 		if(bitmapEpisode == null) {
-			imageButtonTakePhoto.setImageResource(R.drawable.ic_camera)
+			updatePhotoVisibility(PHOTO_STATE_ORIGINAL)
 		}
 		else {
 			imageButtonTakePhoto.setImageBitmap(bitmapEpisode)
+			updatePhotoVisibility(PHOTO_STATE_LOADED)
+		}
+	}
+
+	private fun updatePhotoVisibility(state: Int = PHOTO_STATE_ORIGINAL) {
+		if(state == PHOTO_STATE_ORIGINAL) {
+			imageButtonTakePhoto.visibility = View.GONE
+			textViewUploadPhoto.visibility = View.GONE
+			imageButtonTakePhotoOriginal.visibility = View.VISIBLE
+			textViewUploadPhotoOriginal.visibility = View.VISIBLE
+		}
+		else {
+			imageButtonTakePhoto.visibility = View.VISIBLE
+			textViewUploadPhoto.visibility = View.VISIBLE
+			imageButtonTakePhotoOriginal.visibility = View.GONE
+			textViewUploadPhotoOriginal.visibility = View.GONE
 		}
 	}
 
@@ -283,10 +306,7 @@ class AddEpisodeFragment: Fragment() {
 		}
 		else {
 			progressBarDownloading.visibility = View.GONE
-			buttonSave.isEnabled = true
-		}
-		if(response?.status == ResponseStatus.SUCCESS) {
-			Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+			buttonSave.isEnabled = editTextEpisodeDescription.text.toString().length >= 50 && editTextEpisodeName.text.toString().isNotEmpty()
 		}
 	}
 

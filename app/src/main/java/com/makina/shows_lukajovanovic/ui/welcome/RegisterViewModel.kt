@@ -26,6 +26,10 @@ class RegisterViewModel: ViewModel(), Observer<RegistrationResponse> {
 		AuthorizationRepository.register(username, password)
 	}
 
+	fun cancelCalls() {
+		AuthorizationRepository.cancelCalls()
+	}
+
 	override fun onCleared() {
 		AuthorizationRepository.registrationResponseLiveData.removeObserver(this)
 	}

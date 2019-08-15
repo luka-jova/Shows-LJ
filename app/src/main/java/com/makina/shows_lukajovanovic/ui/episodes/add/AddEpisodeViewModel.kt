@@ -1,6 +1,7 @@
 package com.makina.shows_lukajovanovic.ui.episodes.add
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -28,6 +29,10 @@ class AddEpisodeViewModel : ViewModel(), Observer<EpisodePostResponse> {
 
 	fun addEpisode(showId: String, newEpisode: Episode, photoUri: Uri?) {
 		AddEpisodeRepository.addEpisode(showId, newEpisode, photoUri)
+	}
+
+	fun addListener(listener: AddEpisodeRepository.AddEpisodeFragmentListener) {
+		AddEpisodeRepository.listenerFragment = listener
 	}
 
 	override fun onCleared() {

@@ -56,11 +56,12 @@ class CommentsFragment : Fragment() {
 		}
 
 		buttonPost.setOnClickListener {
-			viewModel.addComment(
-				showId,
-				episodeId,
-				editTextComment.text.toString()
-			)
+			if(editTextComment.text.toString().isNotEmpty())
+				viewModel.addComment(
+					showId,
+					episodeId,
+					editTextComment.text.toString()
+				)
 		}
 
 		textInputLayoutComments.showDividers = LinearLayout.SHOW_DIVIDER_BEGINNING

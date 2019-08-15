@@ -92,9 +92,10 @@
 						android:layout_height="wrap_content"
 						android:paddingTop="50dp">
 			<ImageView
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							app:srcCompat="@drawable/img_placeholder_episodes"/>
+							android:layout_width="120dp"
+							android:layout_height="120dp"
+							android:layout_gravity="center_horizontal"
+							app:srcCompat="@drawable/img_placehoder_comments"/>
 			<TextView
 							android:text="No comments for this episode yet.\nBe the first who will comment!"
 							android:layout_width="match_parent"

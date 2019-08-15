@@ -15,6 +15,7 @@ import com.makina.shows_lukajovanovic.data.model.EpisodePostResponse
 import com.makina.shows_lukajovanovic.data.model.MediaResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.data.network.RetrofitClient
+import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
@@ -73,6 +74,10 @@ object AddEpisodeRepository {
 	}
 
 	var listener: RepositoryInfoHandler? = null
+	var listenerFragment: AddEpisodeFragmentListener? = null
+	interface AddEpisodeFragmentListener {
+		fun onSuccessUpload()
+	}
 
 	private fun getFileFromUri(photoUri: Uri): File? {
 		val input = ShowsApp.instance.contentResolver.openInputStream(photoUri)
@@ -124,6 +129,7 @@ object AddEpisodeRepository {
 						episode = response.body()?.episode ?: Episode(),
 						status = ResponseStatus.SUCCESS
 					)
+				listenerFragment?.onSuccessUpload()
 			}
 		})
 	}

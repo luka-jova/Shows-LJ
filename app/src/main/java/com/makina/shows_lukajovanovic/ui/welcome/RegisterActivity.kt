@@ -85,6 +85,7 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 
 	override fun onStop() {
 		active = false
+		viewModel.cancelCalls()
 		super.onStop()
 	}
 
