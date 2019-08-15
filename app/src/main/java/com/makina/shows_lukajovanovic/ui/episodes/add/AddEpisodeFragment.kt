@@ -23,8 +23,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Episode
+import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import kotlinx.android.synthetic.main.fragment_add_episode.*
 import kotlinx.android.synthetic.main.layout_fragment_season_episode_picker.view.*
+import retrofit2.Response
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -79,8 +81,7 @@ class AddEpisodeFragment: Fragment() {
 		setPhoto()
 
 		buttonSave.setOnClickListener {
-			viewModel.addEpisode(showId, curEpisode)
-			activity?.onBackPressed()
+			viewModel.addEpisode(showId, curEpisode, photoUri)
 		}
 		linearLayoutSeasonEpisodePicker.setOnClickListener {
 			SeasonEpisodePickerDialog(
@@ -117,6 +118,11 @@ class AddEpisodeFragment: Fragment() {
 		imageButtonTakePhoto.setOnClickListener {
 			TakePhotoDialog().show(requireFragmentManager(), "takePhotoDialog")
 		}
+
+		viewModel.episodePostResponseLiveData.observe(this, androidx.lifecycle.Observer{
+			updateUi()
+		})
+		updateUi()
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
@@ -199,14 +205,14 @@ class AddEpisodeFragment: Fragment() {
 			)) return
 		//Imam permissione
 
-		val photoFile: File? = try {
+		val tmpFile = try {
 			createImageFile()
 		} catch (ex: IOException) {
 			null
 		}
 		val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 		takePhotoIntent.resolveActivity(requireContext().packageManager)?.also {
-			photoFile?.also {
+			tmpFile?.also {
 				photoUri = FileProvider.getUriForFile(requireContext(), "com.makina.shows_lukajovanovic", it)
 				takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
 				startActivityForResult(takePhotoIntent,
@@ -267,6 +273,21 @@ class AddEpisodeFragment: Fragment() {
 			storageDir)
 
 		return resultFile
+	}
+
+	private fun updateUi() {
+		val response = viewModel.episodePostResponse
+		if(response?.status == ResponseStatus.DOWNLOADING) {
+			progressBarDownloading.visibility = View.VISIBLE
+			buttonSave.isEnabled = false
+		}
+		else {
+			progressBarDownloading.visibility = View.GONE
+			buttonSave.isEnabled = true
+		}
+		if(response?.status == ResponseStatus.SUCCESS) {
+			Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+		}
 	}
 
 

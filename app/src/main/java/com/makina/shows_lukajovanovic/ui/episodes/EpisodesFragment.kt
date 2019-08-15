@@ -140,5 +140,15 @@ class EpisodesFragment : Fragment() {
 		} else {
 			progressBarDownloading.visibility = View.INVISIBLE
 		}
+		if(viewModel.showDetailsResponse?.status == ResponseStatus.SUCCESS) {
+			buttonLike.visibility = View.VISIBLE
+			buttonDislike.visibility = View.VISIBLE
+			textViewLikesCount.visibility = View.VISIBLE
+		}
+		else {
+			buttonLike.visibility = View.INVISIBLE
+			buttonDislike.visibility = View.INVISIBLE
+			textViewLikesCount.visibility = View.INVISIBLE
+		}
 	}
 }

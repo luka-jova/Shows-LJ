@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.network.RetrofitClient
+import com.makina.shows_lukajovanovic.data.repository.AddEpisodeRepository
 import com.makina.shows_lukajovanovic.data.repository.CommentsRepository
 import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 import com.makina.shows_lukajovanovic.data.repository.RepositoryInfoHandler
@@ -52,6 +53,7 @@ class MainContainerActivity : AppCompatActivity(),
 		}
 		CommentsRepository.listener = this
 		EpisodesRepository.listener = this
+		AddEpisodeRepository.listener = this
 	}
 
 	override fun onResume() {

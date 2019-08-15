@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Episode
+import com.makina.shows_lukajovanovic.data.network.RetrofitClient
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_episode_details.*
 
 class EpisodeDetailsFragment: Fragment() {
@@ -59,6 +61,7 @@ class EpisodeDetailsFragment: Fragment() {
 				e.printStackTrace()
 			}
 		}
+
 	}
 
 	interface EpisodeDetailsFragmentContainer {
@@ -72,6 +75,10 @@ class EpisodeDetailsFragment: Fragment() {
 		textViewEpisodeDescription.text = episode.episodeDescription
 		textViewEpisodeName.text = episode.name
 		textViewSE.text = "S${episode.seasonNum} E${episode.episodeNum}"
+		if(episode.imageUrl.isNotEmpty()) {
+			Picasso.get().load(RetrofitClient.BASE_URL + episode.imageUrl)
+				.into(imageViewEpisode)
+		}
 	}
 
 }

@@ -1,8 +1,14 @@
 package com.makina.shows_lukajovanovic.data.network
 
 import com.makina.shows_lukajovanovic.data.model.*
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
+import okhttp3.RequestBody
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+
+
 
 interface Api {
 	@GET("/api/shows/")
@@ -31,4 +37,11 @@ interface Api {
 
 	@POST("/api/shows/{showId}/dislike")
 	fun postDislike(@Header("Authorization") tokenHeader: String, @Path("showId") showId: String): Call<Show>
+
+	@POST("/api/media")
+	@Multipart
+	fun uploadMedia(@Header("Authorization") tokenHeader: String, @Part("file\"; filename=\"image1212123.jpg\"") request: RequestBody): Call<MediaResponse>
+
+	@POST("/api/episodes")
+	fun uploadEpisode(@Header("Authorization") tokenHeader: String, @Body episode: EpisodePostData): Call<EpisodePostResponse>
 }

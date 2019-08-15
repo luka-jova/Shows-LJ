@@ -39,9 +39,13 @@ object EpisodesRepository {
 	}
 
 	fun fetchDataFromWeb(showId: String) {
-		if(showId in showDetailsResponseData && showDetailsResponseData[ showId ]?.status == ResponseStatus.SUCCESS
+		/*if(showId in showDetailsResponseData && showDetailsResponseData[ showId ]?.status == ResponseStatus.SUCCESS
 			|| showDetailsResponseData[ showId ]?.status == ResponseStatus.DOWNLOADING) {
 			//Data is already downloaded or currently downloading
+			return
+		}*/
+		if(showId in showDetailsResponseData && showDetailsResponseData[ showId ]?.status == ResponseStatus.DOWNLOADING) {
+			//Data is currently downloading
 			return
 		}
 		showDetailsResponseMutableLiveData.value = ShowDetailsResponse(status = ResponseStatus.DOWNLOADING)

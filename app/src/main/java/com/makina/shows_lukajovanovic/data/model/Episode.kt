@@ -20,7 +20,10 @@ class Episode(
 	var episodeDescription:String = "",
 
 	@Json(name = "_id")
-	var episodeId: String = ""
+	var episodeId: String = "",
+
+	@Json(name = "imageUrl")
+	var imageUrl: String = ""
 
 ) :Serializable {
 	var seasonNum: Int
