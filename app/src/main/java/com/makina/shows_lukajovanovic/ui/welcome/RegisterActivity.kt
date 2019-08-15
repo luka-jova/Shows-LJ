@@ -3,6 +3,8 @@ package com.makina.shows_lukajovanovic.ui.welcome
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -59,6 +61,40 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 			}
 		}
 		updateUI()
+
+		editTextEmail.addTextChangedListener(object: TextWatcher {
+			override fun afterTextChanged(p0: Editable?) {
+			}
+
+			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+			}
+
+			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+				updateUI()
+			}
+		})
+		editTextPassword.addTextChangedListener(object: TextWatcher {
+			override fun afterTextChanged(p0: Editable?) {
+			}
+
+			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+			}
+
+			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+				updateUI()
+			}
+		})
+		editTextRepeatPassword.addTextChangedListener(object: TextWatcher {
+			override fun afterTextChanged(p0: Editable?) {
+			}
+
+			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+			}
+
+			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+				updateUI()
+			}
+		})
 	}
 
 	private fun updateUI() {
@@ -70,7 +106,7 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 			editTextRepeatPassword.isEnabled = false
 		}
 		else {
-			buttonRegister.isEnabled = true
+			buttonRegister.isEnabled = editTextPassword.text.toString().isNotEmpty() && editTextEmail.text.toString().isNotEmpty() && editTextRepeatPassword.text.toString().isNotEmpty()
 			progressBarDownloading.visibility = View.INVISIBLE
 			editTextEmail.isEnabled = true
 			editTextPassword.isEnabled = true

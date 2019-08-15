@@ -33,7 +33,12 @@ class WelcomeActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_welcome)
 		val username = intent.getStringExtra(USERNAME_CODE)
-		textViewWelcomeUser.text = "Welcome, $username"
+		var buf = ""
+		for(i in username) {
+			if(i.toString() == "@") break
+			buf = buf.plus(i)
+		}
+		textViewWelcomeUser.text = "Welcome, $buf"
 	}
 
 	override fun onResume() {
