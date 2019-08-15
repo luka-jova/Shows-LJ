@@ -109,6 +109,7 @@ object AuthorizationRepository {
 					if(isSuccessful && bufToken.isNotEmpty()) {
 						registrationResponseMutableLiveData.value =
 										RegistrationResponse(token = bufToken, status = ResponseStatus.SUCCESS)
+						tokenResponseMutableLiveData.value = TokenResponse(token = bufToken, status = ResponseStatus.SUCCESS)
 					}
 					else {
 						registrationResponseMutableLiveData.value = RegistrationResponse(status = ResponseStatus.FAIL)

@@ -106,7 +106,7 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 			editTextRepeatPassword.isEnabled = false
 		}
 		else {
-			buttonRegister.isEnabled = editTextPassword.text.toString().isNotEmpty() && editTextEmail.text.toString().isNotEmpty() && editTextRepeatPassword.text.toString().isNotEmpty()
+			buttonRegister.isEnabled = isFormValid()
 			progressBarDownloading.visibility = View.INVISIBLE
 			editTextEmail.isEnabled = true
 			editTextPassword.isEnabled = true
@@ -128,6 +128,10 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 	override fun displayMessage(title: String, message: String) {
 		if(active)
 			InfoAllertDialog.newInstance(title, message).show(supportFragmentManager, "Message fragment")
+	}
+
+	private fun isFormValid(): Boolean {
+		return EMAIL_REGEX.toRegex().matches(editTextEmail.text.toString()) && editTextPassword.text.toString().length >= minPasswordCnt && editTextRepeatPassword.text.toString().length >= minPasswordCnt
 	}
 
 }

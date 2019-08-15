@@ -20,7 +20,8 @@ import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.shared.InfoAllertDialog
 import kotlinx.android.synthetic.main.activity_login.*
 
-const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._]*@{1}[A-Za-z0-9._]{1,}\.[A-Za-z0-9._]{1,}"""
+const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._+]*@{1}[A-Za-z0-9._+]{1,}\.[A-Za-z0-9._+]{1,}"""
+const val minPasswordCnt = 5
 
 //const val EMAIL_REGEX = "."
 class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
@@ -93,7 +94,7 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 	}
 
 	fun updateButton() {
-		buttonLogin.isEnabled = isEmailValid(editTextUsername.text.toString()) && editTextPassword.text.length >= 1
+		buttonLogin.isEnabled = isEmailValid(editTextUsername.text.toString()) && editTextPassword.text.length >= minPasswordCnt
 	}
 
 	private fun updateUI(response: TokenResponse) {
