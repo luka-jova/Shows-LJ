@@ -63,34 +63,22 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 		updateUI()
 
 		editTextEmail.addTextChangedListener(object: TextWatcher {
-			override fun afterTextChanged(p0: Editable?) {
-			}
-
-			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-			}
-
+			override fun afterTextChanged(p0: Editable?) {}
+			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				updateUI()
 			}
 		})
 		editTextPassword.addTextChangedListener(object: TextWatcher {
-			override fun afterTextChanged(p0: Editable?) {
-			}
-
-			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-			}
-
+			override fun afterTextChanged(p0: Editable?) {}
+			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				updateUI()
 			}
 		})
 		editTextRepeatPassword.addTextChangedListener(object: TextWatcher {
-			override fun afterTextChanged(p0: Editable?) {
-			}
-
-			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-			}
-
+			override fun afterTextChanged(p0: Editable?) {}
+			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				updateUI()
 			}
@@ -98,6 +86,7 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 	}
 
 	private fun updateUI() {
+		isFormValid()
 		if(viewModel.registerResponse?.status == ResponseStatus.DOWNLOADING) {
 			buttonRegister.isEnabled = false
 			progressBarDownloading.visibility = View.VISIBLE
@@ -131,7 +120,28 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 	}
 
 	private fun isFormValid(): Boolean {
-		return EMAIL_REGEX.toRegex().matches(editTextEmail.text.toString()) && editTextPassword.text.toString().length >= minPasswordCnt && editTextRepeatPassword.text.toString().length >= minPasswordCnt
+		if (!isEmailValid(editTextEmail.text.toString())) {
+			textInputLayoutEmail.error = getString(R.string.err_username)
+		} else {
+			textInputLayoutEmail.error = ""
+		}
+		if(editTextPassword.text.length < minPasswordCnt) {
+			textInputLayoutPassword.error = getString(R.string.err_password)
+		} else {
+			textInputLayoutPassword.error = ""
+		}
+
+		if(editTextRepeatPassword.text.toString() != editTextPassword.text.toString()) {
+			textInputLayoutRepeatPassword.error = "Repeat correct password"
+		} else {
+			textInputLayoutRepeatPassword.error = ""
+		}
+
+		return isEmailValid(editTextEmail.text.toString()) && editTextPassword.text.toString().length >= minPasswordCnt && editTextRepeatPassword.text.toString().length >= minPasswordCnt
+	}
+
+	fun isEmailValid(email: String): Boolean {
+		return EMAIL_REGEX.toRegex().matches(email)
 	}
 
 }

@@ -33,6 +33,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.min
 
 class AddEpisodeFragment: Fragment(), AddEpisodeRepository.AddEpisodeFragmentListener {
 	companion object {
@@ -48,6 +49,8 @@ class AddEpisodeFragment: Fragment(), AddEpisodeRepository.AddEpisodeFragmentLis
 
 		private const val PHOTO_STATE_ORIGINAL = 0
 		private const val PHOTO_STATE_LOADED = 1
+
+		private const val minDescriptionLength = 50
 
 		fun newInstance(showId: String): AddEpisodeFragment {
 			return AddEpisodeFragment().apply {
@@ -298,7 +301,25 @@ class AddEpisodeFragment: Fragment(), AddEpisodeRepository.AddEpisodeFragmentLis
 		return resultFile
 	}
 
+	private fun isFormValid(): Boolean {
+		if(editTextEpisodeName.text.toString().isEmpty()) {
+			textInputLayoutEpisodeTitle.error = "Title must not be empty"
+		}
+		else {
+			textInputLayoutEpisodeTitle.error = ""
+		}
+
+		if(editTextEpisodeDescription.text.toString().length < minDescriptionLength) {
+			textInputLayoutEpisodeDescription.error = "Description should be at least $minDescriptionLength chars long."
+		}
+		else {
+			textInputLayoutEpisodeDescription.error = ""
+		}
+		return editTextEpisodeDescription.text.toString().length >= minDescriptionLength && editTextEpisodeName.text.toString().isNotEmpty()
+	}
+
 	private fun updateUi() {
+		isFormValid()
 		val response = viewModel.episodePostResponse
 		if(response?.status == ResponseStatus.DOWNLOADING) {
 			progressBarDownloading.visibility = View.VISIBLE
@@ -306,7 +327,7 @@ class AddEpisodeFragment: Fragment(), AddEpisodeRepository.AddEpisodeFragmentLis
 		}
 		else {
 			progressBarDownloading.visibility = View.GONE
-			buttonSave.isEnabled = editTextEpisodeDescription.text.toString().length >= 50 && editTextEpisodeName.text.toString().isNotEmpty()
+			buttonSave.isEnabled = isFormValid()
 		}
 	}
 

@@ -19,6 +19,8 @@ import com.makina.shows_lukajovanovic.data.repository.RepositoryInfoHandler
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.shared.InfoAllertDialog
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.editTextPassword
+import kotlinx.android.synthetic.main.activity_login.progressBarDownloading
 
 const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._+]*@{1}[A-Za-z0-9._+]{1,}\.[A-Za-z0-9._+]{1,}"""
 const val minPasswordCnt = 5
@@ -44,7 +46,7 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 		viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
 		viewModel.tokenResponseLiveData.observe(this, Observer { response ->
 			if (response == null) return@Observer
-			updateUI(response)
+			updateUI()
 		})
 
 		buttonLogin.setOnClickListener {
@@ -56,28 +58,17 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 
 		editTextUsername.addTextChangedListener(object : TextWatcher {
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-				updateButton()
-				if (!isEmailValid(editTextUsername.text.toString())) {
-					textInputLayoutUsername.error = getString(R.string.err_username)
-				} else {
-					textInputLayoutUsername.error = ""
-				}
+				updateUI()
 			}
-
-			override fun afterTextChanged(p0: Editable?) {
-			}
-
+			override fun afterTextChanged(p0: Editable?) {}
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 		})
 
 		editTextPassword.addTextChangedListener(object : TextWatcher {
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-				updateButton()
+				updateUI()
 			}
-
-			override fun afterTextChanged(p0: Editable?) {
-			}
-
+			override fun afterTextChanged(p0: Editable?) {}
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 		})
 
@@ -97,7 +88,20 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 		buttonLogin.isEnabled = isEmailValid(editTextUsername.text.toString()) && editTextPassword.text.length >= minPasswordCnt
 	}
 
-	private fun updateUI(response: TokenResponse) {
+	private fun updateUI() {
+		updateButton()
+		if (!isEmailValid(editTextUsername.text.toString())) {
+			textInputLayoutUsername.error = getString(R.string.err_username)
+		} else {
+			textInputLayoutUsername.error = ""
+		}
+		if (editTextPassword.text.toString().length < minPasswordCnt) {
+			textInputLayoutPassword.error = getString(R.string.err_password)
+		} else {
+			textInputLayoutPassword.error = ""
+		}
+
+		val response = viewModel.tokenResponseLiveData.value ?: return
 		when (response.status) {
 			ResponseStatus.SUCCESS -> {
 				if (response.token.isNotEmpty()) {

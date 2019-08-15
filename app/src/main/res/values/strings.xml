@@ -3,7 +3,7 @@
 	<string name="hint_username">Username</string>
 	<string name="hint_password">Password</string>
 	<string name="err_username">Enter valid email address</string>
-	<string name="err_password">Enter a password with 8 or more characters</string>
+	<string name="err_password">Password should have at least 5 characters</string>
 	<string name="button_login">Log in</string>
 	<string name="button_save">SAVE</string>
 	<string name="hint_episode_description">Episode description</string>
