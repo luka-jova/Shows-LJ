@@ -88,25 +88,20 @@ class EpisodesFragment : Fragment() {
 			updateUI(response)
 		})
 
-		viewModel.likeStatusListLiveData.observe(this, Observer {likeStatusList ->
+		viewModel.likeStatusLiveData.observe(this, Observer { likeStatus ->
 			updateVisibility()
-			if(likeStatusList.status == ResponseStatus.SUCCESS) {
-				if(!likeStatusList.likeStatus.containsKey(showId)
-					|| likeStatusList.likeStatus[ showId ] == EpisodesRepository.NONE_STATUS) {
-					buttonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
+			when (likeStatus.likeStatus) {
+				EpisodesRepository.LIKE_STATUS -> {
+					buttonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle_filled)
 					buttonDislike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
 				}
-				else {
-					when(likeStatusList.likeStatus[ showId ]) {
-						EpisodesRepository.LIKE_STATUS -> {
-							buttonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle_filled)
-							buttonDislike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
-						}
-						else -> {
-							buttonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
-							buttonDislike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle_filled)
-						}
-					}
+				EpisodesRepository.DISLIKE_STATUS -> {
+					buttonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
+					buttonDislike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle_filled)
+				}
+				else -> {
+					buttonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
+					buttonDislike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle)
 				}
 			}
 		})
@@ -135,17 +130,17 @@ class EpisodesFragment : Fragment() {
 
 	private fun updateVisibility() {
 		if (viewModel.showDetailsResponse?.status == ResponseStatus.DOWNLOADING
-			|| viewModel.likeStatusList?.status == ResponseStatus.DOWNLOADING) {
+			|| viewModel.likeStatus?.status == ResponseStatus.DOWNLOADING
+		) {
 			progressBarDownloading.visibility = View.VISIBLE
 		} else {
 			progressBarDownloading.visibility = View.INVISIBLE
 		}
-		if(viewModel.showDetailsResponse?.status == ResponseStatus.SUCCESS) {
+		if (viewModel.showDetailsResponse?.status == ResponseStatus.SUCCESS) {
 			buttonLike.visibility = View.VISIBLE
 			buttonDislike.visibility = View.VISIBLE
 			textViewLikesCount.visibility = View.VISIBLE
-		}
-		else {
+		} else {
 			buttonLike.visibility = View.INVISIBLE
 			buttonDislike.visibility = View.INVISIBLE
 			textViewLikesCount.visibility = View.INVISIBLE
