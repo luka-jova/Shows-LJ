@@ -27,7 +27,7 @@ class SplashActivity: AppCompatActivity() {
 		const val START_ACTIVITY_CODE = 1
 	}
 	private var active = true
-
+	private var killedAnimation = false
 
 	private lateinit var viewModel: LoginViewModel
 
@@ -41,6 +41,13 @@ class SplashActivity: AppCompatActivity() {
 		layout.doOnLayout {
 			animateLogo()
 		}
+
+	}
+
+	override fun onResume() {
+		if(killedAnimation) animateLogo()
+		active = true
+		super.onResume()
 	}
 
 	private val handlerThread = Handler()
@@ -95,6 +102,7 @@ class SplashActivity: AppCompatActivity() {
 
 	override fun onStop() {
 		active = false
+		killedAnimation = true
 		handlerThread.removeCallbacks(startActivityRunnable)
 		if(::valueAnimatorLogo.isInitialized) valueAnimatorLogo.cancel()
 		if(::valueAnimatorTitle.isInitialized) valueAnimatorTitle.cancel()
