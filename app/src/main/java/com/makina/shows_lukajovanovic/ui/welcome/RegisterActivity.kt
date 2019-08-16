@@ -67,6 +67,7 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				updateUI()
+				validateEmail()
 			}
 		})
 		editTextPassword.addTextChangedListener(object: TextWatcher {
@@ -74,6 +75,7 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				updateUI()
+				validatePassword()
 			}
 		})
 		editTextRepeatPassword.addTextChangedListener(object: TextWatcher {
@@ -81,6 +83,7 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				updateUI()
+				validateRepeatPassword()
 			}
 		})
 	}
@@ -114,29 +117,36 @@ class RegisterActivity : AppCompatActivity(), RepositoryInfoHandler {
 		super.onStop()
 	}
 
+	private fun validateEmail() {
+		if (!isEmailValid(editTextEmail.text.toString())) {
+			textInputLayoutEmail.error = getString(R.string.err_username)
+		} else {
+			textInputLayoutEmail.error = ""
+		}
+	}
+
+	private fun validatePassword() {
+		if(editTextPassword.text.length < minPasswordCnt) {
+			textInputLayoutPassword.error = getString(R.string.err_password)
+		} else {
+			textInputLayoutPassword.error = ""
+		}
+	}
+
+	private fun validateRepeatPassword() {
+		if(editTextRepeatPassword.text.toString() != editTextPassword.text.toString()) {
+			textInputLayoutRepeatPassword.error = "Repeat correct password"
+		} else {
+			textInputLayoutRepeatPassword.error = ""
+		}
+	}
+
 	override fun displayMessage(title: String, message: String) {
 		if(active)
 			InfoAllertDialog.newInstance(title, message).show(supportFragmentManager, "Message fragment")
 	}
 
 	private fun isFormValid(): Boolean {
-		if (!isEmailValid(editTextEmail.text.toString())) {
-			textInputLayoutEmail.error = getString(R.string.err_username)
-		} else {
-			textInputLayoutEmail.error = ""
-		}
-		if(editTextPassword.text.length < minPasswordCnt) {
-			textInputLayoutPassword.error = getString(R.string.err_password)
-		} else {
-			textInputLayoutPassword.error = ""
-		}
-
-		if(editTextRepeatPassword.text.toString() != editTextPassword.text.toString()) {
-			textInputLayoutRepeatPassword.error = "Repeat correct password"
-		} else {
-			textInputLayoutRepeatPassword.error = ""
-		}
-
 		return isEmailValid(editTextEmail.text.toString()) && editTextPassword.text.toString().length >= minPasswordCnt && editTextRepeatPassword.text.toString().length >= minPasswordCnt
 	}
 

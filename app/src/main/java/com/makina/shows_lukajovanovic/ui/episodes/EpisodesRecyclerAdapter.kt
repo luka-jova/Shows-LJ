@@ -18,6 +18,7 @@ class EpisodesRecyclerAdapter(val onEpisodeClick: (String) -> Unit): RecyclerVie
 	}
 	var episodeList: List<Episode> = listOf()
 	var episodeDescription: String = ""
+	var showDefault = false
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 		val view =
@@ -42,7 +43,8 @@ class EpisodesRecyclerAdapter(val onEpisodeClick: (String) -> Unit): RecyclerVie
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 		if(getItemViewType(position) == CODE_HEADER) {
 			holder.itemView.textViewDescription.text = episodeDescription
-			holder.itemView.defaultLayout.visibility = if(episodeList.isEmpty()) View.VISIBLE else View.GONE
+			holder.itemView.defaultLayout.visibility =
+				if(episodeList.isEmpty() && showDefault) View.VISIBLE else View.GONE
 			return
 		}
 		val curEpisode = episodeList[ position - 1 ]
@@ -54,9 +56,10 @@ class EpisodesRecyclerAdapter(val onEpisodeClick: (String) -> Unit): RecyclerVie
 		}
 	}
 
-	fun setData(episodeList: List<Episode>, episodeDescription: String) {
+	fun setData(episodeList: List<Episode>, episodeDescription: String, shouldShowDefault: Boolean) {
 		this.episodeList = episodeList
 		this.episodeDescription = episodeDescription
+		showDefault = shouldShowDefault
 		notifyDataSetChanged()
 	}
 

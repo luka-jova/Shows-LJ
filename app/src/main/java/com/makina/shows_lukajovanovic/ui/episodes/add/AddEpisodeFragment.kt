@@ -110,6 +110,7 @@ class AddEpisodeFragment: Fragment(), AddEpisodeRepository.AddEpisodeFragmentLis
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				curEpisode.name = p0.toString()
 				updateUi()
+				validateTitle()
 			}
 		})
 		editTextEpisodeDescription.addTextChangedListener(object: TextWatcher {
@@ -122,6 +123,7 @@ class AddEpisodeFragment: Fragment(), AddEpisodeRepository.AddEpisodeFragmentLis
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				curEpisode.episodeDescription = p0.toString()
 				updateUi()
+				validateDescription()
 			}
 		})
 
@@ -301,20 +303,25 @@ class AddEpisodeFragment: Fragment(), AddEpisodeRepository.AddEpisodeFragmentLis
 		return resultFile
 	}
 
-	private fun isFormValid(): Boolean {
+	private fun validateTitle() {
 		if(editTextEpisodeName.text.toString().isEmpty()) {
 			textInputLayoutEpisodeTitle.error = "Title must not be empty"
 		}
 		else {
 			textInputLayoutEpisodeTitle.error = ""
 		}
+	}
 
+	private fun validateDescription() {
 		if(editTextEpisodeDescription.text.toString().length < minDescriptionLength) {
 			textInputLayoutEpisodeDescription.error = "Description should be at least $minDescriptionLength chars long."
 		}
 		else {
 			textInputLayoutEpisodeDescription.error = ""
 		}
+	}
+
+	private fun isFormValid(): Boolean {
 		return editTextEpisodeDescription.text.toString().length >= minDescriptionLength && editTextEpisodeName.text.toString().isNotEmpty()
 	}
 

@@ -35,8 +35,6 @@ class SplashActivity: AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		active = true
 		setContentView(R.layout.activity_splash)
-		viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
-		viewModel.tokenResponseLiveData.observe(this, Observer {})
 		textViewTitle.visibility = View.INVISIBLE
 		layout.doOnLayout {
 			animateLogo()
@@ -45,6 +43,9 @@ class SplashActivity: AppCompatActivity() {
 	}
 
 	override fun onResume() {
+		viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+		viewModel.tokenResponseLiveData.observe(this, Observer {})
+		viewModel.resetToken()
 		if(killedAnimation) animateLogo()
 		active = true
 		super.onResume()

@@ -25,10 +25,7 @@ object AuthorizationRepository {
 		get() = registrationResponseMutableLiveData
 
 	init {
-		val bufToken= ShowsApp.instance.getSharedPreferences(LOGIN_DATA, Context.MODE_PRIVATE).getString(TOKEN_CODE, "") ?: ""
-		if(bufToken.isNotEmpty()) {
-			tokenResponseMutableLiveData.value = TokenResponse(bufToken, status = ResponseStatus.SUCCESS)
-		}
+		resetToken()
 	}
 
 	var listener: RepositoryInfoHandler? = null
@@ -118,6 +115,15 @@ object AuthorizationRepository {
 				}
 			}
 		})
+	}
+
+	fun resetToken() {
+		//ovo treba samo zbog splash activity-a
+		tokenResponseMutableLiveData.value = null
+		val bufToken= ShowsApp.instance.getSharedPreferences(LOGIN_DATA, Context.MODE_PRIVATE).getString(TOKEN_CODE, "") ?: ""
+		if(bufToken.isNotEmpty()) {
+			tokenResponseMutableLiveData.value = TokenResponse(bufToken, status = ResponseStatus.SUCCESS)
+		}
 	}
 
 	fun logout() {

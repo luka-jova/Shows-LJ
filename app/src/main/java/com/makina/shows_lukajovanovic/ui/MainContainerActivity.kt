@@ -74,7 +74,7 @@ class MainContainerActivity : AppCompatActivity(),
 			?.responseLogout()
 	}
 
-	override fun startEpisodesFragment(showId: String, title: String, likesNumber: Int) {
+	override fun startEpisodesFragment(showId: String, title: String, likesNumber: Int?) {
 		while(supportFragmentManager?.popBackStackImmediate() == true);
 		supportFragmentManager?.beginTransaction()?.apply {
 			replace(

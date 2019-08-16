@@ -24,6 +24,7 @@ import com.makina.shows_lukajovanovic.data.repository.AuthorizationRepository
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment.Companion.EPISODES_FRAGMENT_TAG
+import com.makina.shows_lukajovanovic.ui.welcome.LoginActivity
 import com.makina.shows_lukajovanovic.ui.welcome.LoginViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.fragment_shows.*
@@ -91,7 +92,7 @@ class ShowsFragment : Fragment() {
 	}
 
 	interface ShowsFragmentContainer {
-		fun startEpisodesFragment(showId: String, title: String, likesNumber: Int)
+		fun startEpisodesFragment(showId: String, title: String, likesNumber: Int?)
 	}
 
 	private fun generateRecyclerView(scrollPosition: Int) {
@@ -122,7 +123,7 @@ class ShowsFragment : Fragment() {
 	private fun updateUI() {
 		buttonLogout.visibility = if((viewModelAuthorization.tokenResponse?.token ?: "") != "") View.VISIBLE else View.INVISIBLE
 		val response: ShowsListResponse? = viewModel.showsListResponseLiveData.value
-		if(response?.showsList?.isEmpty() != false) {
+		if(response?.showsList?.isEmpty() != false && response?.status != ResponseStatus.DOWNLOADING) {
 			recyclerViewShows.visibility = View.INVISIBLE
 			defaultLayout.visibility = View.VISIBLE
 		}
@@ -146,6 +147,8 @@ class ShowsFragment : Fragment() {
 
 	fun responseLogout() {
 		viewModelAuthorization.logout()
+		startActivity(LoginActivity.newInstance(requireContext()))
+		activity?.finish()
 	}
 
 }

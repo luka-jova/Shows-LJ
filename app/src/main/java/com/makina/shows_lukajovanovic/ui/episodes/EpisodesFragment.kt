@@ -2,6 +2,7 @@ package com.makina.shows_lukajovanovic.ui.episodes
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,19 +27,19 @@ class EpisodesFragment : Fragment() {
 		const val EPISODES_FRAGMENT_TAG = "EPISODES_FRAGMENT_TAG"
 		const val LIKES_NUMBER_CODE = "LIKES_NUMBER_CODE"
 
-		fun newInstance(showId: String, title: String, likesNumber: Int): EpisodesFragment {
+		fun newInstance(showId: String, title: String, likesNumber: Int?): EpisodesFragment {
 			return EpisodesFragment().apply {
 				arguments = Bundle().apply {
 					putString(TITLE_CODE, title)
 					putString(SHOW_ID_CODE, showId)
-					putInt(LIKES_NUMBER_CODE, likesNumber)
+					if(likesNumber != null) putInt(LIKES_NUMBER_CODE, likesNumber)
 				}
 			}
 		}
 	}
 
 	private var showId = ""
-	private var likesNumber = 0
+	private var likesNumber: Int? = null
 	private lateinit var viewModel: EpisodesViewModel
 	private lateinit var adapter: EpisodesRecyclerAdapter
 
@@ -53,7 +54,8 @@ class EpisodesFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		showId = arguments?.getString(SHOW_ID_CODE) ?: ""
-		likesNumber = arguments?.getInt(LIKES_NUMBER_CODE) ?: 0
+		Log.d("tigar", "onViewCreated")
+		///likesNumber = savedInstanceState?.getInt(LIKES_NUMBER_CODE) ?: arguments?.getInt(LIKES_NUMBER_CODE)
 		viewModel = ViewModelProviders.of(this, object : ViewModelProvider.Factory {
 			override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 				return EpisodesViewModel(showId) as T
@@ -85,11 +87,11 @@ class EpisodesFragment : Fragment() {
 			}
 		}
 		viewModel.showDetailsResponseLiveData.observe(this, Observer { response ->
-			updateUI(response)
+			updateUI()
 		})
 
 		viewModel.likeStatusLiveData.observe(this, Observer { likeStatus ->
-			updateVisibility()
+			updateUI()
 			when (likeStatus.likeStatus) {
 				EpisodesRepository.LIKE_STATUS -> {
 					buttonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_circle_filled)
@@ -113,14 +115,16 @@ class EpisodesFragment : Fragment() {
 			viewModel.postLikeStatus(showId, EpisodesRepository.DISLIKE_STATUS)
 		}
 
-		updateUI(null)
+		updateUI()
 		viewModel.getData()
 	}
 
-	private fun updateUI(response: ShowDetailsResponse?) {
-		adapter.setData(response?.episodesList ?: listOf(), response?.show?.showDescription ?: "")
-		likesNumber = response?.show?.likeNumber ?: likesNumber
-		textViewLikesCount.text = likesNumber.toString()
+	private fun updateUI() {
+		val response = viewModel.showDetailsResponseLiveData.value
+		adapter.setData(response?.episodesList ?: listOf(), response?.show?.showDescription ?: "", response != null && response.status != ResponseStatus.DOWNLOADING)
+		likesNumber = response?.show?.likeNumber
+		Log.d("tigar", "$response")
+		textViewLikesCount.text = (likesNumber ?: "").toString()
 		textViewLikesCount.setTypeface(textViewLikesCount.typeface, Typeface.BOLD)
 		updateVisibility()
 	}
@@ -133,7 +137,7 @@ class EpisodesFragment : Fragment() {
 		} else {
 			progressBarDownloading.visibility = View.INVISIBLE
 		}
-		if (viewModel.showDetailsResponse?.status == ResponseStatus.SUCCESS) {
+		if (likesNumber != null) {
 			buttonLike.visibility = View.VISIBLE
 			buttonDislike.visibility = View.VISIBLE
 			textViewLikesCount.visibility = View.VISIBLE

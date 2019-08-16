@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.Show
+import com.makina.shows_lukajovanovic.data.model.ShowResponse
 import com.makina.shows_lukajovanovic.data.model.ShowsListResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.data.network.RetrofitClient
@@ -30,6 +31,7 @@ object ShowsRepository {
 			//Already downloaded or downloading
 			return
 		}
+		//if(showsListResponseLiveData.value?.status == ResponseStatus.DOWNLOADING) return
 		showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.DOWNLOADING)
 		callShows = RetrofitClient.apiService?.getShowsList()
 		callShows?.enqueue(object : Callback<ShowsListResponse> {
@@ -64,6 +66,28 @@ object ShowsRepository {
 			buff.add(Show(showId = "cetvri$i", name = "Dr House", imageId = R.drawable.img_dr_house))
 		}
 		showsListResponseMutableLiveData.value = ShowsListResponse(status = ResponseStatus.SUCCESS, showsList = buff)
+	}
+
+	fun updateLikeCount(showId: String, newLikeCnt: Int?) {
+		val showListResponse = showsListResponseLiveData.value
+		if(newLikeCnt == null || showListResponse == null) return
+		val showList = showListResponse.showsList ?: listOf()
+		for(i in showList) {
+			if(i.showId == showId) {
+				i.likeNumber = newLikeCnt
+			}
+		}
+		showsListResponseMutableLiveData.value = ShowsListResponse(showsList = showList, status = showListResponse.status)
+	}
+
+	fun getShowResponse(showId: String): ShowResponse {
+		for(i in showsListResponseLiveData.value?.showsList ?: listOf()) {
+			if(i.showId == showId) {
+				return ShowResponse(show = i, status = showsListResponseLiveData.value?.status ?: ResponseStatus.FAIL)
+			}
+		}
+
+		return ShowResponse(status = ResponseStatus.FAIL)
 	}
 
 	fun cancelCalls() {

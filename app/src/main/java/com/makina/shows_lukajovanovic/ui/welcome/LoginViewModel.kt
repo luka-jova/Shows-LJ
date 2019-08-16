@@ -34,6 +34,10 @@ class LoginViewModel: ViewModel(), Observer<TokenResponse> {
 		AuthorizationRepository.cancelCalls()
 	}
 
+	fun resetToken() {
+		AuthorizationRepository.resetToken()
+	}
+
 	override fun onCleared() {
 		AuthorizationRepository.tokenResponseLiveData.removeObserver(this)
 		AuthorizationRepository.cancelCalls()

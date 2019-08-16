@@ -77,7 +77,7 @@
 							android:layout_height="wrap_content"
 							app:srcCompat="@drawable/img_placeholder_episodes"/>
 			<TextView
-							android:text="Someone has fallen asleep.\nWaking him up!"
+							android:text="There are no shows available."
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:textAlignment="center"

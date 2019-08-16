@@ -17,10 +17,10 @@ data class Show(
 	val name: String = "",
 
 	@Json(name = "description")
-	val showDescription:String = "Default Description",
+	val showDescription:String = "",
 
 	@Json(name = "likesCount")
-	var likeNumber: Int = 0,
+	var likeNumber: Int? = null,
 
 	@Transient
 	val imageId: Int = -1,

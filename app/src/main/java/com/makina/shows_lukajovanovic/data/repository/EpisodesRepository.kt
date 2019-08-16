@@ -48,7 +48,7 @@ object EpisodesRepository {
 			//Data is currently downloading
 			return
 		}
-		showDetailsResponseMutableLiveData.value = ShowDetailsResponse(status = ResponseStatus.DOWNLOADING)
+		showDetailsResponseMutableLiveData.value = showDetailsResponseLiveData.value?.copy(status = ResponseStatus.DOWNLOADING) ?: ShowDetailsResponse(status = ResponseStatus.DOWNLOADING)
 		var episodesListResponse: EpisodesListResponse? = null
 		var showResponse: ShowResponse? = null
 		fun updateData() {
@@ -56,7 +56,13 @@ object EpisodesRepository {
 				var status: Int = ResponseStatus.FAIL
 				if(showResponse?.status == ResponseStatus.SUCCESS && episodesListResponse?.status == ResponseStatus.SUCCESS)
 					status = ResponseStatus.SUCCESS
-
+				/*if(showResponse?.status == ResponseStatus.FAIL) {
+					showResponse = ShowsRepository.getShowResponse(showId)
+				}*/
+				if(status == ResponseStatus.FAIL) {
+					showDetailsResponseMutableLiveData.value = showDetailsResponseMutableLiveData.value?.copy(status = ResponseStatus.FAIL)
+					return
+				}
 				showDetailsResponseData[ showId ] =
 					ShowDetailsResponse(
 						show = showResponse?.show,
@@ -72,7 +78,7 @@ object EpisodesRepository {
 				episodesListResponse = EpisodesListResponse(status = ResponseStatus.FAIL)
 				updateData()
 				callShow?.cancel()
-				if(!call.isCanceled) listener?.displayMessage("Error", "Connection error.")
+				if(!call.isCanceled) {listener?.displayMessage("Error", "Connection error.") ; Log.d("tigar", "bok1")}
 			}
 
 			override fun onResponse(call: Call<EpisodesListResponse>, response: Response<EpisodesListResponse>) {
@@ -97,7 +103,7 @@ object EpisodesRepository {
 				showResponse = ShowResponse(status = ResponseStatus.FAIL)
 				updateData()
 				callEpisodesList?.cancel()
-				if(!call.isCanceled) listener?.displayMessage("Error", "Connection error.")
+				if(!call.isCanceled) {listener?.displayMessage("Error", "Connection error."); Log.d("tigar", "bok2")}
 			}
 
 			override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
@@ -120,8 +126,8 @@ object EpisodesRepository {
 
 	private var callLikeStatus: Call<Show>? = null
 	fun postLikeStatus(likeStatus: LikeStatus, oldStatus: LikeStatus) {
+
 		val token = AuthorizationRepository.tokenResponseLiveData.value?.token ?: ""
-		Log.d("tigar", "stari status: $oldStatus")
 		callLikeStatus =
 			if (likeStatus.likeStatus == LIKE_STATUS)
 				RetrofitClient.apiService?.postLike(token, likeStatus.showId)
@@ -147,6 +153,7 @@ object EpisodesRepository {
 
 				showDetailsResponseData[ likeStatus.showId ]?.show?.likeNumber = newLikeCount
 				showDetailsResponseMutableLiveData.value = showDetailsResponseData[ likeStatus.showId ]
+				ShowsRepository.updateLikeCount(likeStatus.showId, showDetailsResponseData[ likeStatus.showId ]?.show?.likeNumber)
 			}
 		})
 	}

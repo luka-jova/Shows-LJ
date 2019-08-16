@@ -59,6 +59,7 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 		editTextUsername.addTextChangedListener(object : TextWatcher {
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				updateUI()
+				validateEmail()
 			}
 			override fun afterTextChanged(p0: Editable?) {}
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -67,6 +68,7 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 		editTextPassword.addTextChangedListener(object : TextWatcher {
 			override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 				updateUI()
+				validatePassword()
 			}
 			override fun afterTextChanged(p0: Editable?) {}
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -90,17 +92,6 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 
 	private fun updateUI() {
 		updateButton()
-		if (!isEmailValid(editTextUsername.text.toString())) {
-			textInputLayoutUsername.error = getString(R.string.err_username)
-		} else {
-			textInputLayoutUsername.error = ""
-		}
-		if (editTextPassword.text.toString().length < minPasswordCnt) {
-			textInputLayoutPassword.error = getString(R.string.err_password)
-		} else {
-			textInputLayoutPassword.error = ""
-		}
-
 		val response = viewModel.tokenResponseLiveData.value ?: return
 		when (response.status) {
 			ResponseStatus.SUCCESS -> {
@@ -120,6 +111,22 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 				progressBarDownloading.visibility = View.VISIBLE
 				buttonLogin.isEnabled = false
 			}
+		}
+	}
+
+	private fun validateEmail() {
+		if (!isEmailValid(editTextUsername.text.toString())) {
+			textInputLayoutUsername.error = getString(R.string.err_username)
+		} else {
+			textInputLayoutUsername.error = ""
+		}
+	}
+
+	private fun validatePassword() {
+		if (editTextPassword.text.toString().length < minPasswordCnt) {
+			textInputLayoutPassword.error = getString(R.string.err_password)
+		} else {
+			textInputLayoutPassword.error = ""
 		}
 	}
 
