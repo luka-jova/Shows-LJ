@@ -2,11 +2,9 @@ package com.makina.shows_lukajovanovic.ui.episodes
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
-import com.makina.shows_lukajovanovic.data.model.ShowDetailsResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 import kotlinx.android.synthetic.main.fragment_episodes.*
@@ -32,7 +29,7 @@ class EpisodesFragment : Fragment() {
 				arguments = Bundle().apply {
 					putString(TITLE_CODE, title)
 					putString(SHOW_ID_CODE, showId)
-					if(likesNumber != null) putInt(LIKES_NUMBER_CODE, likesNumber)
+					if (likesNumber != null) putInt(LIKES_NUMBER_CODE, likesNumber)
 				}
 			}
 		}
@@ -54,8 +51,6 @@ class EpisodesFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		showId = arguments?.getString(SHOW_ID_CODE) ?: ""
-		Log.d("tigar", "onViewCreated")
-		///likesNumber = savedInstanceState?.getInt(LIKES_NUMBER_CODE) ?: arguments?.getInt(LIKES_NUMBER_CODE)
 		viewModel = ViewModelProviders.of(this, object : ViewModelProvider.Factory {
 			override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 				return EpisodesViewModel(showId) as T
@@ -121,9 +116,12 @@ class EpisodesFragment : Fragment() {
 
 	private fun updateUI() {
 		val response = viewModel.showDetailsResponseLiveData.value
-		adapter.setData(response?.episodesList ?: listOf(), response?.show?.showDescription ?: "", response != null && response.status != ResponseStatus.DOWNLOADING)
+		adapter.setData(
+			response?.episodesList ?: listOf(),
+			response?.show?.showDescription ?: "",
+			response != null && response.status != ResponseStatus.DOWNLOADING
+		)
 		likesNumber = response?.show?.likeNumber
-		Log.d("tigar", "$response")
 		textViewLikesCount.text = (likesNumber ?: "").toString()
 		textViewLikesCount.setTypeface(textViewLikesCount.typeface, Typeface.BOLD)
 		updateVisibility()

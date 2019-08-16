@@ -6,9 +6,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.makina.shows_lukajovanovic.data.model.EpisodeDetailsResponse
 import com.makina.shows_lukajovanovic.data.repository.EpisodeDetailsRepository
-import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
 
-class EpisodeDetailsViewModel : ViewModel(), Observer<EpisodeDetailsResponse>{
+class EpisodeDetailsViewModel : ViewModel(), Observer<EpisodeDetailsResponse> {
 	private val episodeDetailsResponseMutableLiveData = MutableLiveData<EpisodeDetailsResponse>()
 	val episodeDetailsResponseLiveData: LiveData<EpisodeDetailsResponse>
 		get() = episodeDetailsResponseMutableLiveData

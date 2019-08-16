@@ -3,10 +3,8 @@ package com.makina.shows_lukajovanovic.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.makina.shows_lukajovanovic.R
-import com.makina.shows_lukajovanovic.data.network.RetrofitClient
 import com.makina.shows_lukajovanovic.data.repository.*
 import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
 import com.makina.shows_lukajovanovic.ui.episodes.add.AddEpisodeFragment
@@ -75,7 +73,7 @@ class MainContainerActivity : AppCompatActivity(),
 	}
 
 	override fun startEpisodesFragment(showId: String, title: String, likesNumber: Int?) {
-		while(supportFragmentManager?.popBackStackImmediate() == true);
+		while (supportFragmentManager?.popBackStackImmediate() == true);
 		supportFragmentManager?.beginTransaction()?.apply {
 			replace(
 				slaveContainerId,
@@ -86,6 +84,7 @@ class MainContainerActivity : AppCompatActivity(),
 			commit()
 		}
 	}
+
 	override fun startAddEpisodeFragment(showId: String) {
 		supportFragmentManager?.beginTransaction()?.apply {
 			replace(
@@ -128,7 +127,7 @@ class MainContainerActivity : AppCompatActivity(),
 	}
 
 	override fun displayMessage(title: String, message: String) {
-		if(active)
+		if (active)
 			InfoAllertDialog.newInstance(title, message).show(supportFragmentManager, "Message fragment")
 	}
 

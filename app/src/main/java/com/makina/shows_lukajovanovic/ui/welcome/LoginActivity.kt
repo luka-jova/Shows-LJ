@@ -5,22 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.makina.shows_lukajovanovic.R
-import com.makina.shows_lukajovanovic.data.model.TokenResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
 import com.makina.shows_lukajovanovic.data.repository.AuthorizationRepository
 import com.makina.shows_lukajovanovic.data.repository.RepositoryInfoHandler
 import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import com.makina.shows_lukajovanovic.ui.shared.InfoAllertDialog
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_login.editTextPassword
-import kotlinx.android.synthetic.main.activity_login.progressBarDownloading
 
 const val EMAIL_REGEX = """^[A-Za-z][A-Za-z0-9._+]*@{1}[A-Za-z0-9._+]{1,}\.[A-Za-z0-9._+]{1,}"""
 const val minPasswordCnt = 5
@@ -61,6 +57,7 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 				updateUI()
 				validateEmail()
 			}
+
 			override fun afterTextChanged(p0: Editable?) {}
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 		})
@@ -70,6 +67,7 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 				updateUI()
 				validatePassword()
 			}
+
 			override fun afterTextChanged(p0: Editable?) {}
 			override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 		})
@@ -87,7 +85,8 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 	}
 
 	fun updateButton() {
-		buttonLogin.isEnabled = isEmailValid(editTextUsername.text.toString()) && editTextPassword.text.length >= minPasswordCnt
+		buttonLogin.isEnabled =
+			isEmailValid(editTextUsername.text.toString()) && editTextPassword.text.length >= minPasswordCnt
 	}
 
 	private fun updateUI() {
@@ -142,7 +141,7 @@ class LoginActivity : AppCompatActivity(), RepositoryInfoHandler {
 	}
 
 	override fun displayMessage(title: String, message: String) {
-		if(active)
+		if (active)
 			InfoAllertDialog.newInstance(title, message).show(supportFragmentManager, "Message fragment")
 	}
 

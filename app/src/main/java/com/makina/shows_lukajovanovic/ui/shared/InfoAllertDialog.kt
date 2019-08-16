@@ -1,13 +1,12 @@
 package com.makina.shows_lukajovanovic.ui.shared
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 
-class InfoAllertDialog: DialogFragment() {
+class InfoAllertDialog : DialogFragment() {
 	companion object {
 		private const val MESSAGE_CODE = "MESSAGE_CODE"
 		private const val TITLE_CODE = "TITLE_CODE"
@@ -26,7 +25,7 @@ class InfoAllertDialog: DialogFragment() {
 			AlertDialog.Builder(it)
 				.setTitle(arguments?.getString(TITLE_CODE) ?: "")
 				.setMessage(arguments?.getString(MESSAGE_CODE) ?: "Something happened")
-				.setPositiveButton("Ok", DialogInterface.OnClickListener {_, _ -> })
+				.setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ -> })
 				.create()
 		} ?: throw IllegalStateException("Activity cannot be null")
 	}

@@ -1,7 +1,6 @@
 package com.makina.shows_lukajovanovic.ui.episodes.details
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +69,7 @@ class EpisodeDetailsFragment: Fragment() {
 
 	private fun updateUI() {
 		val response = viewModel.episodeDetailsResponseLiveData.value
-		if(response == null) {Log.d("tigar", "null je response"); return}
+		if(response == null) {return}
 		val episode = response.episode
 		textViewEpisodeDescription.text = episode.episodeDescription
 		textViewEpisodeName.text = episode.name

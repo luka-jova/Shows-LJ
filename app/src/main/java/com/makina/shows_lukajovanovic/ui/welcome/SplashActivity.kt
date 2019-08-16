@@ -1,19 +1,15 @@
 package com.makina.shows_lukajovanovic.ui.welcome
 
-import android.animation.Animator
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
-import android.renderscript.Sampler
-import android.util.Log
 import android.view.View
-import android.view.animation.*
+import android.view.animation.BounceInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
@@ -21,11 +17,11 @@ import com.makina.shows_lukajovanovic.ui.MainContainerActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 
 
-
-class SplashActivity: AppCompatActivity() {
+class SplashActivity : AppCompatActivity() {
 	companion object {
 		const val START_ACTIVITY_CODE = 1
 	}
+
 	private var active = true
 	private var killedAnimation = false
 
@@ -46,17 +42,16 @@ class SplashActivity: AppCompatActivity() {
 		viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
 		viewModel.tokenResponseLiveData.observe(this, Observer {})
 		viewModel.resetToken()
-		if(killedAnimation) animateLogo()
+		if (killedAnimation) animateLogo()
 		active = true
 		super.onResume()
 	}
 
 	private val handlerThread = Handler()
 	private val startActivityRunnable = Runnable {
-		if(viewModel.tokenResponse?.status == ResponseStatus.SUCCESS && (viewModel.tokenResponse?.token ?: "") != "") {
+		if (viewModel.tokenResponse?.status == ResponseStatus.SUCCESS && (viewModel.tokenResponse?.token ?: "") != "") {
 			startActivity(MainContainerActivity.newInstance(this))
-		}
-		else {
+		} else {
 			startActivity(LoginActivity.newInstance(this))
 		}
 		finish()
@@ -72,7 +67,7 @@ class SplashActivity: AppCompatActivity() {
 			interpolator = BounceInterpolator()
 			duration = 1000
 			doOnEnd {
-				if(active) animateTitle()
+				if (active) animateTitle()
 			}
 			startDelay = 500
 			start()
@@ -105,8 +100,8 @@ class SplashActivity: AppCompatActivity() {
 		active = false
 		killedAnimation = true
 		handlerThread.removeCallbacks(startActivityRunnable)
-		if(::valueAnimatorLogo.isInitialized) valueAnimatorLogo.cancel()
-		if(::valueAnimatorTitle.isInitialized) valueAnimatorTitle.cancel()
+		if (::valueAnimatorLogo.isInitialized) valueAnimatorLogo.cancel()
+		if (::valueAnimatorTitle.isInitialized) valueAnimatorTitle.cancel()
 		super.onStop()
 	}
 }

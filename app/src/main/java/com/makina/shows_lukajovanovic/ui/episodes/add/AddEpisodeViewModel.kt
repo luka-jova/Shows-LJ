@@ -1,7 +1,6 @@
 package com.makina.shows_lukajovanovic.ui.episodes.add
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -9,8 +8,6 @@ import androidx.lifecycle.ViewModel
 import com.makina.shows_lukajovanovic.data.model.Episode
 import com.makina.shows_lukajovanovic.data.model.EpisodePostResponse
 import com.makina.shows_lukajovanovic.data.repository.AddEpisodeRepository
-import com.makina.shows_lukajovanovic.data.repository.EpisodesRepository
-import java.io.File
 
 class AddEpisodeViewModel : ViewModel(), Observer<EpisodePostResponse> {
 	private val episodePostResponseMutableLiveData = MutableLiveData<EpisodePostResponse>()

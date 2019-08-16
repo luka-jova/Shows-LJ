@@ -1,9 +1,7 @@
 package com.makina.shows_lukajovanovic.data.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.room.Room
 import com.makina.shows_lukajovanovic.ShowsApp
 import com.makina.shows_lukajovanovic.data.database.LikeStatusDatabase
@@ -41,35 +39,38 @@ object EpisodesRepository {
 	}
 
 	private var callEpisodesList: Call<EpisodesListResponse>? = null
-	private  var callShow: Call<ShowResponse>? = null
+	private var callShow: Call<ShowResponse>? = null
 
 	fun fetchDataFromWeb(showId: String) {
 		if (showDetailsResponseLiveData.value?.status == ResponseStatus.DOWNLOADING) {
 			//Data is currently downloading
 			return
 		}
-		showDetailsResponseMutableLiveData.value = showDetailsResponseLiveData.value?.copy(status = ResponseStatus.DOWNLOADING) ?: ShowDetailsResponse(status = ResponseStatus.DOWNLOADING)
+		showDetailsResponseMutableLiveData.value =
+			showDetailsResponseLiveData.value?.copy(status = ResponseStatus.DOWNLOADING)
+				?: ShowDetailsResponse(status = ResponseStatus.DOWNLOADING)
 		var episodesListResponse: EpisodesListResponse? = null
 		var showResponse: ShowResponse? = null
 		fun updateData() {
 			if (episodesListResponse != null && showResponse != null) {
 				var status: Int = ResponseStatus.FAIL
-				if(showResponse?.status == ResponseStatus.SUCCESS && episodesListResponse?.status == ResponseStatus.SUCCESS)
+				if (showResponse?.status == ResponseStatus.SUCCESS && episodesListResponse?.status == ResponseStatus.SUCCESS)
 					status = ResponseStatus.SUCCESS
 				/*if(showResponse?.status == ResponseStatus.FAIL) {
 					showResponse = ShowsRepository.getShowResponse(showId)
 				}*/
-				if(status == ResponseStatus.FAIL) {
-					showDetailsResponseMutableLiveData.value = showDetailsResponseMutableLiveData.value?.copy(status = ResponseStatus.FAIL)
+				if (status == ResponseStatus.FAIL) {
+					showDetailsResponseMutableLiveData.value =
+						showDetailsResponseMutableLiveData.value?.copy(status = ResponseStatus.FAIL)
 					return
 				}
-				showDetailsResponseData[ showId ] =
+				showDetailsResponseData[showId] =
 					ShowDetailsResponse(
 						show = showResponse?.show,
 						episodesList = episodesListResponse?.episodesList?.toMutableList() ?: mutableListOf(),
 						status = status
 					)
-				showDetailsResponseMutableLiveData.value = showDetailsResponseData[ showId ]
+				showDetailsResponseMutableLiveData.value = showDetailsResponseData[showId]
 			}
 		}
 		callEpisodesList = RetrofitClient.apiService?.getEpisodesListById(showId)
@@ -78,16 +79,17 @@ object EpisodesRepository {
 				episodesListResponse = EpisodesListResponse(status = ResponseStatus.FAIL)
 				updateData()
 				callShow?.cancel()
-				if(!call.isCanceled) {listener?.displayMessage("Error", "Connection error.") ; Log.d("tigar", "bok1")}
+				if (!call.isCanceled) {
+					listener?.displayMessage("Error", "Connection error.")
+				}
 			}
 
 			override fun onResponse(call: Call<EpisodesListResponse>, response: Response<EpisodesListResponse>) {
-				if(!response.isSuccessful || response.body() == null) {
+				if (!response.isSuccessful || response.body() == null) {
 					episodesListResponse = EpisodesListResponse(status = ResponseStatus.FAIL)
 					listener?.displayMessage("Error", "Error while downloading")
 					callShow?.cancel()
-				}
-				else {
+				} else {
 					episodesListResponse = EpisodesListResponse(
 						episodesList = response.body()?.episodesList,
 						status = ResponseStatus.SUCCESS
@@ -103,11 +105,13 @@ object EpisodesRepository {
 				showResponse = ShowResponse(status = ResponseStatus.FAIL)
 				updateData()
 				callEpisodesList?.cancel()
-				if(!call.isCanceled) {listener?.displayMessage("Error", "Connection error."); Log.d("tigar", "bok2")}
+				if (!call.isCanceled) {
+					listener?.displayMessage("Error", "Connection error.")
+				}
 			}
 
 			override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
-				if(!response.isSuccessful || response.body() == null) {
+				if (!response.isSuccessful || response.body() == null) {
 					showResponse = ShowResponse(status = ResponseStatus.FAIL)
 					listener?.displayMessage("Error", "Error while downloading.")
 					callEpisodesList?.cancel()
@@ -138,7 +142,7 @@ object EpisodesRepository {
 		callLikeStatus?.enqueue(object : Callback<Show> {
 			override fun onFailure(call: Call<Show>, t: Throwable) {
 				saveLikeStatus(oldStatus.copy(status = ResponseStatus.FAIL))
-				if(!call.isCanceled) listener?.displayMessage("Error", "Connection error")
+				if (!call.isCanceled) listener?.displayMessage("Error", "Connection error")
 			}
 
 			override fun onResponse(call: Call<Show>, response: Response<Show>) {
@@ -149,11 +153,12 @@ object EpisodesRepository {
 				}
 
 				saveLikeStatus(likeStatus.copy(status = ResponseStatus.SUCCESS))
-				val newLikeCount = response.body()?.likeNumber ?: (showDetailsResponseData[ likeStatus.showId ]?.show?.likeNumber ?: 0)
+				val newLikeCount =
+					response.body()?.likeNumber ?: (showDetailsResponseData[likeStatus.showId]?.show?.likeNumber ?: 0)
 
-				showDetailsResponseData[ likeStatus.showId ]?.show?.likeNumber = newLikeCount
-				showDetailsResponseMutableLiveData.value = showDetailsResponseData[ likeStatus.showId ]
-				ShowsRepository.updateLikeCount(likeStatus.showId, showDetailsResponseData[ likeStatus.showId ]?.show?.likeNumber)
+				showDetailsResponseData[likeStatus.showId]?.show?.likeNumber = newLikeCount
+				showDetailsResponseMutableLiveData.value = showDetailsResponseData[likeStatus.showId]
+				ShowsRepository.updateLikeCount(likeStatus.showId, showDetailsResponseData[likeStatus.showId]?.show?.likeNumber)
 			}
 		})
 	}
@@ -177,7 +182,7 @@ object EpisodesRepository {
 
 	fun saveLikeStatus(likeStatus: LikeStatus) {
 		//TODO zasto je likeStatusListLiveData().value == null???
-		if(likeStatus.id == 0) {
+		if (likeStatus.id == 0) {
 			executor.execute {
 				databaseLikeStatus.likeStatusDao().insert(likeStatus)
 			}

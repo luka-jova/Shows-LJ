@@ -5,11 +5,9 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -20,17 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.makina.shows_lukajovanovic.R
 import com.makina.shows_lukajovanovic.data.model.ShowsListResponse
 import com.makina.shows_lukajovanovic.data.network.ResponseStatus
-import com.makina.shows_lukajovanovic.data.repository.AuthorizationRepository
-import com.makina.shows_lukajovanovic.ui.MainContainerActivity
-import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment
-import com.makina.shows_lukajovanovic.ui.episodes.EpisodesFragment.Companion.EPISODES_FRAGMENT_TAG
 import com.makina.shows_lukajovanovic.ui.welcome.LoginActivity
 import com.makina.shows_lukajovanovic.ui.welcome.LoginViewModel
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.fragment_shows.*
-import kotlinx.android.synthetic.main.fragment_shows.progressBarDownloading
-import java.lang.Exception
-import java.lang.IllegalStateException
 
 
 class ShowsFragment : Fragment() {
@@ -69,7 +59,7 @@ class ShowsFragment : Fragment() {
 		viewModel.getShowsList()
 		fabToggleLayout.setOnClickListener {
 			curLayout =
-				if(curLayout == LAYOUT_LIST) LAYOUT_GRID
+				if (curLayout == LAYOUT_LIST) LAYOUT_GRID
 				else LAYOUT_LIST
 			generateRecyclerView(getScrollPosition())
 		}
@@ -114,20 +104,20 @@ class ShowsFragment : Fragment() {
 		fabToggleLayout.setImageDrawable(
 			ContextCompat.getDrawable(
 				requireContext(),
-				if(curLayout == LAYOUT_LIST) R.drawable.ic_gridview_white
+				if (curLayout == LAYOUT_LIST) R.drawable.ic_gridview_white
 				else R.drawable.ic_listview
 			)
 		)
 	}
 
 	private fun updateUI() {
-		buttonLogout.visibility = if((viewModelAuthorization.tokenResponse?.token ?: "") != "") View.VISIBLE else View.INVISIBLE
+		buttonLogout.visibility =
+			if ((viewModelAuthorization.tokenResponse?.token ?: "") != "") View.VISIBLE else View.INVISIBLE
 		val response: ShowsListResponse? = viewModel.showsListResponseLiveData.value
-		if(response?.showsList?.isEmpty() != false && response?.status != ResponseStatus.DOWNLOADING) {
+		if (response?.showsList?.isEmpty() != false && response?.status != ResponseStatus.DOWNLOADING) {
 			recyclerViewShows.visibility = View.INVISIBLE
 			defaultLayout.visibility = View.VISIBLE
-		}
-		else {
+		} else {
 			recyclerViewShows.visibility = View.VISIBLE
 			defaultLayout.visibility = View.INVISIBLE
 		}
@@ -154,7 +144,7 @@ class ShowsFragment : Fragment() {
 }
 
 
-class LogoutConfirmDialogFragment: DialogFragment() {
+class LogoutConfirmDialogFragment : DialogFragment() {
 	interface LogoutDialogListener {
 		fun responseLogout()
 	}
